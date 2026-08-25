@@ -41,12 +41,13 @@
           <button data-sport="MLB">MLB</button>
           <button data-sport="WNBA">WNBA</button>
         </div>
+        <label class="date-filter"><span>Game date</span><select id="dateSelect"><option value="ALL">All upcoming dates</option></select></label>
         <label class="search"><span>Search</span><input id="searchInput" type="search" placeholder="Player or market" /></label>
       </section>
 
       <section class="section-head">
         <div><p class="eyebrow">Priced board</p><h2>Qualified plays</h2></div>
-        <p>Requires a sportsbook price and a complete two-sided market.</p>
+        <p>Requires a current sportsbook price. Two-book consensus is preferred; ESPN projections provide the fallback comparison.</p>
       </section>
       <section id="betBoard" class="card-grid"></section>
 

@@ -106,6 +106,10 @@ class OddsApiIoProvider:
                     )
                     break
                 except ProviderError as exc:
+                    maximum = re.search(r"allowed max (\d+) bookmakers", str(exc), re.I)
+                    if maximum and len(active_books) > int(maximum.group(1)):
+                        active_books = active_books[: int(maximum.group(1))]
+                        continue
                     invalid = re.search(r'["\']([^"\']+) is not a valid bookmaker', str(exc))
                     if not invalid:
                         raise

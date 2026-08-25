@@ -37,6 +37,7 @@ class Projection:
     standard_deviation: float
     recent: list[float]
     trend: float
+    start_time: str = ""
     source: str = "ESPN public statistics"
 
     def to_dict(self) -> dict[str, Any]:

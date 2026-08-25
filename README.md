@@ -16,7 +16,7 @@ Sportsbook odds produce model-ranked **Best**, **Good**, and **Lean** rows. ESPN
 4. Open **Settings → Pages** and choose **GitHub Actions** as the source.
 5. Open **Actions → Refresh Props Edge → Run workflow**.
 
-The workflow refreshes automatically five times per day and redeploys the page. It can also be run at any time from GitHub Actions or through the dashboard's **Run GitHub update** link.
+The workflow refreshes automatically five times per day and redeploys the page. It can also be run at any time from GitHub Actions or through the dashboard's **Run GitHub update** link. The **Game date** selector lets you isolate today, tomorrow, or any other available scheduled day in the seven-day window.
 
 ## Add private odds-provider keys (optional)
 
@@ -54,7 +54,7 @@ The CSV is read only by that browser tab and is not uploaded, committed, or reta
 
 ## Data and model rules
 
-- DraftKings is the target book for automatically priced plays.
+- DraftKings is the target book for automatically priced plays. FanDuel is the second primary comparison book so the free Odds-API.io account stays within its two-book maximum.
 - Consensus probabilities use complete two-sided prices from at least two books and remove the two-way market margin before comparison.
 - If DraftKings has a current price but fewer than two consensus books are available, the model can conservatively compare that price with the matching ESPN player projection. These cards are explicitly labeled `DraftKings price vs ESPN projection`.
 - Model probabilities are shrunk toward 50% to reduce overconfidence.

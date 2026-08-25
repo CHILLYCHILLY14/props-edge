@@ -1,7 +1,7 @@
 {
   "bookmakers": {
     "target": "DraftKings",
-    "primary_consensus": ["DraftKings", "FanDuel", "BetMGM", "Caesars"],
+    "primary_consensus": ["DraftKings", "FanDuel"],
     "secondary_consensus": ["draftkings", "fanduel", "betmgm", "williamhill_us"]
   },
   "sports": {

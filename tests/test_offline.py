@@ -25,6 +25,7 @@ def fixture(name: str):
 
 class ProviderParsingTests(unittest.TestCase):
     def test_primary_provider_parses_two_sided_props(self) -> None:
+        self.assertLessEqual(len(load_settings()["bookmakers"]["primary_consensus"]), 2)
         quotes = parse_odds_api_io_event(fixture("odds_api_io_event.json"), "NFL")
         self.assertEqual(len(quotes), 6)
         self.assertEqual({row.book for row in quotes}, {"DraftKings", "FanDuel", "BetMGM"})
@@ -96,12 +97,24 @@ class ProviderParsingTests(unittest.TestCase):
 
     def test_espn_projection_fallback_has_no_odds(self) -> None:
         summaries = fixture("espn_summaries.json")
-        rows = parse_summaries(summaries, "WNBA", {"torontotempo": "Montreal @ Toronto"})
-        points = next(row for row in rows if row.player == "Alex Example" and row.market == "Points")
+        schedule = {
+            "torontotempo": [
+                {"matchup": "Montreal @ Toronto", "start_time": "2026-08-25T23:00:00Z"},
+                {"matchup": "Toronto @ New York", "start_time": "2026-08-26T23:00:00Z"},
+            ]
+        }
+        rows = parse_summaries(summaries, "WNBA", schedule)
+        point_rows = [row for row in rows if row.player == "Alex Example" and row.market == "Points"]
+        self.assertEqual(len(point_rows), 2)
+        points = point_rows[0]
         self.assertEqual(points.samples, 2)
         self.assertAlmostEqual(points.projection, 22.0)
         self.assertAlmostEqual(points.standard_deviation, 3.0)
         self.assertEqual(points.recent, [18.0, 24.0])
+        self.assertEqual(
+            {row.start_time for row in point_rows},
+            {"2026-08-25T23:00:00Z", "2026-08-26T23:00:00Z"},
+        )
 
 
 class SecurityTests(unittest.TestCase):

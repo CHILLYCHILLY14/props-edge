@@ -1,10 +1,17 @@
-const state = { meta: null, board: [], projections: [], imported: [], sport: "ALL", search: "" };
+const state = { meta: null, board: [], projections: [], imported: [], sport: "ALL", date: "ALL", search: "" };
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 const escapeHtml = (value) => String(value ?? "").replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char]));
 const pct = (value) => value == null ? "—" : `${(Number(value) * 100).toFixed(1)}%`;
 const american = (value) => value == null ? "—" : `${Number(value) > 0 ? "+" : ""}${Math.round(Number(value))}`;
 const normalized = (value) => String(value ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
+const dateKey = (value) => {
+  if (!value) return "";
+  const date = new Date(value); if (Number.isNaN(date.getTime())) return "";
+  const pad = (number) => String(number).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+};
+const formatStart = (value) => value ? new Date(value).toLocaleString([], { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) : "";
 
 async function loadData() {
   const stamp = Date.now();
@@ -14,23 +21,40 @@ async function loadData() {
     fetch(`data/projections.json?v=${stamp}`).then((r) => r.json()),
   ]);
   state.meta = meta; state.board = board; state.projections = projections;
+  populateDates();
   render();
+}
+
+function dateLabel(key) {
+  const [year, month, day] = key.split("-").map(Number); const target = new Date(year, month - 1, day); const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); const difference = Math.round((target - today) / 86400000);
+  const prefix = difference === 0 ? "Today — " : difference === 1 ? "Tomorrow — " : "";
+  return `${prefix}${target.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" })}`;
+}
+
+function populateDates() {
+  const dates = [...new Set([...state.board, ...state.projections].map((row) => dateKey(row.start_time)).filter(Boolean))].sort();
+  const select = $("#dateSelect"); const current = state.date;
+  select.innerHTML = '<option value="ALL">All upcoming dates</option>' + dates.map((date) => `<option value="${date}">${escapeHtml(dateLabel(date))}</option>`).join("");
+  if (current !== "ALL" && dates.includes(current)) select.value = current; else { state.date = "ALL"; select.value = "ALL"; }
 }
 
 function visible(row) {
   const sport = state.sport === "ALL" || row.sport === state.sport;
+  const date = state.date === "ALL" || dateKey(row.start_time) === state.date;
   const query = !state.search || `${row.player} ${row.market} ${row.matchup || ""}`.toLowerCase().includes(state.search);
-  return sport && query;
+  return sport && date && query;
 }
 
 function render() {
   const allBets = [...state.board, ...state.imported];
-  const actionable = allBets.filter((row) => row.tier !== "PASS" && visible(row));
-  const projections = state.projections.filter(visible).slice(0, 120);
-  $("#metricBest").textContent = allBets.filter((row) => row.tier === "BEST").length;
-  $("#metricGood").textContent = allBets.filter((row) => row.tier === "GOOD").length;
-  $("#metricLean").textContent = allBets.filter((row) => row.tier === "LEAN").length;
-  $("#metricProjection").textContent = state.projections.length;
+  const filteredBets = allBets.filter(visible); const filteredProjections = state.projections.filter(visible);
+  const actionable = filteredBets.filter((row) => row.tier !== "PASS");
+  const projections = filteredProjections.slice(0, 120);
+  $("#metricBest").textContent = filteredBets.filter((row) => row.tier === "BEST").length;
+  $("#metricGood").textContent = filteredBets.filter((row) => row.tier === "GOOD").length;
+  $("#metricLean").textContent = filteredBets.filter((row) => row.tier === "LEAN").length;
+  $("#metricProjection").textContent = filteredProjections.length;
   renderStatus(); renderBets(actionable); renderProjections(projections); renderSources();
 }
 
@@ -56,7 +80,7 @@ function renderBets(rows) {
   board.innerHTML = rows.map((row) => `
     <article class="bet-card ${escapeHtml(row.tier.toLowerCase())}">
       <div class="card-top"><span>${escapeHtml(row.sport)} · ${escapeHtml(row.book)}</span><span class="badge">${escapeHtml(row.tier)}</span></div>
-      <h3>${escapeHtml(row.pick)}</h3><div class="matchup">${escapeHtml(row.matchup)}</div>
+      <h3>${escapeHtml(row.pick)}</h3><div class="matchup">${escapeHtml([formatStart(row.start_time), row.matchup].filter(Boolean).join(" · "))}</div>
       <div class="model-source">${escapeHtml(row.model_label || `${row.consensus_books || 0}-book no-vig consensus`)}</div>
       <div class="numbers"><div><strong>${american(row.price_american)}</strong><span>Price</span></div><div><strong>${pct(row.edge)}</strong><span>Edge</span></div><div><strong>${pct(row.ev)}</strong><span>EV</span></div></div>
     </article>`).join("");
@@ -68,7 +92,7 @@ function renderProjections(rows) {
   board.innerHTML = rows.map((row) => `
     <article class="projection-card">
       <div class="card-top"><span>${escapeHtml(row.sport)}</span><span>${Math.round(row.confidence * 100)}% confidence</span></div>
-      <h3>${escapeHtml(row.player)}</h3><div class="matchup">${escapeHtml(row.matchup)}</div>
+      <h3>${escapeHtml(row.player)}</h3><div class="matchup">${escapeHtml([formatStart(row.start_time), row.matchup].filter(Boolean).join(" · "))}</div>
       <div class="projection-number">${Number(row.projection).toFixed(1)}</div>
       <strong>${escapeHtml(row.market)}</strong>
       <div class="recent">Recent: ${(row.recent || []).map((n) => Number(n).toFixed(0)).join(" · ")} · ${row.samples} games</div>
@@ -96,7 +120,7 @@ function tierFor(edge) { if (edge >= .06) return "BEST"; if (edge >= .04) return
 
 function evaluateImported(rows) {
   return rows.flatMap((line) => {
-    const projection = state.projections.find((row) => row.sport === line.sport && normalized(row.player) === normalized(line.player) && normalized(row.market) === normalized(line.market));
+    const projection = state.projections.find((row) => row.sport === line.sport && normalized(row.player) === normalized(line.player) && normalized(row.market) === normalized(line.market) && (state.date === "ALL" || dateKey(row.start_time) === state.date));
     if (!projection) return [];
     const sd = Math.max(Number(projection.standard_deviation) || 0, 0.75);
     const rawOver = 1 - normalCdf((Number(line.line) - Number(projection.projection)) / sd);
@@ -125,6 +149,7 @@ function downloadTemplate() {
 $("#importButton").addEventListener("click", () => $("#lineFile").click());
 $("#lineFile").addEventListener("change", (event) => event.target.files[0] && importLines(event.target.files[0]));
 $("#downloadTemplate").addEventListener("click", downloadTemplate);
+$("#dateSelect").addEventListener("change", (event) => { state.date = event.target.value; render(); });
 $("#searchInput").addEventListener("input", (event) => { state.search = event.target.value.trim().toLowerCase(); render(); });
 $$('#sportTabs button').forEach((button) => button.addEventListener("click", () => { $$('#sportTabs button').forEach((row) => row.classList.remove("active")); button.classList.add("active"); state.sport = button.dataset.sport; render(); }));
 function showError(error) { const banner = $("#statusBanner"); banner.className = "status-banner warn"; banner.textContent = `Could not load data: ${error.message}`; }

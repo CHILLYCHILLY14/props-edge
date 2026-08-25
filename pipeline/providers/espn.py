@@ -22,8 +22,8 @@ def _date_range(start: dt.date, end: dt.date) -> str:
     return f"{start:%Y%m%d}-{end:%Y%m%d}"
 
 
-def _team_and_matchups(events: list[dict[str, Any]]) -> dict[str, str]:
-    answer: dict[str, str] = {}
+def _team_and_matchups(events: list[dict[str, Any]]) -> dict[str, list[dict[str, str]]]:
+    answer: dict[str, list[dict[str, str]]] = defaultdict(list)
     for event in events:
         competition = (event.get("competitions") or [{}])[0]
         competitors = competition.get("competitors") or []
@@ -32,9 +32,15 @@ def _team_and_matchups(events: list[dict[str, Any]]) -> dict[str, str]:
         home_name = str((home.get("team") or {}).get("displayName") or "Home")
         away_name = str((away.get("team") or {}).get("displayName") or "Away")
         matchup = f"{away_name} @ {home_name}"
-        answer[_norm(home_name)] = matchup
-        answer[_norm(away_name)] = matchup
-    return answer
+        event_info = {
+            "matchup": matchup,
+            "start_time": str(event.get("date") or competition.get("date") or ""),
+        }
+        for team_name in (home_name, away_name):
+            team_key = _norm(team_name)
+            if event_info not in answer[team_key]:
+                answer[team_key].append(event_info)
+    return dict(answer)
 
 
 def _canonical_market(sport: str, group: str, name: str) -> str | None:
@@ -111,7 +117,7 @@ def _canonical_market(sport: str, group: str, name: str) -> str | None:
 
 
 def parse_summaries(
-    summaries: list[dict[str, Any]], sport: str, upcoming_matchups: dict[str, str]
+    summaries: list[dict[str, Any]], sport: str, upcoming_matchups: dict[str, Any]
 ) -> list[Projection]:
     history: dict[tuple[str, str, str], list[float]] = defaultdict(list)
     display: dict[tuple[str, str, str], tuple[str, str]] = {}
@@ -147,22 +153,36 @@ def parse_summaries(
         projection = sum(value * weight for value, weight in zip(recent, weights)) / sum(weights)
         deviation = statistics.pstdev(recent) if len(recent) > 1 else 0.0
         simple_average = statistics.mean(recent)
-        projections.append(
-            Projection(
-                sport=sport,
-                player=player,
-                team=team,
-                matchup=upcoming_matchups.get(team_key, "Next matchup not posted"),
-                market=key[2],
-                projection=round(projection, 2),
-                samples=len(recent),
-                confidence=round(min(0.72, 0.28 + 0.07 * len(recent)), 2),
-                standard_deviation=round(deviation, 2),
-                recent=[round(value, 2) for value in recent],
-                trend=round(projection - simple_average, 2),
+        raw_matchups = upcoming_matchups.get(team_key) if upcoming_matchups else None
+        if isinstance(raw_matchups, str):
+            matchup_rows = [{"matchup": raw_matchups, "start_time": ""}]
+        elif isinstance(raw_matchups, dict):
+            matchup_rows = [raw_matchups]
+        elif isinstance(raw_matchups, list):
+            matchup_rows = raw_matchups
+        else:
+            matchup_rows = [{"matchup": "Next matchup not posted", "start_time": ""}]
+        for matchup_info in matchup_rows:
+            projections.append(
+                Projection(
+                    sport=sport,
+                    player=player,
+                    team=team,
+                    matchup=str(matchup_info.get("matchup") or "Next matchup not posted"),
+                    market=key[2],
+                    projection=round(projection, 2),
+                    samples=len(recent),
+                    confidence=round(min(0.72, 0.28 + 0.07 * len(recent)), 2),
+                    standard_deviation=round(deviation, 2),
+                    recent=[round(value, 2) for value in recent],
+                    trend=round(projection - simple_average, 2),
+                    start_time=str(matchup_info.get("start_time") or ""),
+                )
             )
-        )
-    return sorted(projections, key=lambda row: (-row.confidence, -row.samples, row.player, row.market))
+    return sorted(
+        projections,
+        key=lambda row: (row.start_time, -row.confidence, -row.samples, row.player, row.market),
+    )
 
 
 class EspnProjectionProvider:
@@ -201,5 +221,10 @@ class EspnProjectionProvider:
                 return None
         with ThreadPoolExecutor(max_workers=6) as pool:
             summaries = [summary for summary in pool.map(fetch_summary, event_ids) if summary]
-        matchup_map = _team_and_matchups(upcoming.get("events") or [])
+        upcoming_events = [
+            event
+            for event in upcoming.get("events") or []
+            if not ((event.get("status") or {}).get("type") or {}).get("completed")
+        ]
+        matchup_map = _team_and_matchups(upcoming_events)
         return parse_summaries(summaries, sport, matchup_map)
