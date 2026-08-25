@@ -56,6 +56,7 @@ h3 { margin-bottom: 10px; }
 .badge { padding: 3px 7px; border-radius: 999px; background: #1c2b44; color: var(--text); font-weight: 800; }
 .bet-card h3, .projection-card h3 { margin: 14px 0 3px; font-size: 18px; }
 .matchup { color: var(--muted); font-size: 13px; }
+.model-source { margin-top: 7px; color: var(--cyan); font-size: 11px; font-weight: 750; letter-spacing: .04em; text-transform: uppercase; }
 .numbers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 16px; }
 .numbers div { padding: 9px; border-radius: 9px; background: #08111f; }
 .numbers strong, .numbers span { display: block; }
@@ -75,4 +76,3 @@ footer { padding: 28px 0 52px; color: var(--muted); font-size: 13px; text-align:
 @media (max-width: 900px) { .card-grid { grid-template-columns: repeat(2, 1fr); } .projection-grid { grid-template-columns: repeat(3, 1fr); } .hero-grid { grid-template-columns: 1fr; } .hero-actions { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 680px) { .metrics, .source-grid, .import-help { grid-template-columns: 1fr 1fr; } .card-grid, .projection-grid { grid-template-columns: 1fr; } .controls, .section-head { align-items: stretch; flex-direction: column; } .section-head > p { text-align: left; } .search { justify-content: space-between; } .search input { width: 70%; } .hero-actions { grid-template-columns: 1fr; } }
 @media (max-width: 440px) { .metrics, .source-grid, .import-help { grid-template-columns: 1fr; } }
-

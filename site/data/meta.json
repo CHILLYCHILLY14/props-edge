@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-25T00:17:44.445979+00:00",
+  "generated_at": "2026-08-25T00:29:33.105025+00:00",
   "provider_priority": [
     "Odds-API.io",
     "The Odds API",
@@ -8,8 +8,8 @@
   "target_book": "DraftKings",
   "keyless_fallback": true,
   "configured": {
-    "odds_api_io": true,
-    "the_odds_api": true,
+    "odds_api_io": false,
+    "the_odds_api": false,
     "espn_keyless": true
   },
   "counts": {
@@ -26,42 +26,32 @@
       "source": "ESPN public statistics",
       "priced_quotes": 0,
       "projections": 164,
-      "errors": [
-        "Odds-API.io request failed (HTTP 400: {\"error\":\"Pinnacle is not a valid bookmaker, use /v3/bookmakers to get a list of valid bookmakers\"})",
-        "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)"
-      ]
+      "errors": []
     },
     "NCAAF": {
-      "source": "ESPN public statistics",
+      "source": "No source available",
       "priced_quotes": 0,
       "projections": 0,
-      "errors": [
-        "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)"
-      ]
+      "errors": []
     },
     "MLB": {
       "source": "ESPN public statistics",
       "priced_quotes": 0,
       "projections": 300,
-      "errors": [
-        "Odds-API.io request failed (HTTP 400: {\"error\":\"Pinnacle is not a valid bookmaker, use /v3/bookmakers to get a list of valid bookmakers\"})",
-        "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)"
-      ]
+      "errors": []
     },
     "WNBA": {
       "source": "ESPN public statistics",
       "priced_quotes": 0,
       "projections": 762,
-      "errors": [
-        "Odds-API.io request failed (HTTP 400: {\"error\":\"Pinnacle is not a valid bookmaker, use /v3/bookmakers to get a list of valid bookmakers\"})",
-        "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)"
-      ]
+      "errors": []
     }
   },
-  "workflow_url": "https://github.com/CHILLYCHILLY14/props-edge/actions/workflows/refresh.yml",
+  "workflow_url": "",
   "notes": [
     "API credentials are optional and are read only from GitHub Actions secrets.",
     "If both odds providers are unavailable, ESPN schedules and box-score statistics produce projection-only rows.",
+    "When DraftKings prices exist without enough consensus books, ESPN projections can price the line conservatively.",
     "Action Network and OddsShark are not scraped because automated extraction is blocked or prohibited."
   ]
 }

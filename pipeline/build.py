@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 from .http import ProviderError
-from .model import evaluate_quotes
+from .model import evaluate_quotes, evaluate_quotes_against_projections, merge_boards
 from .providers.espn import EspnProjectionProvider
 from .providers.odds_api_io import OddsApiIoProvider
 from .providers.the_odds_api import TheOddsApiProvider
@@ -35,64 +35,58 @@ def build() -> dict[str, Any]:
     primary = OddsApiIoProvider(primary_key, settings) if primary_key else None
     secondary = TheOddsApiProvider(secondary_key, settings) if secondary_key else None
     espn = EspnProjectionProvider(settings)
-    espn_prefetch: dict[str, tuple[list[Any], str | None]] = {}
-    if not primary and not secondary:
-        def fetch_keyless(sport_name: str) -> tuple[str, list[Any], str | None]:
-            try:
-                return sport_name, espn.fetch(sport_name), None
-            except ProviderError as exc:
-                return sport_name, [], str(exc)
-        with ThreadPoolExecutor(max_workers=2) as pool:
-            for sport_name, rows, error in pool.map(fetch_keyless, settings["sports"]):
-                espn_prefetch[sport_name] = (rows, error)
-
     quotes = []
     projections = []
     source_by_sport: dict[str, dict[str, Any]] = {}
-    for sport in settings["sports"]:
-        errors: list[str] = []
-        sport_quotes = []
-        sport_projections = []
-        source = None
-        if primary:
-            try:
-                sport_quotes = primary.fetch(sport)
-                if sport_quotes:
-                    source = primary.name
-            except ProviderError as exc:
-                errors.append(str(exc))
-        if not sport_quotes and secondary:
-            try:
-                sport_quotes = secondary.fetch(sport)
-                if sport_quotes:
-                    source = secondary.name
-            except ProviderError as exc:
-                errors.append(str(exc))
-        if not sport_quotes:
-            if sport in espn_prefetch:
-                sport_projections, prefetch_error = espn_prefetch[sport]
-                if prefetch_error:
-                    errors.append(prefetch_error)
-                    source = "No source available"
-                else:
-                    source = espn.name
-            else:
+    def fetch_espn(sport_name: str) -> tuple[list[Any], str | None]:
+        try:
+            return espn.fetch(sport_name), None
+        except ProviderError as exc:
+            return [], str(exc)
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        espn_futures = {
+            sport_name: pool.submit(fetch_espn, sport_name) for sport_name in settings["sports"]
+        }
+        for sport in settings["sports"]:
+            errors: list[str] = []
+            sport_quotes = []
+            source = None
+            if primary:
                 try:
-                    sport_projections = espn.fetch(sport)
-                    source = espn.name
+                    sport_quotes = primary.fetch(sport)
+                    if sport_quotes:
+                        source = primary.name
                 except ProviderError as exc:
                     errors.append(str(exc))
-                    source = "No source available"
-        quotes.extend(sport_quotes)
-        projections.extend(sport_projections)
-        source_by_sport[sport] = {
-            "source": source,
-            "priced_quotes": len(sport_quotes),
-            "projections": len(sport_projections),
-            "errors": errors,
-        }
+            if not sport_quotes and secondary:
+                try:
+                    sport_quotes = secondary.fetch(sport)
+                    if sport_quotes:
+                        source = secondary.name
+                except ProviderError as exc:
+                    errors.append(str(exc))
+            sport_projections, espn_error = espn_futures[sport].result()
+            if espn_error:
+                errors.append(espn_error)
+            if sport_quotes and sport_projections:
+                source = f"{source} + {espn.name}"
+            elif not sport_quotes and sport_projections:
+                source = espn.name
+            elif not sport_quotes:
+                source = "No source available"
+            quotes.extend(sport_quotes)
+            projections.extend(sport_projections)
+            source_by_sport[sport] = {
+                "source": source,
+                "priced_quotes": len(sport_quotes),
+                "projections": len(sport_projections),
+                "errors": errors,
+            }
 
-    board = evaluate_quotes(quotes, settings)
+    consensus_board = evaluate_quotes(quotes, settings)
+    projection_board = evaluate_quotes_against_projections(quotes, projections, settings)
+    board = merge_boards(consensus_board, projection_board)
     projection_rows = [row.to_dict() for row in projections]
     now = dt.datetime.now(dt.timezone.utc).isoformat()
     repository = os.getenv("GITHUB_REPOSITORY", "").strip()
@@ -122,6 +116,7 @@ def build() -> dict[str, Any]:
         "notes": [
             "API credentials are optional and are read only from GitHub Actions secrets.",
             "If both odds providers are unavailable, ESPN schedules and box-score statistics produce projection-only rows.",
+            "When DraftKings prices exist without enough consensus books, ESPN projections can price the line conservatively.",
             "Action Network and OddsShark are not scraped because automated extraction is blocked or prohibited.",
         ],
     }

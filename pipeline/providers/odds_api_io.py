@@ -4,7 +4,7 @@ import datetime as dt
 import re
 from typing import Any, Iterable
 
-from ..http import JsonClient
+from ..http import JsonClient, ProviderError
 from ..schema import PropQuote, as_float, decimal_to_american
 
 
@@ -91,17 +91,28 @@ class OddsApiIoProvider:
         )
         selected = [event for event in events if _is_league(event, cfg["league_aliases"])]
         ids = [str(event["id"]) for event in selected if event.get("id")]
-        books = ",".join(self.settings["bookmakers"]["primary_consensus"])
+        active_books = list(dict.fromkeys(self.settings["bookmakers"]["primary_consensus"]))
         detailed: list[dict[str, Any]] = []
         for start in range(0, len(ids), 10):
-            response = self.client.get(
-                "/odds/multi",
-                {
-                    "apiKey": self.api_key,
-                    "eventIds": ",".join(ids[start : start + 10]),
-                    "bookmakers": books,
-                },
-            )
+            while True:
+                try:
+                    response = self.client.get(
+                        "/odds/multi",
+                        {
+                            "apiKey": self.api_key,
+                            "eventIds": ",".join(ids[start : start + 10]),
+                            "bookmakers": ",".join(active_books),
+                        },
+                    )
+                    break
+                except ProviderError as exc:
+                    invalid = re.search(r'["\']([^"\']+) is not a valid bookmaker', str(exc))
+                    if not invalid:
+                        raise
+                    bad_book = invalid.group(1).casefold()
+                    remaining = [book for book in active_books if book.casefold() != bad_book]
+                    if not remaining or len(remaining) == len(active_books):
+                        raise
+                    active_books = remaining
             detailed.extend(response if isinstance(response, list) else [response])
         return [quote for event in detailed for quote in parse_event(event, sport)]
-

@@ -57,6 +57,7 @@ function renderBets(rows) {
     <article class="bet-card ${escapeHtml(row.tier.toLowerCase())}">
       <div class="card-top"><span>${escapeHtml(row.sport)} · ${escapeHtml(row.book)}</span><span class="badge">${escapeHtml(row.tier)}</span></div>
       <h3>${escapeHtml(row.pick)}</h3><div class="matchup">${escapeHtml(row.matchup)}</div>
+      <div class="model-source">${escapeHtml(row.model_label || `${row.consensus_books || 0}-book no-vig consensus`)}</div>
       <div class="numbers"><div><strong>${american(row.price_american)}</strong><span>Price</span></div><div><strong>${pct(row.edge)}</strong><span>Edge</span></div><div><strong>${pct(row.ev)}</strong><span>EV</span></div></div>
     </article>`).join("");
 }

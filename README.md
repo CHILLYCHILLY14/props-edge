@@ -56,6 +56,7 @@ The CSV is read only by that browser tab and is not uploaded, committed, or reta
 
 - DraftKings is the target book for automatically priced plays.
 - Consensus probabilities use complete two-sided prices from at least two books and remove the two-way market margin before comparison.
+- If DraftKings has a current price but fewer than two consensus books are available, the model can conservatively compare that price with the matching ESPN player projection. These cards are explicitly labeled `DraftKings price vs ESPN projection`.
 - Model probabilities are shrunk toward 50% to reduce overconfidence.
 - A positive expected value and at least a 2% model edge are required for a Lean; 4% is Good and 6% is Best.
 - Prices outside -250 to +500 are rejected.

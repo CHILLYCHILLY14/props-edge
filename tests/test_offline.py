@@ -5,11 +5,14 @@ import re
 import unittest
 from pathlib import Path
 
-from pipeline.model import evaluate_quotes
+from pipeline.http import ProviderError
+from pipeline.model import evaluate_quotes, evaluate_quotes_against_projections
+from pipeline.providers.odds_api_io import OddsApiIoProvider
 from pipeline.providers.odds_api_io import parse_event as parse_odds_api_io_event
 from pipeline.providers.espn import parse_summaries
 from pipeline.providers.the_odds_api import parse_event as parse_the_odds_api_event
 from pipeline.build import load_settings
+from pipeline.schema import Projection
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -29,6 +32,58 @@ class ProviderParsingTests(unittest.TestCase):
         over = next(row for row in board if row["side"] == "over")
         self.assertIn(over["tier"], {"GOOD", "BEST"})
         self.assertEqual(over["consensus_books"], 3)
+
+    def test_primary_provider_retries_without_rejected_bookmaker(self) -> None:
+        settings = json.loads(json.dumps(load_settings()))
+        settings["bookmakers"]["primary_consensus"].append("Pinnacle")
+        provider = OddsApiIoProvider("fixture-key", settings)
+
+        class FakeClient:
+            calls: list[str] = []
+
+            def get(self, path, params, retries=2):
+                if path == "/events":
+                    return [{"id": 1001, "league": {"name": "NFL"}}]
+                self.calls.append(params["bookmakers"])
+                if "Pinnacle" in params["bookmakers"]:
+                    raise ProviderError(
+                        'Odds-API.io request failed (HTTP 400: {"error":"Pinnacle is not a valid bookmaker"})'
+                    )
+                return [fixture("odds_api_io_event.json")]
+
+        fake = FakeClient()
+        provider.client = fake
+        quotes = provider.fetch("NFL")
+        self.assertEqual(len(quotes), 6)
+        self.assertIn("Pinnacle", fake.calls[0])
+        self.assertNotIn("Pinnacle", fake.calls[1])
+
+    def test_draftkings_price_can_use_espn_projection(self) -> None:
+        draftkings = [
+            row
+            for row in parse_odds_api_io_event(fixture("odds_api_io_event.json"), "NFL")
+            if row.book == "DraftKings"
+        ]
+        projections = [
+            Projection(
+                sport="NFL",
+                player="Jordan Example",
+                team="Kansas City",
+                matchup="Buffalo @ Kansas City",
+                market="Passing yards",
+                projection=315.0,
+                samples=4,
+                confidence=0.56,
+                standard_deviation=12.0,
+                recent=[298.0, 311.0, 320.0, 326.0],
+                trend=4.0,
+            )
+        ]
+        board = evaluate_quotes_against_projections(draftkings, projections, load_settings())
+        over = next(row for row in board if row["side"] == "over")
+        self.assertEqual(over["tier"], "BEST")
+        self.assertEqual(over["mode"], "projection-priced")
+        self.assertEqual(over["projection"], 315.0)
 
     def test_secondary_provider_parses_american_prices(self) -> None:
         quotes = parse_the_odds_api_event(fixture("the_odds_api_event.json"), "MLB")
