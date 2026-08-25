@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-25T01:32:07.493478+00:00",
+  "generated_at": "2026-08-25T02:06:26.196608+00:00",
   "provider_priority": [
     "Odds-API.io",
     "The Odds API",
@@ -13,19 +13,19 @@
     "espn_keyless": true
   },
   "counts": {
-    "priced_quotes": 9110,
-    "board": 4262,
-    "actionable": 207,
-    "best": 160,
-    "good": 19,
-    "leans": 28,
-    "projections": 5413
+    "priced_quotes": 4276,
+    "board": 1384,
+    "actionable": 75,
+    "best": 57,
+    "good": 4,
+    "leans": 14,
+    "projections": 6065
   },
   "source_by_sport": {
     "NFL": {
       "source": "ESPN public statistics",
       "priced_quotes": 0,
-      "projections": 164,
+      "projections": 417,
       "errors": [
         "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)"
       ]
@@ -40,13 +40,13 @@
     },
     "MLB": {
       "source": "Odds-API.io + ESPN public statistics",
-      "priced_quotes": 8167,
-      "projections": 2419,
+      "priced_quotes": 3652,
+      "projections": 2818,
       "errors": []
     },
     "WNBA": {
       "source": "Odds-API.io + ESPN public statistics",
-      "priced_quotes": 943,
+      "priced_quotes": 624,
       "projections": 2830,
       "errors": []
     }
