@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-25T17:45:09.723822+00:00",
+  "generated_at": "2026-08-25T21:00:36.797789+00:00",
   "provider_priority": [
     "Odds-API.io",
     "The Odds API",
@@ -13,12 +13,12 @@
     "espn_keyless": true
   },
   "counts": {
-    "priced_quotes": 11576,
-    "board": 7403,
-    "actionable": 516,
-    "best": 419,
-    "good": 47,
-    "leans": 50,
+    "priced_quotes": 12162,
+    "board": 7440,
+    "actionable": 511,
+    "best": 406,
+    "good": 52,
+    "leans": 53,
     "projections": 9166
   },
   "source_by_sport": {
@@ -40,13 +40,13 @@
     },
     "MLB": {
       "source": "Odds-API.io + ESPN public statistics",
-      "priced_quotes": 10362,
+      "priced_quotes": 10920,
       "projections": 5909,
       "errors": []
     },
     "WNBA": {
       "source": "Odds-API.io + ESPN public statistics",
-      "priced_quotes": 1214,
+      "priced_quotes": 1242,
       "projections": 2840,
       "errors": []
     }
