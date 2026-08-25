@@ -34,6 +34,31 @@ class ProviderParsingTests(unittest.TestCase):
         self.assertIn(over["tier"], {"GOOD", "BEST"})
         self.assertEqual(over["consensus_books"], 3)
 
+    def test_primary_generic_market_splits_player_and_prop_type(self) -> None:
+        event = {
+            "id": 22,
+            "home": "Toronto",
+            "away": "Boston",
+            "bookmakers": {
+                "DraftKings": [
+                    {
+                        "name": "Player Props",
+                        "odds": [
+                            {
+                                "label": "Alex Example (Hits)",
+                                "hdp": 1.5,
+                                "over": 2.1,
+                                "under": 1.7,
+                            }
+                        ],
+                    }
+                ]
+            },
+        }
+        quotes = parse_odds_api_io_event(event, "MLB")
+        self.assertEqual({row.player for row in quotes}, {"Alex Example"})
+        self.assertEqual({row.market for row in quotes}, {"Batter hits"})
+
     def test_primary_provider_retries_without_rejected_bookmaker(self) -> None:
         settings = json.loads(json.dumps(load_settings()))
         settings["bookmakers"]["primary_consensus"].append("Pinnacle")
@@ -115,6 +140,14 @@ class ProviderParsingTests(unittest.TestCase):
             {row.start_time for row in point_rows},
             {"2026-08-25T23:00:00Z", "2026-08-26T23:00:00Z"},
         )
+        pra_rows = [
+            row
+            for row in rows
+            if row.player == "Alex Example" and row.market == "Points + Rebounds + Assists"
+        ]
+        self.assertEqual(len(pra_rows), 2)
+        self.assertAlmostEqual(pra_rows[0].projection, 36.67)
+        self.assertEqual(pra_rows[0].recent, [30.0, 40.0])
 
 
 class SecurityTests(unittest.TestCase):

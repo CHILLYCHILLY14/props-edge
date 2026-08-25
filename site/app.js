@@ -1,4 +1,5 @@
-const state = { meta: null, board: [], projections: [], imported: [], sport: "ALL", date: "ALL", search: "" };
+const state = { meta: null, board: [], projections: [], imported: [], ledger: [], betIndex: {}, sport: "ALL", date: "ALL", search: "" };
+const LEDGER_KEY = "props-edge-ledger-v1";
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 const escapeHtml = (value) => String(value ?? "").replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char]));
@@ -12,6 +13,16 @@ const dateKey = (value) => {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 };
 const formatStart = (value) => value ? new Date(value).toLocaleString([], { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) : "";
+
+function loadLedger() {
+  try { const saved = JSON.parse(localStorage.getItem(LEDGER_KEY) || "[]"); state.ledger = Array.isArray(saved) ? saved : []; }
+  catch { state.ledger = []; }
+}
+
+function saveLedger() {
+  try { localStorage.setItem(LEDGER_KEY, JSON.stringify(state.ledger)); }
+  catch { /* Private browsing may disable persistent storage. */ }
+}
 
 async function loadData() {
   const stamp = Date.now();
@@ -55,7 +66,7 @@ function render() {
   $("#metricGood").textContent = filteredBets.filter((row) => row.tier === "GOOD").length;
   $("#metricLean").textContent = filteredBets.filter((row) => row.tier === "LEAN").length;
   $("#metricProjection").textContent = filteredProjections.length;
-  renderStatus(); renderBets(actionable); renderProjections(projections); renderSources();
+  renderStatus(); renderTierBoards(actionable); renderLedger(); renderProjections(projections); renderSources();
 }
 
 function renderStatus() {
@@ -74,16 +85,94 @@ function renderStatus() {
   if (!configured.odds_api_io && !configured.the_odds_api) banner.textContent += " Odds-provider secrets are not configured.";
 }
 
-function renderBets(rows) {
-  const board = $("#betBoard");
-  if (!rows.length) { board.innerHTML = '<div class="empty">No priced plays currently clear the model thresholds. Check the ESPN projections below or import a current sportsbook line.</div>'; return; }
-  board.innerHTML = rows.map((row) => `
+function betKey(row) {
+  return [row.sport, row.event_id, row.book, row.player, row.market, row.side, row.line, row.start_time].map(normalized).join("-");
+}
+
+function betCard(row) {
+  const key = betKey(row); state.betIndex[key] = row;
+  const saved = state.ledger.some((item) => item.id === key);
+  return `
     <article class="bet-card ${escapeHtml(row.tier.toLowerCase())}">
       <div class="card-top"><span>${escapeHtml(row.sport)} · ${escapeHtml(row.book)}</span><span class="badge">${escapeHtml(row.tier)}</span></div>
       <h3>${escapeHtml(row.pick)}</h3><div class="matchup">${escapeHtml([formatStart(row.start_time), row.matchup].filter(Boolean).join(" · "))}</div>
       <div class="model-source">${escapeHtml(row.model_label || `${row.consensus_books || 0}-book no-vig consensus`)}</div>
       <div class="numbers"><div><strong>${american(row.price_american)}</strong><span>Price</span></div><div><strong>${pct(row.edge)}</strong><span>Edge</span></div><div><strong>${pct(row.ev)}</strong><span>EV</span></div></div>
-    </article>`).join("");
+      <div class="card-actions"><button class="ledger-add" data-bet-key="${escapeHtml(key)}" ${saved ? "disabled" : ""}>${saved ? "In ledger" : "Add to ledger"}</button></div>
+    </article>`;
+}
+
+function renderTierBoard(selector, rows, emptyText) {
+  const board = $(selector);
+  board.innerHTML = rows.length ? rows.map(betCard).join("") : `<div class="empty">${escapeHtml(emptyText)}</div>`;
+}
+
+function renderTierBoards(rows) {
+  state.betIndex = {};
+  renderTierBoard("#bestBoard", rows.filter((row) => row.tier === "BEST"), "No Best Bets clear the 6% threshold for this filter.");
+  renderTierBoard("#goodBoard", rows.filter((row) => row.tier === "GOOD"), "No Good Plays clear the 4% threshold for this filter.");
+  renderTierBoard("#leanBoard", rows.filter((row) => row.tier === "LEAN"), "No Leans clear the 2% threshold for this filter.");
+}
+
+function addToLedger(row) {
+  const id = betKey(row);
+  if (state.ledger.some((item) => item.id === id)) return;
+  state.ledger.unshift({
+    id,
+    added_at: new Date().toISOString(),
+    start_time: row.start_time || "",
+    sport: row.sport,
+    tier: row.tier,
+    pick: row.pick,
+    matchup: row.matchup,
+    book: row.book,
+    price_american: row.price_american,
+    edge: row.edge,
+    ev: row.ev,
+    stake: 10,
+    status: "Pending",
+  });
+  saveLedger(); render();
+}
+
+function ledgerProfit(item) {
+  const stake = Math.max(0, Number(item.stake) || 0);
+  if (item.status === "Win") return stake * (decimalOdds(item.price_american) - 1);
+  if (item.status === "Loss") return -stake;
+  return 0;
+}
+
+function renderLedger() {
+  const profit = state.ledger.reduce((total, item) => total + ledgerProfit(item), 0);
+  const pending = state.ledger.filter((item) => item.status === "Pending").length;
+  const settled = state.ledger.filter((item) => item.status === "Win" || item.status === "Loss").length;
+  $("#ledgerSummary").innerHTML = `<span><strong>${state.ledger.length}</strong> bets</span><span><strong>${pending}</strong> pending</span><span><strong>${settled}</strong> settled</span><span class="${profit > 0 ? "profit-positive" : profit < 0 ? "profit-negative" : ""}"><strong>${profit >= 0 ? "+" : ""}$${profit.toFixed(2)}</strong> P/L</span>`;
+  const body = $("#ledgerBody");
+  if (!state.ledger.length) {
+    body.innerHTML = '<tr><td colspan="9" class="empty">No bets saved yet. Use Add to ledger on a qualified card.</td></tr>';
+    return;
+  }
+  body.innerHTML = state.ledger.map((item) => {
+    const itemProfit = ledgerProfit(item); const profitClass = itemProfit > 0 ? "profit-positive" : itemProfit < 0 ? "profit-negative" : "";
+    const date = item.start_time ? new Date(item.start_time).toLocaleDateString() : "—";
+    return `<tr>
+      <td>${escapeHtml(date)}</td><td><span class="badge">${escapeHtml(item.tier)}</span></td>
+      <td class="ledger-pick"><strong>${escapeHtml(item.pick)}</strong><div class="matchup">${escapeHtml(item.matchup)}</div></td>
+      <td>${escapeHtml(item.book)}<br>${american(item.price_american)}</td><td>${pct(item.edge)}</td>
+      <td><input class="ledger-stake" data-ledger-id="${escapeHtml(item.id)}" type="number" min="0" step="1" value="${Number(item.stake) || 0}" aria-label="Stake" /></td>
+      <td><select class="ledger-status" data-ledger-id="${escapeHtml(item.id)}" aria-label="Status">${["Pending", "Win", "Loss", "Void"].map((status) => `<option value="${status}" ${item.status === status ? "selected" : ""}>${status}</option>`).join("")}</select></td>
+      <td class="${profitClass}">${itemProfit >= 0 ? "+" : ""}$${itemProfit.toFixed(2)}</td>
+      <td><button class="ledger-remove" data-ledger-id="${escapeHtml(item.id)}">Remove</button></td>
+    </tr>`;
+  }).join("");
+}
+
+function csvCell(value) { return `"${String(value ?? "").replaceAll('"', '""')}"`; }
+function exportLedger() {
+  const headers = ["date", "sport", "tier", "pick", "matchup", "book", "american_odds", "edge", "ev", "stake", "status", "profit_loss"];
+  const rows = state.ledger.map((item) => [item.start_time, item.sport, item.tier, item.pick, item.matchup, item.book, item.price_american, item.edge, item.ev, item.stake, item.status, ledgerProfit(item)]);
+  const content = [headers, ...rows].map((row) => row.map(csvCell).join(",")).join("\n");
+  const link = document.createElement("a"); link.href = URL.createObjectURL(new Blob([content], { type: "text/csv" })); link.download = "props-edge-ledger.csv"; link.click(); URL.revokeObjectURL(link.href);
 }
 
 function renderProjections(rows) {
@@ -149,8 +238,23 @@ function downloadTemplate() {
 $("#importButton").addEventListener("click", () => $("#lineFile").click());
 $("#lineFile").addEventListener("change", (event) => event.target.files[0] && importLines(event.target.files[0]));
 $("#downloadTemplate").addEventListener("click", downloadTemplate);
+$("#exportLedger").addEventListener("click", exportLedger);
 $("#dateSelect").addEventListener("change", (event) => { state.date = event.target.value; render(); });
 $("#searchInput").addEventListener("input", (event) => { state.search = event.target.value.trim().toLowerCase(); render(); });
 $$('#sportTabs button').forEach((button) => button.addEventListener("click", () => { $$('#sportTabs button').forEach((row) => row.classList.remove("active")); button.classList.add("active"); state.sport = button.dataset.sport; render(); }));
+document.addEventListener("click", (event) => {
+  const addButton = event.target.closest(".ledger-add");
+  if (addButton && state.betIndex[addButton.dataset.betKey]) addToLedger(state.betIndex[addButton.dataset.betKey]);
+  const removeButton = event.target.closest(".ledger-remove");
+  if (removeButton) { state.ledger = state.ledger.filter((item) => item.id !== removeButton.dataset.ledgerId); saveLedger(); render(); }
+});
+document.addEventListener("change", (event) => {
+  const id = event.target.dataset.ledgerId; if (!id) return;
+  const item = state.ledger.find((row) => row.id === id); if (!item) return;
+  if (event.target.classList.contains("ledger-stake")) item.stake = Math.max(0, Number(event.target.value) || 0);
+  if (event.target.classList.contains("ledger-status")) item.status = event.target.value;
+  saveLedger(); renderLedger();
+});
 function showError(error) { const banner = $("#statusBanner"); banner.className = "status-banner warn"; banner.textContent = `Could not load data: ${error.message}`; }
+loadLedger();
 loadData().catch(showError);

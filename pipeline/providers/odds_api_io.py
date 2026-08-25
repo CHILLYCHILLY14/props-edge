@@ -28,6 +28,49 @@ def _is_prop_market(name: str, rows: list[dict[str, Any]]) -> bool:
     return any(token in lowered for token in ("player", "passing", "rushing", "receiving", "batter", "pitcher"))
 
 
+def _canonical_detail_market(sport: str, detail: str) -> str:
+    key = _norm(detail)
+    maps = {
+        "MLB": {
+            "total-bases": "Batter total bases",
+            "hits-runs-rbis": "Batter hits + runs + RBIs",
+            "hits": "Batter hits",
+            "runs-batted-in": "Batter RBIs",
+            "runs-scored": "Batter runs",
+            "home-runs": "Batter home runs",
+            "batter-walks": "Batter walks",
+            "stolen-bases": "Batter stolen bases",
+            "doubles": "Batter doubles",
+            "triples": "Batter triples",
+            "singles": "Batter singles",
+            "pitcher-strikeouts": "Pitcher strikeouts",
+            "pitcher-outs": "Pitcher outs",
+            "earned-runs": "Pitcher earned runs",
+            "pitcher-hits-allowed": "Pitcher hits allowed",
+        },
+        "WNBA": {
+            "points": "Points",
+            "rebounds": "Rebounds",
+            "assists": "Assists",
+            "pts-rebs": "Points + Rebounds",
+            "pts-asts": "Points + Assists",
+            "pts-rebs-asts": "Points + Rebounds + Assists",
+            "rebs-asts": "Rebounds + Assists",
+            "3-point-fg": "Threes",
+        },
+    }
+    return maps.get(sport, {}).get(key, detail.strip())
+
+
+def _player_and_market(player_label: str, market_name: str, sport: str) -> tuple[str, str]:
+    if _norm(market_name) not in ("player-prop", "player-props"):
+        return player_label.strip(), market_name
+    match = re.match(r"^(.*?)\s*\(([^()]*)\)\s*$", player_label.strip())
+    if not match:
+        return player_label.strip(), market_name
+    return match.group(1).strip(), _canonical_detail_market(sport, match.group(2))
+
+
 def parse_event(event: dict[str, Any], sport: str) -> list[PropQuote]:
     quotes: list[PropQuote] = []
     matchup = f"{event.get('away', 'Away')} @ {event.get('home', 'Home')}"
@@ -38,7 +81,9 @@ def parse_event(event: dict[str, Any], sport: str) -> list[PropQuote]:
             if not _is_prop_market(market_name, rows):
                 continue
             for row in rows:
-                player = str(row.get("label") or "").strip()
+                player, parsed_market = _player_and_market(
+                    str(row.get("label") or ""), market_name, sport
+                )
                 if not player:
                     continue
                 for side in ("over", "under", "yes", "no"):
@@ -52,7 +97,7 @@ def parse_event(event: dict[str, Any], sport: str) -> list[PropQuote]:
                             start_time=str(event.get("date") or ""),
                             matchup=matchup,
                             player=player,
-                            market=market_name,
+                            market=parsed_market,
                             side=side,
                             line=as_float(row.get("hdp")),
                             price_decimal=decimal_price,

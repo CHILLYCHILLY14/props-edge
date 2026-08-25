@@ -88,6 +88,9 @@ def _canonical_market(sport: str, group: str, name: str) -> str | None:
                 "strikeouts": "Batter strikeouts",
                 "totalbases": "Batter total bases",
                 "homeruns": "Batter home runs",
+                "doubles": "Batter doubles",
+                "triples": "Batter triples",
+                "stolenbases": "Batter stolen bases",
             }
             return mapping.get(stat)
         if "pitch" in group_key:
@@ -131,14 +134,49 @@ def parse_summaries(
                     player = str((athlete_row.get("athlete") or {}).get("displayName") or "")
                     if not player:
                         continue
+                    observed: dict[str, float] = {}
                     for name, raw in zip(names, athlete_row.get("stats") or []):
                         market = _canonical_market(sport, group, str(name))
                         value = as_float(raw)
                         if market is None or value is None or value < 0:
                             continue
+                        observed[market] = value
                         key = (player.casefold(), _norm(team), market)
                         history[key].append(value)
                         display[key] = (player, team)
+                    combinations = []
+                    if sport == "MLB":
+                        if all(
+                            component in observed
+                            for component in ("Batter hits", "Batter doubles", "Batter triples", "Batter home runs")
+                        ):
+                            singles = max(
+                                0.0,
+                                observed["Batter hits"]
+                                - observed["Batter doubles"]
+                                - observed["Batter triples"]
+                                - observed["Batter home runs"],
+                            )
+                            singles_key = (player.casefold(), _norm(team), "Batter singles")
+                            history[singles_key].append(singles)
+                            display[singles_key] = (player, team)
+                        combinations = [
+                            ("Batter hits + runs + RBIs", ("Batter hits", "Batter runs", "Batter RBIs")),
+                        ]
+                    elif sport == "WNBA":
+                        combinations = [
+                            ("Points + Rebounds", ("Points", "Rebounds")),
+                            ("Points + Assists", ("Points", "Assists")),
+                            ("Points + Rebounds + Assists", ("Points", "Rebounds", "Assists")),
+                            ("Rebounds + Assists", ("Rebounds", "Assists")),
+                        ]
+                    for combined_market, components in combinations:
+                        if not all(component in observed for component in components):
+                            continue
+                        combined_value = sum(observed[component] for component in components)
+                        combined_key = (player.casefold(), _norm(team), combined_market)
+                        history[combined_key].append(combined_value)
+                        display[combined_key] = (player, team)
 
     projections: list[Projection] = []
     for key, values in history.items():

@@ -8,6 +8,8 @@ Props Edge is a static GitHub Pages dashboard for NFL, NCAAF, MLB, and WNBA play
 
 Sportsbook odds produce model-ranked **Best**, **Good**, and **Lean** rows. ESPN has player statistics but no sportsbook prices, so its fallback rows are clearly labeled **Projections**, not bets. Current sportsbook lines can also be imported as a CSV and evaluated locally in the browser.
 
+Qualified plays are displayed in three separate Best, Good, and Lean areas. Every qualified card has an **Add to ledger** button. The ledger stores the selection, line, odds, edge, editable stake, result status, and calculated profit/loss. It can be exported to CSV.
+
 ## Fast GitHub setup
 
 1. Create a new public GitHub repository named `props-edge`.
@@ -52,9 +54,18 @@ WNBA,Player Name,Points,20.5,-110,-110,theScore Bet,Away @ Home
 
 The CSV is read only by that browser tab and is not uploaded, committed, or retained after the page closes. Player and market names must match a displayed ESPN projection.
 
+## Bet ledger
+
+- Choose **Add to ledger** on any Best, Good, or Lean card.
+- Change the stake and set the result to Pending, Win, Loss, or Void.
+- Win/loss profit is calculated from the saved American price and stake.
+- Choose **Export ledger CSV** to download the complete ledger.
+- Ledger entries use browser storage and persist on that browser and device. They are not uploaded to GitHub and do not automatically sync to another phone or computer.
+
 ## Data and model rules
 
 - DraftKings is the target book for automatically priced plays. FanDuel is the second primary comparison book so the free Odds-API.io account stays within its two-book maximum.
+- Generic Odds-API.io labels are normalized into real prop markets, including MLB batter and pitcher props plus WNBA points, rebounds, assists, threes, and combination props.
 - Consensus probabilities use complete two-sided prices from at least two books and remove the two-way market margin before comparison.
 - If DraftKings has a current price but fewer than two consensus books are available, the model can conservatively compare that price with the matching ESPN player projection. These cards are explicitly labeled `DraftKings price vs ESPN projection`.
 - Model probabilities are shrunk toward 50% to reduce overconfidence.

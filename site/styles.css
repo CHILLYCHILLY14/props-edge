@@ -59,6 +59,10 @@ h3 { margin-bottom: 10px; }
 .bet-card h3, .projection-card h3 { margin: 14px 0 3px; font-size: 18px; }
 .matchup { color: var(--muted); font-size: 13px; }
 .model-source { margin-top: 7px; color: var(--cyan); font-size: 11px; font-weight: 750; letter-spacing: .04em; text-transform: uppercase; }
+.card-actions { display: flex; justify-content: flex-end; margin-top: 13px; }
+.ledger-add { padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; background: #14223a; color: var(--text); cursor: pointer; }
+.ledger-add:hover { border-color: var(--cyan); }
+.ledger-add:disabled { color: var(--green); cursor: default; opacity: .8; }
 .numbers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 16px; }
 .numbers div { padding: 9px; border-radius: 9px; background: #08111f; }
 .numbers strong, .numbers span { display: block; }
@@ -67,6 +71,24 @@ h3 { margin-bottom: 10px; }
 .projection-card .projection-number { margin: 12px 0; color: var(--cyan); font-size: 34px; font-weight: 850; line-height: 1; }
 .recent { color: var(--muted); font-size: 12px; }
 .empty { grid-column: 1 / -1; padding: 28px; border: 1px dashed var(--line); border-radius: 14px; color: var(--muted); text-align: center; }
+.best-head h2 { color: var(--gold); }
+.good-head h2 { color: var(--green); }
+.lean-head h2 { color: var(--blue); }
+.ledger-panel { margin-top: 48px; padding: 22px; }
+.ledger-head { display: flex; justify-content: space-between; gap: 24px; align-items: center; }
+.ledger-head p { margin-bottom: 0; color: var(--muted); }
+.ledger-summary { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 12px; }
+.ledger-summary span { padding: 8px 11px; border-radius: 8px; background: #08111f; color: var(--muted); }
+.ledger-summary strong { color: var(--text); }
+.ledger-table-wrap { overflow-x: auto; }
+.ledger-table { width: 100%; min-width: 980px; border-collapse: collapse; }
+.ledger-table th, .ledger-table td { padding: 10px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+.ledger-table th { color: var(--muted); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+.ledger-table input, .ledger-table select { max-width: 100px; padding: 7px; border: 1px solid var(--line); border-radius: 7px; background: #08111f; color: var(--text); }
+.ledger-pick { min-width: 260px; }
+.ledger-remove { border: 0; background: transparent; color: var(--red); cursor: pointer; }
+.profit-positive { color: var(--green); }
+.profit-negative { color: var(--red); }
 .import-help { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 44px; padding: 24px; }
 .import-help code { display: block; overflow-x: auto; padding: 12px; border-radius: 8px; background: #060b13; color: var(--cyan); white-space: nowrap; }
 .text-button { margin-top: 12px; padding: 0; border: 0; background: transparent; color: var(--blue); cursor: pointer; }
@@ -76,5 +98,5 @@ h3 { margin-bottom: 10px; }
 .source-row { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--line); }
 footer { padding: 28px 0 52px; color: var(--muted); font-size: 13px; text-align: center; }
 @media (max-width: 900px) { .card-grid { grid-template-columns: repeat(2, 1fr); } .projection-grid { grid-template-columns: repeat(3, 1fr); } .hero-grid { grid-template-columns: 1fr; } .hero-actions { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 680px) { .metrics, .source-grid, .import-help { grid-template-columns: 1fr 1fr; } .card-grid, .projection-grid { grid-template-columns: 1fr; } .controls, .section-head { align-items: stretch; flex-direction: column; } .section-head > p { text-align: left; } .search, .date-filter { justify-content: space-between; } .search input, .date-filter select { width: 70%; } .hero-actions { grid-template-columns: 1fr; } }
+@media (max-width: 680px) { .metrics, .source-grid, .import-help { grid-template-columns: 1fr 1fr; } .card-grid, .projection-grid { grid-template-columns: 1fr; } .controls, .section-head, .ledger-head { align-items: stretch; flex-direction: column; } .section-head > p { text-align: left; } .search, .date-filter { justify-content: space-between; } .search input, .date-filter select { width: 70%; } .hero-actions { grid-template-columns: 1fr; } }
 @media (max-width: 440px) { .metrics, .source-grid, .import-help { grid-template-columns: 1fr; } }

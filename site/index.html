@@ -45,11 +45,37 @@
         <label class="search"><span>Search</span><input id="searchInput" type="search" placeholder="Player or market" /></label>
       </section>
 
-      <section class="section-head">
-        <div><p class="eyebrow">Priced board</p><h2>Qualified plays</h2></div>
-        <p>Requires a current sportsbook price. Two-book consensus is preferred; ESPN projections provide the fallback comparison.</p>
+      <section class="section-head tier-head best-head">
+        <div><p class="eyebrow">6%+ model edge</p><h2>Best Bets</h2></div>
+        <p>Highest-rated qualified plays for the selected sport and date.</p>
       </section>
-      <section id="betBoard" class="card-grid"></section>
+      <section id="bestBoard" class="card-grid tier-board"></section>
+
+      <section class="section-head tier-head good-head">
+        <div><p class="eyebrow">4%+ model edge</p><h2>Good Plays</h2></div>
+        <p>Strong qualified plays that sit below the Best threshold.</p>
+      </section>
+      <section id="goodBoard" class="card-grid tier-board"></section>
+
+      <section class="section-head tier-head lean-head">
+        <div><p class="eyebrow">2%+ model edge</p><h2>Leans</h2></div>
+        <p>Smaller model advantages to monitor or stake more cautiously.</p>
+      </section>
+      <section id="leanBoard" class="card-grid tier-board"></section>
+
+      <section class="panel ledger-panel">
+        <div class="ledger-head">
+          <div><p class="eyebrow">Saved in this browser</p><h2>Bet Ledger</h2><p>Add qualified cards, edit stake and status, then export the ledger to CSV.</p></div>
+          <button id="exportLedger" class="button secondary">Export ledger CSV</button>
+        </div>
+        <div id="ledgerSummary" class="ledger-summary"></div>
+        <div class="ledger-table-wrap">
+          <table class="ledger-table">
+            <thead><tr><th>Date</th><th>Tier</th><th>Pick</th><th>Book / Odds</th><th>Edge</th><th>Stake</th><th>Status</th><th>P/L</th><th></th></tr></thead>
+            <tbody id="ledgerBody"></tbody>
+          </table>
+        </div>
+      </section>
 
       <section class="section-head projections-head">
         <div><p class="eyebrow">No-odds fallback</p><h2>Best projections</h2></div>
