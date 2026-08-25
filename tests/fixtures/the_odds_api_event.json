@@ -1,0 +1,35 @@
+{
+  "id": "mlb-example-1",
+  "commence_time": "2026-08-25T23:10:00Z",
+  "home_team": "Toronto Blue Jays",
+  "away_team": "Boston Red Sox",
+  "bookmakers": [
+    {
+      "key": "draftkings",
+      "title": "DraftKings",
+      "last_update": "2026-08-24T20:00:00Z",
+      "markets": [
+        {
+          "key": "pitcher_strikeouts",
+          "outcomes": [
+            {"name": "Over", "description": "Taylor Example", "price": 110, "point": 5.5},
+            {"name": "Under", "description": "Taylor Example", "price": -130, "point": 5.5}
+          ]
+        }
+      ]
+    },
+    {
+      "key": "fanduel",
+      "title": "FanDuel",
+      "markets": [
+        {
+          "key": "pitcher_strikeouts",
+          "outcomes": [
+            {"name": "Over", "description": "Taylor Example", "price": -110, "point": 5.5},
+            {"name": "Under", "description": "Taylor Example", "price": -110, "point": 5.5}
+          ]
+        }
+      ]
+    }
+  ]
+}

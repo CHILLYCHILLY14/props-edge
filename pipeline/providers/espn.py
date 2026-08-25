@@ -1,0 +1,205 @@
+from __future__ import annotations
+
+import datetime as dt
+import re
+import statistics
+from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor
+from typing import Any
+
+from ..http import JsonClient
+from ..schema import Projection, as_float
+
+
+ESPN_URL = "https://site.api.espn.com/apis/site/v2/sports"
+
+
+def _norm(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "", (value or "").casefold())
+
+
+def _date_range(start: dt.date, end: dt.date) -> str:
+    return f"{start:%Y%m%d}-{end:%Y%m%d}"
+
+
+def _team_and_matchups(events: list[dict[str, Any]]) -> dict[str, str]:
+    answer: dict[str, str] = {}
+    for event in events:
+        competition = (event.get("competitions") or [{}])[0]
+        competitors = competition.get("competitors") or []
+        home = next((row for row in competitors if row.get("homeAway") == "home"), {})
+        away = next((row for row in competitors if row.get("homeAway") == "away"), {})
+        home_name = str((home.get("team") or {}).get("displayName") or "Home")
+        away_name = str((away.get("team") or {}).get("displayName") or "Away")
+        matchup = f"{away_name} @ {home_name}"
+        answer[_norm(home_name)] = matchup
+        answer[_norm(away_name)] = matchup
+    return answer
+
+
+def _canonical_market(sport: str, group: str, name: str) -> str | None:
+    group_key = _norm(group)
+    stat = _norm(name)
+    if sport in ("NFL", "NCAAF"):
+        maps = {
+            "passing": {
+                "passingyards": "Passing yards",
+                "yards": "Passing yards",
+                "passingtouchdowns": "Passing touchdowns",
+                "touchdowns": "Passing touchdowns",
+                "interceptions": "Pass interceptions",
+            },
+            "rushing": {
+                "rushingattempts": "Rush attempts",
+                "carries": "Rush attempts",
+                "attempts": "Rush attempts",
+                "rushingyards": "Rushing yards",
+                "yards": "Rushing yards",
+                "rushingtouchdowns": "Rushing touchdowns",
+                "touchdowns": "Rushing touchdowns",
+            },
+            "receiving": {
+                "receptions": "Receptions",
+                "receivingyards": "Receiving yards",
+                "yards": "Receiving yards",
+                "receivingtouchdowns": "Receiving touchdowns",
+                "touchdowns": "Receiving touchdowns",
+                "targets": "Targets",
+            },
+        }
+        for key, mapping in maps.items():
+            if key in group_key and stat in mapping:
+                return mapping[stat]
+    elif sport == "MLB":
+        if "bat" in group_key:
+            mapping = {
+                "hits": "Batter hits",
+                "runs": "Batter runs",
+                "runsbattedin": "Batter RBIs",
+                "rbis": "Batter RBIs",
+                "walks": "Batter walks",
+                "baseonballs": "Batter walks",
+                "strikeouts": "Batter strikeouts",
+                "totalbases": "Batter total bases",
+                "homeruns": "Batter home runs",
+            }
+            return mapping.get(stat)
+        if "pitch" in group_key:
+            mapping = {
+                "strikeouts": "Pitcher strikeouts",
+                "walks": "Pitcher walks",
+                "baseonballs": "Pitcher walks",
+                "earnedruns": "Pitcher earned runs",
+                "hits": "Pitcher hits allowed",
+                "outs": "Pitcher outs",
+            }
+            return mapping.get(stat)
+    elif sport == "WNBA":
+        mapping = {
+            "points": "Points",
+            "totalrebounds": "Rebounds",
+            "rebounds": "Rebounds",
+            "assists": "Assists",
+            "threepointfieldgoalsmade": "Threes",
+            "threepointsmade": "Threes",
+            "steals": "Steals",
+            "blocks": "Blocks",
+            "turnovers": "Turnovers",
+        }
+        return mapping.get(stat)
+    return None
+
+
+def parse_summaries(
+    summaries: list[dict[str, Any]], sport: str, upcoming_matchups: dict[str, str]
+) -> list[Projection]:
+    history: dict[tuple[str, str, str], list[float]] = defaultdict(list)
+    display: dict[tuple[str, str, str], tuple[str, str]] = {}
+    for summary in summaries:
+        for team_block in ((summary.get("boxscore") or {}).get("players") or []):
+            team = str((team_block.get("team") or {}).get("displayName") or "")
+            for stat_group in team_block.get("statistics") or []:
+                group = str(stat_group.get("type") or stat_group.get("name") or stat_group.get("displayName") or "")
+                names = stat_group.get("keys") or stat_group.get("names") or stat_group.get("labels") or []
+                for athlete_row in stat_group.get("athletes") or []:
+                    player = str((athlete_row.get("athlete") or {}).get("displayName") or "")
+                    if not player:
+                        continue
+                    for name, raw in zip(names, athlete_row.get("stats") or []):
+                        market = _canonical_market(sport, group, str(name))
+                        value = as_float(raw)
+                        if market is None or value is None or value < 0:
+                            continue
+                        key = (player.casefold(), _norm(team), market)
+                        history[key].append(value)
+                        display[key] = (player, team)
+
+    projections: list[Projection] = []
+    for key, values in history.items():
+        player, team = display[key]
+        team_key = key[1]
+        if upcoming_matchups and team_key not in upcoming_matchups:
+            continue
+        recent = values[-8:]
+        if len(recent) < 2:
+            continue
+        weights = list(range(1, len(recent) + 1))
+        projection = sum(value * weight for value, weight in zip(recent, weights)) / sum(weights)
+        deviation = statistics.pstdev(recent) if len(recent) > 1 else 0.0
+        simple_average = statistics.mean(recent)
+        projections.append(
+            Projection(
+                sport=sport,
+                player=player,
+                team=team,
+                matchup=upcoming_matchups.get(team_key, "Next matchup not posted"),
+                market=key[2],
+                projection=round(projection, 2),
+                samples=len(recent),
+                confidence=round(min(0.72, 0.28 + 0.07 * len(recent)), 2),
+                standard_deviation=round(deviation, 2),
+                recent=[round(value, 2) for value in recent],
+                trend=round(projection - simple_average, 2),
+            )
+        )
+    return sorted(projections, key=lambda row: (-row.confidence, -row.samples, row.player, row.market))
+
+
+class EspnProjectionProvider:
+    name = "ESPN public statistics"
+
+    def __init__(self, settings: dict[str, Any]) -> None:
+        self.settings = settings
+        self.client = JsonClient(self.name, ESPN_URL, timeout=18)
+
+    def fetch(self, sport: str) -> list[Projection]:
+        cfg = self.settings["sports"][sport]
+        path = cfg["espn_path"]
+        today = dt.datetime.now(dt.timezone.utc).date()
+        lookback = int(self.settings["fetch"]["espn_lookback_days"])
+        lookahead = int(self.settings["fetch"]["lookahead_days"])
+        recent = self.client.get(
+            f"/{path}/scoreboard",
+            {"dates": _date_range(today - dt.timedelta(days=lookback), today), "limit": 500},
+        )
+        upcoming = self.client.get(
+            f"/{path}/scoreboard",
+            {"dates": _date_range(today, today + dt.timedelta(days=lookahead)), "limit": 500},
+        )
+        completed = [
+            event
+            for event in recent.get("events") or []
+            if ((event.get("status") or {}).get("type") or {}).get("completed")
+        ]
+        completed.sort(key=lambda event: str(event.get("date") or ""), reverse=True)
+        max_games = int(self.settings["fetch"]["espn_max_completed_games"])
+        event_ids = [event["id"] for event in completed[:max_games] if event.get("id")]
+        def fetch_summary(event_id: str) -> dict[str, Any] | None:
+            try:
+                return self.client.get(f"/{path}/summary", {"event": event_id}, retries=1)
+            except Exception:
+                return None
+        with ThreadPoolExecutor(max_workers=6) as pool:
+            summaries = [summary for summary in pool.map(fetch_summary, event_ids) if summary]
+        matchup_map = _team_and_matchups(upcoming.get("events") or [])
+        return parse_summaries(summaries, sport, matchup_map)

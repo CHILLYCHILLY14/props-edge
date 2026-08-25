@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#08101f" />
+    <title>Props Edge</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="shell hero-grid">
+        <div>
+          <p class="eyebrow">NFL · NCAAF · MLB · WNBA</p>
+          <h1>Props <span>Edge</span></h1>
+          <p class="lede">DraftKings prop prices when available. ESPN-powered player projections when they are not.</p>
+        </div>
+        <div class="hero-actions">
+          <a id="workflowButton" class="button primary" href="#" target="_blank" rel="noopener">Run GitHub update</a>
+          <button id="importButton" class="button secondary">Import sportsbook lines</button>
+          <input id="lineFile" type="file" accept=".csv,text/csv" hidden />
+        </div>
+      </div>
+    </header>
+
+    <main class="shell">
+      <section id="statusBanner" class="status-banner loading">Loading the latest board…</section>
+
+      <section class="metrics" aria-label="Board totals">
+        <article><strong id="metricBest">—</strong><span>Best Bets</span></article>
+        <article><strong id="metricGood">—</strong><span>Good Plays</span></article>
+        <article><strong id="metricLean">—</strong><span>Leans</span></article>
+        <article><strong id="metricProjection">—</strong><span>ESPN Projections</span></article>
+      </section>
+
+      <section class="panel controls">
+        <div id="sportTabs" class="tabs" role="tablist" aria-label="Sport filter">
+          <button class="active" data-sport="ALL">All</button>
+          <button data-sport="NFL">NFL</button>
+          <button data-sport="NCAAF">NCAAF</button>
+          <button data-sport="MLB">MLB</button>
+          <button data-sport="WNBA">WNBA</button>
+        </div>
+        <label class="search"><span>Search</span><input id="searchInput" type="search" placeholder="Player or market" /></label>
+      </section>
+
+      <section class="section-head">
+        <div><p class="eyebrow">Priced board</p><h2>Qualified plays</h2></div>
+        <p>Requires a sportsbook price and a complete two-sided market.</p>
+      </section>
+      <section id="betBoard" class="card-grid"></section>
+
+      <section class="section-head projections-head">
+        <div><p class="eyebrow">No-odds fallback</p><h2>Best projections</h2></div>
+        <p>Projected stat numbers—not bets—until a current sportsbook line is added.</p>
+      </section>
+      <section id="projectionBoard" class="projection-grid"></section>
+
+      <section class="panel import-help">
+        <div>
+          <p class="eyebrow">Optional keyless comparison</p>
+          <h2>Add Canadian sportsbook lines</h2>
+          <p>Upload a CSV from your device. It stays in this browser and is never committed to GitHub.</p>
+        </div>
+        <div>
+          <code>sport,player,market,line,over_odds,under_odds,book,matchup</code>
+          <button id="downloadTemplate" class="text-button">Download CSV template</button>
+        </div>
+      </section>
+
+      <section class="source-grid">
+        <article class="panel"><h3>Source health</h3><div id="sourceHealth"></div></article>
+        <article class="panel"><h3>How tiers work</h3><p>Best: 6%+ probability edge. Good: 4%+. Lean: 2%+. Prices outside the configured range remain passes.</p></article>
+        <article class="panel"><h3>Security</h3><p>API credentials are used only by GitHub Actions. No key is placed in this page, its JavaScript, or generated JSON.</p></article>
+      </section>
+    </main>
+
+    <footer class="shell">For informational and entertainment use only. Verify every line at the sportsbook before wagering. Bet responsibly.</footer>
+    <script src="app.js" defer></script>
+  </body>
+</html>

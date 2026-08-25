@@ -1,0 +1,70 @@
+name: Refresh Props Edge
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/refresh.yml"
+      - "pipeline/**"
+      - "config/**"
+      - "tests/**"
+      - "site/index.html"
+      - "site/app.js"
+      - "site/styles.css"
+  schedule:
+    - cron: "0 12,16,20 * * *"
+    - cron: "0 0,5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: props-edge-pages
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run offline tests
+        run: python -m unittest tests.test_offline -v
+
+      - name: Refresh props and projections
+        env:
+          ODDS_API_IO_KEY: ${{ secrets.ODDS_API_IO_KEY }}
+          THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
+        run: python -m pipeline.build
+
+      - name: Commit generated data
+        run: |
+          git config user.name "props-edge bot"
+          git config user.email "actions@github.com"
+          git add site/data
+          git diff --staged --quiet || git commit -m "Refresh props $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git pull --rebase --autostash origin main || true
+          git push
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: refresh
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+

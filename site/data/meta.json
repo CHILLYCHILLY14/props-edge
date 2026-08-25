@@ -1,0 +1,56 @@
+{
+  "generated_at": "2026-08-25T00:07:44.694784+00:00",
+  "provider_priority": [
+    "Odds-API.io",
+    "The Odds API",
+    "ESPN public statistics"
+  ],
+  "target_book": "DraftKings",
+  "keyless_fallback": true,
+  "configured": {
+    "odds_api_io": false,
+    "the_odds_api": false,
+    "espn_keyless": true
+  },
+  "counts": {
+    "priced_quotes": 0,
+    "board": 0,
+    "actionable": 0,
+    "best": 0,
+    "good": 0,
+    "leans": 0,
+    "projections": 1226
+  },
+  "source_by_sport": {
+    "NFL": {
+      "source": "ESPN public statistics",
+      "priced_quotes": 0,
+      "projections": 164,
+      "errors": []
+    },
+    "NCAAF": {
+      "source": "ESPN public statistics",
+      "priced_quotes": 0,
+      "projections": 0,
+      "errors": []
+    },
+    "MLB": {
+      "source": "ESPN public statistics",
+      "priced_quotes": 0,
+      "projections": 300,
+      "errors": []
+    },
+    "WNBA": {
+      "source": "ESPN public statistics",
+      "priced_quotes": 0,
+      "projections": 762,
+      "errors": []
+    }
+  },
+  "workflow_url": "",
+  "notes": [
+    "API credentials are optional and are read only from GitHub Actions secrets.",
+    "If both odds providers are unavailable, ESPN schedules and box-score statistics produce projection-only rows.",
+    "Action Network and OddsShark are not scraped because automated extraction is blocked or prohibited."
+  ]
+}

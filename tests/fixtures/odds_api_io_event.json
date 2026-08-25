@@ -1,0 +1,34 @@
+{
+  "id": 1001,
+  "date": "2026-09-13T17:00:00Z",
+  "home": "Kansas City",
+  "away": "Buffalo",
+  "bookmakers": {
+    "DraftKings": [
+      {
+        "name": "Player Passing Yards",
+        "updatedAt": "2026-09-12T18:00:00Z",
+        "odds": [
+          {"label": "Jordan Example", "hdp": 275.5, "over": "2.10", "under": "1.70"}
+        ]
+      }
+    ],
+    "FanDuel": [
+      {
+        "name": "Player Passing Yards",
+        "odds": [
+          {"label": "Jordan Example", "hdp": 275.5, "over": "1.80", "under": "2.05"}
+        ]
+      }
+    ],
+    "BetMGM": [
+      {
+        "name": "Player Passing Yards",
+        "odds": [
+          {"label": "Jordan Example", "hdp": 275.5, "over": "1.82", "under": "2.00"}
+        ]
+      }
+    ]
+  }
+}
+
