@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-25T01:30:19.674692+00:00",
+  "generated_at": "2026-08-25T01:32:07.493478+00:00",
   "provider_priority": [
     "Odds-API.io",
     "The Odds API",
@@ -15,9 +15,9 @@
   "counts": {
     "priced_quotes": 9110,
     "board": 4262,
-    "actionable": 206,
-    "best": 161,
-    "good": 17,
+    "actionable": 207,
+    "best": 160,
+    "good": 19,
     "leans": 28,
     "projections": 5413
   },
