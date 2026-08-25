@@ -1,5 +1,6 @@
-const state = { meta: null, board: [], projections: [], imported: [], ledger: [], betIndex: {}, sport: "ALL", date: "ALL", search: "" };
+const state = { meta: null, board: [], projections: [], imported: [], ledger: [], betIndex: {}, sport: "ALL", market: "ALL", date: "ALL", search: "", bankroll: 500, maxStake: 50 };
 const LEDGER_KEY = "props-edge-ledger-v1";
+const SETTINGS_KEY = "props-edge-settings-v1";
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
 const escapeHtml = (value) => String(value ?? "").replace(/[&<>'"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char]));
@@ -15,12 +16,30 @@ const dateKey = (value) => {
 const formatStart = (value) => value ? new Date(value).toLocaleString([], { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) : "";
 
 function loadLedger() {
-  try { const saved = JSON.parse(localStorage.getItem(LEDGER_KEY) || "[]"); state.ledger = Array.isArray(saved) ? saved : []; }
+  try {
+    const saved = JSON.parse(localStorage.getItem(LEDGER_KEY) || "[]");
+    state.ledger = Array.isArray(saved) ? saved.map((item) => ({ market: "Player prop", confidence: null, closing_odds: "", notes: "", ...item })) : [];
+  }
   catch { state.ledger = []; }
 }
 
 function saveLedger() {
   try { localStorage.setItem(LEDGER_KEY, JSON.stringify(state.ledger)); }
+  catch { /* Private browsing may disable persistent storage. */ }
+}
+
+function loadSettings() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
+    state.bankroll = Math.max(1, Number(saved.bankroll) || 500);
+    state.maxStake = Math.max(1, Number(saved.maxStake) || 50);
+  } catch { state.bankroll = 500; state.maxStake = 50; }
+  $("#bankrollInput").value = state.bankroll;
+  $("#maxStakeInput").value = state.maxStake;
+}
+
+function saveSettings() {
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify({ bankroll: state.bankroll, maxStake: state.maxStake })); }
   catch { /* Private browsing may disable persistent storage. */ }
 }
 
@@ -54,7 +73,34 @@ function visible(row) {
   const sport = state.sport === "ALL" || row.sport === state.sport;
   const date = state.date === "ALL" || dateKey(row.start_time) === state.date;
   const query = !state.search || `${row.player} ${row.market} ${row.matchup || ""}`.toLowerCase().includes(state.search);
-  return sport && date && query;
+  const market = state.sport !== "NFL" || state.market === "ALL" || marketGroup(row.market) === state.market;
+  return sport && date && query && market;
+}
+
+function marketGroup(market) {
+  const value = String(market || "").toLowerCase();
+  if (value.includes("touchdown")) return "TOUCHDOWNS";
+  if (value.includes("target")) return "TARGETS";
+  if (value.includes("pass") || value.includes("interception")) return "PASSING";
+  if (value.includes("rush") || value.includes("carr")) return "RUSHING";
+  if (value.includes("receiv") || value.includes("reception")) return "RECEIVING";
+  if (value.includes("tackle") || value.includes("sack") || value.includes("defens")) return "DEFENSE";
+  if (value.includes("kick") || value.includes("field goal") || value.includes("extra point")) return "KICKING";
+  return "OTHER";
+}
+
+function money(value, signed = false) {
+  const number = Number(value) || 0;
+  return `${signed && number >= 0 ? "+" : ""}$${number.toFixed(2)}`;
+}
+
+function recommendedStake(row) {
+  const decimal = decimalOdds(row.price_american);
+  const probability = Number(row.model_prob);
+  let fullKelly = Number(row.full_kelly);
+  if (!Number.isFinite(fullKelly) && Number.isFinite(probability) && decimal > 1) fullKelly = Math.max(0, (probability * decimal - 1) / (decimal - 1));
+  if (!Number.isFinite(fullKelly)) return Math.min(state.maxStake, Number(row.recommended_stake) || 10);
+  return Math.max(0, Math.min(state.maxStake, state.bankroll * fullKelly * 0.25));
 }
 
 function render() {
@@ -66,19 +112,36 @@ function render() {
   $("#metricGood").textContent = filteredBets.filter((row) => row.tier === "GOOD").length;
   $("#metricLean").textContent = filteredBets.filter((row) => row.tier === "LEAN").length;
   $("#metricProjection").textContent = filteredProjections.length;
-  renderStatus(); renderTierBoards(actionable); renderLedger(); renderProjections(projections); renderSources();
+  renderMode(); renderStatus(); renderTierBoards(actionable); renderLedger(); renderNflDashboard(); renderProjections(projections); renderSources();
+}
+
+function renderMode() {
+  const nflMode = state.sport === "NFL";
+  document.body.classList.toggle("nfl-mode", nflMode);
+  $("#nflDashboard").hidden = !nflMode;
+  $("#bestTitle").textContent = nflMode ? "NFL Best Bets" : "Best Bets";
+  $("#goodTitle").textContent = nflMode ? "NFL Good Plays" : "Good Plays";
+  $("#leanTitle").textContent = nflMode ? "NFL Leans" : "Leans";
+  $("#projectionTitle").textContent = nflMode ? "NFL Projection Board" : "Best projections";
+  $("#bestDescription").textContent = nflMode ? "Top NFL props ranked by probability edge, expected value and controlled stake size." : "Highest-rated qualified plays for the selected sport and date.";
 }
 
 function renderStatus() {
   const banner = $("#statusBanner");
   const configured = state.meta.configured || {};
   const when = new Date(state.meta.generated_at).toLocaleString();
-  if ((state.meta.counts?.priced_quotes || 0) > 0) {
+  const sportInfo = state.sport === "ALL" ? null : (state.meta.source_by_sport || {})[state.sport];
+  const priced = sportInfo ? Number(sportInfo.priced_quotes) || 0 : Number(state.meta.counts?.priced_quotes) || 0;
+  const projections = sportInfo ? Number(sportInfo.projections) || 0 : Number(state.meta.counts?.projections) || 0;
+  if (priced > 0) {
     banner.className = "status-banner ok";
-    banner.textContent = `Priced props loaded. Last model update: ${when}.`;
+    banner.textContent = `${state.sport === "ALL" ? "Priced props" : `${state.sport} priced props`} loaded. Last model update: ${when}.`;
+  } else if (projections > 0) {
+    banner.className = "status-banner warn";
+    banner.textContent = `${state.sport === "ALL" ? "Player" : state.sport} projections are ready, but no current sportsbook prices were available for this filter. Last update: ${when}.`;
   } else {
     banner.className = "status-banner warn";
-    banner.textContent = `No sportsbook prop prices were available. Showing ESPN projections only. Last update: ${when}.`;
+    banner.textContent = `No current prices or projections were available for ${state.sport === "ALL" ? "the board" : state.sport}. Last update: ${when}.`;
   }
   const workflow = $("#workflowButton");
   if (state.meta.workflow_url) workflow.href = state.meta.workflow_url; else workflow.style.display = "none";
@@ -92,12 +155,15 @@ function betKey(row) {
 function betCard(row) {
   const key = betKey(row); state.betIndex[key] = row;
   const saved = state.ledger.some((item) => item.id === key);
+  const stake = recommendedStake(row);
+  const confidence = Number(row.confidence) || 0;
   return `
     <article class="bet-card ${escapeHtml(row.tier.toLowerCase())}">
-      <div class="card-top"><span>${escapeHtml(row.sport)} · ${escapeHtml(row.book)}</span><span class="badge">${escapeHtml(row.tier)}</span></div>
+      <div class="card-top"><span>${escapeHtml(row.sport)} · ${escapeHtml(row.book)} · ${escapeHtml(marketGroup(row.market))}</span><span class="badge">${escapeHtml(row.tier)}</span></div>
       <h3>${escapeHtml(row.pick)}</h3><div class="matchup">${escapeHtml([formatStart(row.start_time), row.matchup].filter(Boolean).join(" · "))}</div>
       <div class="model-source">${escapeHtml(row.model_label || `${row.consensus_books || 0}-book no-vig consensus`)}</div>
-      <div class="numbers"><div><strong>${american(row.price_american)}</strong><span>Price</span></div><div><strong>${pct(row.edge)}</strong><span>Edge</span></div><div><strong>${pct(row.ev)}</strong><span>EV</span></div></div>
+      <div class="confidence-track"><span style="width:${Math.max(4, confidence * 100)}%"></span></div>
+      <div class="numbers"><div><strong>${american(row.price_american)}</strong><span>Price</span></div><div><strong>${pct(row.edge)}</strong><span>Edge</span></div><div><strong>${pct(row.ev)}</strong><span>EV</span></div><div><strong>${money(stake)}</strong><span>¼ Kelly stake</span></div></div>
       <div class="card-actions"><button class="ledger-add" data-bet-key="${escapeHtml(key)}" ${saved ? "disabled" : ""}>${saved ? "In ledger" : "Add to ledger"}</button></div>
     </article>`;
 }
@@ -123,14 +189,19 @@ function addToLedger(row) {
     start_time: row.start_time || "",
     sport: row.sport,
     tier: row.tier,
+    market: row.market,
+    bet_type: marketGroup(row.market),
     pick: row.pick,
     matchup: row.matchup,
     book: row.book,
     price_american: row.price_american,
     edge: row.edge,
     ev: row.ev,
-    stake: 10,
+    confidence: row.confidence,
+    stake: Number(recommendedStake(row).toFixed(2)),
     status: "Pending",
+    closing_odds: "",
+    notes: "",
   });
   saveLedger(); render();
 }
@@ -142,26 +213,53 @@ function ledgerProfit(item) {
   return 0;
 }
 
+function ledgerClv(item) {
+  const closing = Number(item.closing_odds);
+  if (!Number.isFinite(closing) || closing === 0) return null;
+  return decimalOdds(item.price_american) / decimalOdds(closing) - 1;
+}
+
+function ledgerStats(rows = state.ledger) {
+  const profit = rows.reduce((total, item) => total + ledgerProfit(item), 0);
+  const pendingRows = rows.filter((item) => item.status === "Pending");
+  const settledRows = rows.filter((item) => ["Win", "Loss", "Push", "Void"].includes(item.status));
+  const exposure = pendingRows.reduce((total, item) => total + Math.max(0, Number(item.stake) || 0), 0);
+  const settledStake = settledRows.reduce((total, item) => total + Math.max(0, Number(item.stake) || 0), 0);
+  const available = state.bankroll + profit - exposure;
+  return { profit, pending: pendingRows.length, settled: settledRows.length, exposure, available, roi: settledStake ? profit / settledStake : 0 };
+}
+
+function renderNflDashboard() {
+  const stats = ledgerStats(state.ledger.filter((item) => item.sport === "NFL"));
+  $("#nflBankroll").textContent = money(state.bankroll);
+  $("#nflExposure").textContent = `${money(stats.exposure)} · ${pct(stats.exposure / Math.max(1, state.bankroll + stats.profit))}`;
+  $("#nflAvailable").textContent = money(stats.available);
+  $("#nflProfit").textContent = money(stats.profit, true);
+  $("#nflProfit").className = stats.profit > 0 ? "profit-positive" : stats.profit < 0 ? "profit-negative" : "";
+  $("#nflRoi").textContent = pct(stats.roi);
+}
+
 function renderLedger() {
-  const profit = state.ledger.reduce((total, item) => total + ledgerProfit(item), 0);
-  const pending = state.ledger.filter((item) => item.status === "Pending").length;
-  const settled = state.ledger.filter((item) => item.status === "Win" || item.status === "Loss").length;
-  $("#ledgerSummary").innerHTML = `<span><strong>${state.ledger.length}</strong> bets</span><span><strong>${pending}</strong> pending</span><span><strong>${settled}</strong> settled</span><span class="${profit > 0 ? "profit-positive" : profit < 0 ? "profit-negative" : ""}"><strong>${profit >= 0 ? "+" : ""}$${profit.toFixed(2)}</strong> P/L</span>`;
+  const stats = ledgerStats();
+  $("#ledgerSummary").innerHTML = `<span><strong>${state.ledger.length}</strong> bets</span><span><strong>${stats.pending}</strong> pending</span><span><strong>${stats.settled}</strong> settled</span><span><strong>${money(stats.exposure)}</strong> open exposure</span><span><strong>${money(stats.available)}</strong> available</span><span class="${stats.profit > 0 ? "profit-positive" : stats.profit < 0 ? "profit-negative" : ""}"><strong>${money(stats.profit, true)}</strong> P/L</span><span><strong>${pct(stats.roi)}</strong> ROI</span>`;
   const body = $("#ledgerBody");
   if (!state.ledger.length) {
-    body.innerHTML = '<tr><td colspan="9" class="empty">No bets saved yet. Use Add to ledger on a qualified card.</td></tr>';
+    body.innerHTML = '<tr><td colspan="13" class="empty">No bets saved yet. Use Add to ledger on a qualified card.</td></tr>';
     return;
   }
   body.innerHTML = state.ledger.map((item) => {
-    const itemProfit = ledgerProfit(item); const profitClass = itemProfit > 0 ? "profit-positive" : itemProfit < 0 ? "profit-negative" : "";
+    const itemProfit = ledgerProfit(item); const profitClass = itemProfit > 0 ? "profit-positive" : itemProfit < 0 ? "profit-negative" : ""; const clv = ledgerClv(item);
     const date = item.start_time ? new Date(item.start_time).toLocaleDateString() : "—";
     return `<tr>
-      <td>${escapeHtml(date)}</td><td><span class="badge">${escapeHtml(item.tier)}</span></td>
+      <td>${escapeHtml(date)}</td><td><strong>${escapeHtml(item.sport)}</strong></td><td><span class="badge">${escapeHtml(item.tier)}</span></td>
+      <td><span class="market-chip">${escapeHtml(item.bet_type || marketGroup(item.market))}</span></td>
       <td class="ledger-pick"><strong>${escapeHtml(item.pick)}</strong><div class="matchup">${escapeHtml(item.matchup)}</div></td>
-      <td>${escapeHtml(item.book)}<br>${american(item.price_american)}</td><td>${pct(item.edge)}</td>
-      <td><input class="ledger-stake" data-ledger-id="${escapeHtml(item.id)}" type="number" min="0" step="1" value="${Number(item.stake) || 0}" aria-label="Stake" /></td>
-      <td><select class="ledger-status" data-ledger-id="${escapeHtml(item.id)}" aria-label="Status">${["Pending", "Win", "Loss", "Void"].map((status) => `<option value="${status}" ${item.status === status ? "selected" : ""}>${status}</option>`).join("")}</select></td>
+      <td>${escapeHtml(item.book)}<br>${american(item.price_american)}</td><td>${pct(item.edge)}<br><span class="muted">${pct(item.confidence)} conf.</span></td>
+      <td><input class="ledger-stake" data-ledger-id="${escapeHtml(item.id)}" type="number" min="0" max="${state.maxStake}" step="1" value="${Number(item.stake) || 0}" aria-label="Stake" /></td>
+      <td><select class="ledger-status" data-ledger-id="${escapeHtml(item.id)}" aria-label="Status">${["Pending", "Win", "Loss", "Push", "Void"].map((status) => `<option value="${status}" ${item.status === status ? "selected" : ""}>${status}</option>`).join("")}</select></td>
+      <td><input class="ledger-closing" data-ledger-id="${escapeHtml(item.id)}" type="number" step="1" value="${escapeHtml(item.closing_odds)}" placeholder="Odds" aria-label="Closing odds" /><br><span class="${clv == null ? "muted" : clv >= 0 ? "profit-positive" : "profit-negative"}">${clv == null ? "— CLV" : `${pct(clv)} CLV`}</span></td>
       <td class="${profitClass}">${itemProfit >= 0 ? "+" : ""}$${itemProfit.toFixed(2)}</td>
+      <td><input class="ledger-notes" data-ledger-id="${escapeHtml(item.id)}" type="text" value="${escapeHtml(item.notes)}" placeholder="Injury, line move…" aria-label="Notes" /></td>
       <td><button class="ledger-remove" data-ledger-id="${escapeHtml(item.id)}">Remove</button></td>
     </tr>`;
   }).join("");
@@ -169,8 +267,8 @@ function renderLedger() {
 
 function csvCell(value) { return `"${String(value ?? "").replaceAll('"', '""')}"`; }
 function exportLedger() {
-  const headers = ["date", "sport", "tier", "pick", "matchup", "book", "american_odds", "edge", "ev", "stake", "status", "profit_loss"];
-  const rows = state.ledger.map((item) => [item.start_time, item.sport, item.tier, item.pick, item.matchup, item.book, item.price_american, item.edge, item.ev, item.stake, item.status, ledgerProfit(item)]);
+  const headers = ["date", "sport", "tier", "bet_type", "market", "pick", "matchup", "book", "american_odds", "edge", "confidence", "ev", "recommended_stake", "status", "closing_odds", "clv", "profit_loss", "notes"];
+  const rows = state.ledger.map((item) => [item.start_time, item.sport, item.tier, item.bet_type || marketGroup(item.market), item.market, item.pick, item.matchup, item.book, item.price_american, item.edge, item.confidence, item.ev, item.stake, item.status, item.closing_odds, ledgerClv(item), ledgerProfit(item), item.notes]);
   const content = [headers, ...rows].map((row) => row.map(csvCell).join(",")).join("\n");
   const link = document.createElement("a"); link.href = URL.createObjectURL(new Blob([content], { type: "text/csv" })); link.download = "props-edge-ledger.csv"; link.click(); URL.revokeObjectURL(link.href);
 }
@@ -180,11 +278,12 @@ function renderProjections(rows) {
   if (!rows.length) { board.innerHTML = '<div class="empty">No upcoming-player projections are available for this filter yet.</div>'; return; }
   board.innerHTML = rows.map((row) => `
     <article class="projection-card">
-      <div class="card-top"><span>${escapeHtml(row.sport)}</span><span>${Math.round(row.confidence * 100)}% confidence</span></div>
+      <div class="card-top"><span>${escapeHtml(row.sport)} · ${escapeHtml(marketGroup(row.market))}</span><span>${Math.round(row.confidence * 100)}% confidence</span></div>
       <h3>${escapeHtml(row.player)}</h3><div class="matchup">${escapeHtml([formatStart(row.start_time), row.matchup].filter(Boolean).join(" · "))}</div>
       <div class="projection-number">${Number(row.projection).toFixed(1)}</div>
       <strong>${escapeHtml(row.market)}</strong>
       <div class="recent">Recent: ${(row.recent || []).map((n) => Number(n).toFixed(0)).join(" · ")} · ${row.samples} games</div>
+      <div class="projection-foot"><span>${Number(row.trend) >= 0 ? "▲" : "▼"} ${Math.abs(Number(row.trend) || 0).toFixed(1)} trend</span><span>SD ${Number(row.standard_deviation || 0).toFixed(1)}</span></div>
     </article>`).join("");
 }
 
@@ -207,19 +306,39 @@ function normalCdf(value) {
 function decimalOdds(price) { const p = Number(price); return p > 0 ? 1 + p / 100 : 1 + 100 / Math.abs(p); }
 function tierFor(edge) { if (edge >= .06) return "BEST"; if (edge >= .04) return "GOOD"; if (edge >= .02) return "LEAN"; return "PASS"; }
 
+function touchdownYesProbability(projection) {
+  const recent = projection.recent || [projection.projection];
+  const hits = recent.filter((value) => Number(value) >= 1).length;
+  const empirical = (hits + 0.5) / (recent.length + 2);
+  const poisson = 1 - Math.exp(-Math.max(0, Number(projection.projection) || 0));
+  const confidence = Math.max(.2, Math.min(.72, Number(projection.confidence) || .4));
+  return Math.max(.04, Math.min(.85, .2 + (((empirical + poisson) / 2) - .2) * confidence));
+}
+
 function evaluateImported(rows) {
   return rows.flatMap((line) => {
     const projection = state.projections.find((row) => row.sport === line.sport && normalized(row.player) === normalized(line.player) && normalized(row.market) === normalized(line.market) && (state.date === "ALL" || dateKey(row.start_time) === state.date));
     if (!projection) return [];
-    const sd = Math.max(Number(projection.standard_deviation) || 0, 0.75);
-    const rawOver = 1 - normalCdf((Number(line.line) - Number(projection.projection)) / sd);
-    const confidence = Number(projection.confidence) || .4;
-    const overP = .5 + (rawOver - .5) * confidence; const underP = 1 - overP;
-    const options = [["over", Number(line.over_odds), overP], ["under", Number(line.under_odds), underP]].filter((row) => Number.isFinite(row[1]) && row[1] !== 0);
+    const touchdown = normalized(line.market) === "anytimetouchdown";
+    let options = [];
+    if (touchdown) {
+      const yesP = touchdownYesProbability(projection);
+      options = [["yes", Number(line.yes_odds), yesP], ["no", Number(line.no_odds), 1 - yesP]];
+    } else {
+      const point = Number(line.line); if (!Number.isFinite(point)) return [];
+      const sd = Math.max(Number(projection.standard_deviation) || 0, 0.75);
+      const rawOver = 1 - normalCdf((point - Number(projection.projection)) / sd);
+      const confidence = Number(projection.confidence) || .4;
+      const overP = .5 + (rawOver - .5) * confidence; const underP = 1 - overP;
+      options = [["over", Number(line.over_odds), overP], ["under", Number(line.under_odds), underP]];
+    }
+    options = options.filter((row) => Number.isFinite(row[1]) && row[1] !== 0);
     if (!options.length) return [];
     const scored = options.map(([side, price, probability]) => { const decimal = decimalOdds(price); return { side, price, probability, decimal, edge: probability - 1 / decimal, ev: probability * decimal - 1 }; }).sort((a, b) => b.ev - a.ev)[0];
     const tier = tierFor(scored.edge);
-    return [{ ...projection, line: Number(line.line), book: line.book || "Imported book", matchup: line.matchup || projection.matchup, side: scored.side, price_american: scored.price, edge: scored.edge, ev: scored.ev, tier, pick: `${projection.player} — ${scored.side[0].toUpperCase() + scored.side.slice(1)} ${line.line} ${projection.market}`, mode: "local import" }];
+    const pickLine = touchdown ? "" : ` ${line.line}`;
+    const decimal = decimalOdds(scored.price); const fullKelly = Math.max(0, (scored.probability * decimal - 1) / (decimal - 1));
+    return [{ ...projection, line: touchdown ? null : Number(line.line), book: line.book || "Imported book", matchup: line.matchup || projection.matchup, side: scored.side, price_american: scored.price, model_prob: scored.probability, full_kelly: fullKelly, recommended_stake: Math.min(state.maxStake, state.bankroll * fullKelly * .25), edge: scored.edge, ev: scored.ev, tier, pick: `${projection.player} — ${scored.side[0].toUpperCase() + scored.side.slice(1)}${pickLine} ${projection.market}`, mode: "local import", model_label: "Imported price vs ESPN projection" }];
   });
 }
 
@@ -231,7 +350,7 @@ async function importLines(file) {
 }
 
 function downloadTemplate() {
-  const content = "sport,player,market,line,over_odds,under_odds,book,matchup\nWNBA,Player Name,Points,20.5,-110,-110,theScore Bet,Away @ Home\n";
+  const content = "sport,player,market,line,over_odds,under_odds,yes_odds,no_odds,book,matchup\nNFL,Player Name,Receiving yards,64.5,-110,-110,,,DraftKings,Away @ Home\nNFL,Player Name,Anytime touchdown,,,,+150,,DraftKings,Away @ Home\nWNBA,Player Name,Points,20.5,-110,-110,,,theScore Bet,Away @ Home\n";
   const link = document.createElement("a"); link.href = URL.createObjectURL(new Blob([content], { type: "text/csv" })); link.download = "props-lines-template.csv"; link.click(); URL.revokeObjectURL(link.href);
 }
 
@@ -241,7 +360,10 @@ $("#downloadTemplate").addEventListener("click", downloadTemplate);
 $("#exportLedger").addEventListener("click", exportLedger);
 $("#dateSelect").addEventListener("change", (event) => { state.date = event.target.value; render(); });
 $("#searchInput").addEventListener("input", (event) => { state.search = event.target.value.trim().toLowerCase(); render(); });
-$$('#sportTabs button').forEach((button) => button.addEventListener("click", () => { $$('#sportTabs button').forEach((row) => row.classList.remove("active")); button.classList.add("active"); state.sport = button.dataset.sport; render(); }));
+$$('#sportTabs button').forEach((button) => button.addEventListener("click", () => { $$('#sportTabs button').forEach((row) => row.classList.remove("active")); button.classList.add("active"); state.sport = button.dataset.sport; state.market = "ALL"; $$('#nflMarketTabs button').forEach((row) => row.classList.toggle("active", row.dataset.market === "ALL")); render(); }));
+$$('#nflMarketTabs button').forEach((button) => button.addEventListener("click", () => { $$('#nflMarketTabs button').forEach((row) => row.classList.remove("active")); button.classList.add("active"); state.market = button.dataset.market; render(); }));
+$("#bankrollInput").addEventListener("change", (event) => { state.bankroll = Math.max(1, Number(event.target.value) || 500); saveSettings(); render(); });
+$("#maxStakeInput").addEventListener("change", (event) => { state.maxStake = Math.max(1, Number(event.target.value) || 50); saveSettings(); render(); });
 document.addEventListener("click", (event) => {
   const addButton = event.target.closest(".ledger-add");
   if (addButton && state.betIndex[addButton.dataset.betKey]) addToLedger(state.betIndex[addButton.dataset.betKey]);
@@ -253,8 +375,11 @@ document.addEventListener("change", (event) => {
   const item = state.ledger.find((row) => row.id === id); if (!item) return;
   if (event.target.classList.contains("ledger-stake")) item.stake = Math.max(0, Number(event.target.value) || 0);
   if (event.target.classList.contains("ledger-status")) item.status = event.target.value;
-  saveLedger(); renderLedger();
+  if (event.target.classList.contains("ledger-closing")) item.closing_odds = event.target.value;
+  if (event.target.classList.contains("ledger-notes")) item.notes = event.target.value;
+  saveLedger(); renderLedger(); renderNflDashboard();
 });
 function showError(error) { const banner = $("#statusBanner"); banner.className = "status-banner warn"; banner.textContent = `Could not load data: ${error.message}`; }
 loadLedger();
+loadSettings();
 loadData().catch(showError);

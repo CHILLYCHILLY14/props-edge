@@ -51,9 +51,15 @@ def _canonical_market(sport: str, group: str, name: str) -> str | None:
             "passing": {
                 "passingyards": "Passing yards",
                 "yards": "Passing yards",
+                "completions": "Pass completions",
+                "passingcompletions": "Pass completions",
+                "attempts": "Pass attempts",
+                "passingattempts": "Pass attempts",
                 "passingtouchdowns": "Passing touchdowns",
                 "touchdowns": "Passing touchdowns",
                 "interceptions": "Pass interceptions",
+                "long": "Longest pass",
+                "longestpass": "Longest pass",
             },
             "rushing": {
                 "rushingattempts": "Rush attempts",
@@ -63,6 +69,8 @@ def _canonical_market(sport: str, group: str, name: str) -> str | None:
                 "yards": "Rushing yards",
                 "rushingtouchdowns": "Rushing touchdowns",
                 "touchdowns": "Rushing touchdowns",
+                "long": "Longest rush",
+                "longestrush": "Longest rush",
             },
             "receiving": {
                 "receptions": "Receptions",
@@ -71,6 +79,22 @@ def _canonical_market(sport: str, group: str, name: str) -> str | None:
                 "receivingtouchdowns": "Receiving touchdowns",
                 "touchdowns": "Receiving touchdowns",
                 "targets": "Targets",
+                "receivingtargets": "Targets",
+                "long": "Longest reception",
+                "longestreception": "Longest reception",
+            },
+            "kicking": {
+                "fieldgoalsmade": "Field goals made",
+                "fg": "Field goals made",
+                "extrapointsmade": "Extra points made",
+                "xp": "Extra points made",
+                "points": "Kicking points",
+                "kickingpoints": "Kicking points",
+            },
+            "defensive": {
+                "totaltackles": "Tackles + assists",
+                "tackles": "Tackles + assists",
+                "sacks": "Sacks",
             },
         }
         for key, mapping in maps.items():
@@ -125,6 +149,9 @@ def parse_summaries(
     history: dict[tuple[str, str, str], list[float]] = defaultdict(list)
     display: dict[tuple[str, str, str], tuple[str, str]] = {}
     for summary in summaries:
+        game_observed: dict[tuple[str, str], dict[str, Any]] = defaultdict(
+            lambda: {"player": "", "team": "", "markets": {}}
+        )
         for team_block in ((summary.get("boxscore") or {}).get("players") or []):
             team = str((team_block.get("team") or {}).get("displayName") or "")
             for stat_group in team_block.get("statistics") or []:
@@ -136,11 +163,38 @@ def parse_summaries(
                         continue
                     observed: dict[str, float] = {}
                     for name, raw in zip(names, athlete_row.get("stats") or []):
+                        stat_key = _norm(str(name))
+                        group_key = _norm(group)
+                        combined_match = re.match(r"^\s*(\d+(?:\.\d+)?)\s*/\s*(\d+(?:\.\d+)?)\s*$", str(raw))
+                        if (
+                            sport in ("NFL", "NCAAF")
+                            and "passing" in group_key
+                            and "completion" in stat_key
+                            and "attempt" in stat_key
+                            and combined_match
+                        ):
+                            game_key = (player.casefold(), _norm(team))
+                            for market, value in (
+                                ("Pass completions", float(combined_match.group(1))),
+                                ("Pass attempts", float(combined_match.group(2))),
+                            ):
+                                observed[market] = value
+                                game_observed[game_key]["player"] = player
+                                game_observed[game_key]["team"] = team
+                                game_observed[game_key]["markets"][market] = value
+                                key = (player.casefold(), _norm(team), market)
+                                history[key].append(value)
+                                display[key] = (player, team)
+                            continue
                         market = _canonical_market(sport, group, str(name))
                         value = as_float(raw)
                         if market is None or value is None or value < 0:
                             continue
                         observed[market] = value
+                        game_key = (player.casefold(), _norm(team))
+                        game_observed[game_key]["player"] = player
+                        game_observed[game_key]["team"] = team
+                        game_observed[game_key]["markets"][market] = value
                         key = (player.casefold(), _norm(team), market)
                         history[key].append(value)
                         display[key] = (player, team)
@@ -177,6 +231,17 @@ def parse_summaries(
                         combined_key = (player.casefold(), _norm(team), combined_market)
                         history[combined_key].append(combined_value)
                         display[combined_key] = (player, team)
+
+        if sport in ("NFL", "NCAAF"):
+            for (player_key, team_key), info in game_observed.items():
+                markets = info["markets"]
+                touchdown_markets = ("Rushing touchdowns", "Receiving touchdowns")
+                if not any(market in markets for market in touchdown_markets):
+                    continue
+                total_touchdowns = sum(markets.get(market, 0.0) for market in touchdown_markets)
+                combined_key = (player_key, team_key, "Anytime touchdown")
+                history[combined_key].append(total_touchdowns)
+                display[combined_key] = (info["player"], info["team"])
 
     projections: list[Projection] = []
     for key, values in history.items():

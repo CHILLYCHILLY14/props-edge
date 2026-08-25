@@ -40,7 +40,12 @@
     "good_edge": 0.04,
     "best_edge": 0.06,
     "min_price": -250,
-    "max_price": 500
+    "max_price": 500,
+    "nfl_touchdown_max_price": 750,
+    "bankroll": 500,
+    "kelly_fraction": 0.25,
+    "max_stake": 50,
+    "max_open_exposure": 0.5
   },
   "fetch": {
     "lookahead_days": 7,

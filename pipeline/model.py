@@ -53,6 +53,24 @@ def _normal_cdf(value: float) -> float:
     return 0.5 * (1 + math.erf(value / math.sqrt(2)))
 
 
+def _recommended_stake(model_prob: float | None, decimal_price: float, cfg: dict[str, Any]) -> tuple[float, float]:
+    if model_prob is None or decimal_price <= 1:
+        return 0.0, 0.0
+    full_kelly = max(0.0, (model_prob * decimal_price - 1) / (decimal_price - 1))
+    fraction = float(cfg.get("kelly_fraction", 0.25))
+    bankroll = float(cfg.get("bankroll", 500))
+    max_stake = float(cfg.get("max_stake", 50))
+    stake = min(max_stake, bankroll * full_kelly * fraction)
+    return round(full_kelly, 5), round(stake, 2)
+
+
+def _allowed_price(quote: PropQuote, cfg: dict[str, Any]) -> bool:
+    maximum = float(cfg.get("max_price", 500))
+    if quote.sport == "NFL" and _market_key(quote.market) == "anytimetouchdown":
+        maximum = float(cfg.get("nfl_touchdown_max_price", maximum))
+    return float(cfg["min_price"]) <= quote.price_american <= maximum
+
+
 def _board_key(row: dict[str, Any]) -> tuple[Any, ...]:
     return (
         row.get("event_id"),
@@ -88,11 +106,12 @@ def evaluate_quotes(quotes: list[PropQuote], settings: dict[str, Any]) -> list[d
             model_prob = None if fair is None else 0.5 + (fair - 0.5) * float(cfg["probability_shrink"])
             edge = None if model_prob is None else model_prob - breakeven
             ev = None if model_prob is None else model_prob * quote.price_decimal - 1
+            full_kelly, recommended_stake = _recommended_stake(model_prob, quote.price_decimal, cfg)
             tier = "PASS"
             reason = ""
             if len(fair_samples) < int(cfg["min_consensus_books"]):
                 reason = f"needs {cfg['min_consensus_books']} complete two-sided books"
-            elif not (float(cfg["min_price"]) <= quote.price_american <= float(cfg["max_price"])):
+            elif not _allowed_price(quote, cfg):
                 reason = "price outside allowed range"
             elif edge is None or edge < float(cfg["lean_edge"]) or (ev or 0) <= 0:
                 reason = "edge below Lean threshold"
@@ -111,6 +130,8 @@ def evaluate_quotes(quotes: list[PropQuote], settings: dict[str, Any]) -> list[d
                     "model_prob": None if model_prob is None else round(model_prob, 5),
                     "edge": None if edge is None else round(edge, 5),
                     "ev": None if ev is None else round(ev, 5),
+                    "full_kelly": full_kelly,
+                    "recommended_stake": recommended_stake,
                     "consensus_books": len(fair_samples),
                     "confidence": round(min(0.85, 0.42 + 0.09 * len(fair_samples)), 2),
                     "tier": tier,
@@ -133,9 +154,13 @@ def evaluate_quotes_against_projections(
     board: list[dict[str, Any]] = []
     seen: set[tuple[Any, ...]] = set()
     for quote in quotes:
-        if _book_key(quote.book) != target or quote.side not in ("over", "under"):
+        if _book_key(quote.book) != target or quote.side not in ("over", "under", "yes", "no"):
             continue
-        if quote.line is None:
+        market_key = _market_key(quote.market)
+        is_touchdown_yes_no = quote.side in ("yes", "no") and market_key == "anytimetouchdown"
+        if quote.side in ("over", "under") and quote.line is None:
+            continue
+        if quote.side in ("yes", "no") and not is_touchdown_yes_no:
             continue
         row_key = (
             quote.event_id,
@@ -150,21 +175,30 @@ def evaluate_quotes_against_projections(
         projection = projection_index.get((quote.sport, row_key[1], row_key[2]))
         if projection is None:
             continue
-        deviation = max(float(projection.standard_deviation), 0.75)
-        normal_over = 1 - _normal_cdf((quote.line - projection.projection) / deviation)
         recent = projection.recent or [projection.projection]
-        over_wins = sum(value > quote.line for value in recent)
-        empirical_over = (over_wins + 1) / (len(recent) + 2)
-        raw_over = (normal_over + empirical_over) / 2
-        raw_probability = raw_over if quote.side == "over" else 1 - raw_over
         confidence = max(0.2, min(0.72, float(projection.confidence)))
-        model_prob = 0.5 + (raw_probability - 0.5) * confidence
+        if is_touchdown_yes_no:
+            touchdown_hits = sum(value >= 1 for value in recent)
+            empirical_yes = (touchdown_hits + 0.5) / (len(recent) + 2)
+            poisson_yes = 1 - math.exp(-max(0.0, float(projection.projection)))
+            raw_yes = (empirical_yes + poisson_yes) / 2
+            conservative_yes = max(0.04, min(0.85, 0.2 + (raw_yes - 0.2) * confidence))
+            model_prob = conservative_yes if quote.side == "yes" else 1 - conservative_yes
+        else:
+            deviation = max(float(projection.standard_deviation), 0.75)
+            normal_over = 1 - _normal_cdf((quote.line - projection.projection) / deviation)
+            over_wins = sum(value > quote.line for value in recent)
+            empirical_over = (over_wins + 1) / (len(recent) + 2)
+            raw_over = (normal_over + empirical_over) / 2
+            raw_probability = raw_over if quote.side == "over" else 1 - raw_over
+            model_prob = 0.5 + (raw_probability - 0.5) * confidence
         breakeven = 1 / quote.price_decimal
         edge = model_prob - breakeven
         ev = model_prob * quote.price_decimal - 1
+        full_kelly, recommended_stake = _recommended_stake(model_prob, quote.price_decimal, cfg)
         tier = "PASS"
         reason = ""
-        if not (float(cfg["min_price"]) <= quote.price_american <= float(cfg["max_price"])):
+        if not _allowed_price(quote, cfg):
             reason = "price outside allowed range"
         elif edge < float(cfg["lean_edge"]) or ev <= 0:
             reason = "ESPN projection edge below Lean threshold"
@@ -183,12 +217,14 @@ def evaluate_quotes_against_projections(
                 "model_prob": round(model_prob, 5),
                 "edge": round(edge, 5),
                 "ev": round(ev, 5),
+                "full_kelly": full_kelly,
+                "recommended_stake": recommended_stake,
                 "consensus_books": 0,
                 "confidence": round(confidence, 2),
                 "tier": tier,
                 "reason": reason,
                 "mode": "projection-priced",
-                "model_label": "DraftKings price vs ESPN projection",
+                "model_label": f"DraftKings price vs {projection.source}",
                 "projection": projection.projection,
                 "projection_samples": projection.samples,
             }

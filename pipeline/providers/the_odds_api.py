@@ -10,6 +10,37 @@ SECONDARY_URL = "https://api.the-odds-api.com/v4"
 PROP_PREFIXES = ("player_", "batter_", "pitcher_")
 
 
+NFL_MARKETS = {
+    "player_pass_yds": "Passing yards",
+    "player_pass_tds": "Passing touchdowns",
+    "player_pass_attempts": "Pass attempts",
+    "player_pass_completions": "Pass completions",
+    "player_pass_interceptions": "Pass interceptions",
+    "player_rush_yds": "Rushing yards",
+    "player_rush_attempts": "Rush attempts",
+    "player_rush_tds": "Rushing touchdowns",
+    "player_receptions": "Receptions",
+    "player_reception_yds": "Receiving yards",
+    "player_reception_tds": "Receiving touchdowns",
+    "player_targets": "Targets",
+    "player_anytime_td": "Anytime touchdown",
+    "player_longest_pass_completion": "Longest pass",
+    "player_longest_rush": "Longest rush",
+    "player_longest_reception": "Longest reception",
+    "player_field_goals": "Field goals made",
+    "player_kicking_points": "Kicking points",
+    "player_tackles_assists": "Tackles + assists",
+    "player_sacks": "Sacks",
+}
+NFL_MARKET_PRIORITY = {market: index for index, market in enumerate(NFL_MARKETS)}
+
+
+def _canonical_market_key(sport: str, market_key: str) -> str:
+    if sport in ("NFL", "NCAAF"):
+        return NFL_MARKETS.get(market_key, market_key)
+    return market_key
+
+
 def parse_event(event: dict[str, Any], sport: str) -> list[PropQuote]:
     quotes: list[PropQuote] = []
     matchup = f"{event.get('away_team', 'Away')} @ {event.get('home_team', 'Home')}"
@@ -32,7 +63,7 @@ def parse_event(event: dict[str, Any], sport: str) -> list[PropQuote]:
                         start_time=str(event.get("commence_time") or ""),
                         matchup=matchup,
                         player=player,
-                        market=market_key,
+                        market=_canonical_market_key(sport, market_key),
                         side=side,
                         line=as_float(outcome.get("point")),
                         price_decimal=american_to_decimal(price),
@@ -74,6 +105,8 @@ class TheOddsApiProvider:
                         market_keys.append(key)
             if not market_keys:
                 continue
+            if sport in ("NFL", "NCAAF"):
+                market_keys.sort(key=lambda key: NFL_MARKET_PRIORITY.get(key, len(NFL_MARKET_PRIORITY)))
             limit = int(self.settings["fetch"]["secondary_max_markets_per_event"])
             response = self.client.get(
                 f"/sports/{sport_key}/events/{event_id}/odds",
@@ -87,4 +120,3 @@ class TheOddsApiProvider:
             )
             quotes.extend(parse_event(response, sport))
         return quotes
-

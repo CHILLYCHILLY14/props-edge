@@ -12,7 +12,7 @@ from pipeline.providers.odds_api_io import parse_event as parse_odds_api_io_even
 from pipeline.providers.espn import parse_summaries
 from pipeline.providers.the_odds_api import parse_event as parse_the_odds_api_event
 from pipeline.build import load_settings
-from pipeline.schema import Projection
+from pipeline.schema import Projection, PropQuote
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -58,6 +58,27 @@ class ProviderParsingTests(unittest.TestCase):
         quotes = parse_odds_api_io_event(event, "MLB")
         self.assertEqual({row.player for row in quotes}, {"Alex Example"})
         self.assertEqual({row.market for row in quotes}, {"Batter hits"})
+
+    def test_primary_generic_market_normalizes_nfl_targets_and_touchdowns(self) -> None:
+        event = {
+            "id": 23,
+            "home": "Toronto",
+            "away": "Buffalo",
+            "bookmakers": {
+                "DraftKings": [
+                    {
+                        "name": "Player Props",
+                        "odds": [
+                            {"label": "Sam Receiver (Receiving Targets)", "hdp": 7.5, "over": 1.91, "under": 1.91},
+                            {"label": "Sam Receiver (Anytime Touchdown Scorer)", "yes": 2.5},
+                        ],
+                    }
+                ]
+            },
+        }
+        quotes = parse_odds_api_io_event(event, "NFL")
+        self.assertEqual({row.player for row in quotes}, {"Sam Receiver"})
+        self.assertEqual({row.market for row in quotes}, {"Targets", "Anytime touchdown"})
 
     def test_primary_provider_retries_without_rejected_bookmaker(self) -> None:
         settings = json.loads(json.dumps(load_settings()))
@@ -119,6 +140,110 @@ class ProviderParsingTests(unittest.TestCase):
         )
         self.assertEqual(draftkings_over.price_american, 110)
         self.assertAlmostEqual(draftkings_over.price_decimal, 2.1)
+
+    def test_secondary_provider_normalizes_anytime_touchdown(self) -> None:
+        event = {
+            "id": "nfl-1",
+            "commence_time": "2026-09-10T00:00:00Z",
+            "away_team": "Buffalo Bills",
+            "home_team": "Kansas City Chiefs",
+            "bookmakers": [
+                {
+                    "title": "DraftKings",
+                    "markets": [
+                        {
+                            "key": "player_anytime_td",
+                            "outcomes": [
+                                {"description": "Sam Receiver", "name": "Yes", "price": 220}
+                            ],
+                        }
+                    ],
+                }
+            ],
+        }
+        quotes = parse_the_odds_api_event(event, "NFL")
+        self.assertEqual(len(quotes), 1)
+        self.assertEqual(quotes[0].market, "Anytime touchdown")
+        self.assertEqual(quotes[0].side, "yes")
+
+    def test_espn_nfl_projection_builds_targets_and_anytime_touchdown(self) -> None:
+        def summary(rush_td, rush_yards, rush_attempts, rec_td, rec_yards, receptions, targets, completions_attempts):
+            return {
+                "boxscore": {
+                    "players": [
+                        {
+                            "team": {"displayName": "Toronto Northmen"},
+                            "statistics": [
+                                {
+                                    "type": "passing",
+                                    "keys": ["completions/passingAttempts", "passingYards", "passingTouchdowns", "interceptions"],
+                                    "athletes": [{"athlete": {"displayName": "Sam Quarterback"}, "stats": [completions_attempts, 225, 2, 1]}],
+                                },
+                                {
+                                    "type": "rushing",
+                                    "keys": ["rushingTouchdowns", "rushingYards", "rushingAttempts"],
+                                    "athletes": [{"athlete": {"displayName": "Sam Receiver"}, "stats": [rush_td, rush_yards, rush_attempts]}],
+                                },
+                                {
+                                    "type": "receiving",
+                                    "keys": ["receivingTouchdowns", "receivingYards", "receptions", "targets"],
+                                    "athletes": [{"athlete": {"displayName": "Sam Receiver"}, "stats": [rec_td, rec_yards, receptions, targets]}],
+                                },
+                            ],
+                        }
+                    ]
+                }
+            }
+
+        schedule = {"torontonorthmen": [{"matchup": "Buffalo @ Toronto", "start_time": "2026-09-10T00:00:00Z"}]}
+        rows = parse_summaries(
+            [summary(1, 50, 10, 0, 20, 2, 3, "17/28"), summary(0, 30, 8, 1, 40, 4, 6, "20/30")],
+            "NFL",
+            schedule,
+        )
+        targets = next(row for row in rows if row.market == "Targets")
+        touchdown = next(row for row in rows if row.market == "Anytime touchdown")
+        self.assertAlmostEqual(targets.projection, 5.0)
+        self.assertEqual(targets.recent, [3.0, 6.0])
+        self.assertAlmostEqual(touchdown.projection, 1.0)
+        self.assertEqual(touchdown.recent, [1.0, 1.0])
+        completions = next(row for row in rows if row.market == "Pass completions")
+        attempts = next(row for row in rows if row.market == "Pass attempts")
+        self.assertAlmostEqual(completions.projection, 19.0)
+        self.assertAlmostEqual(attempts.projection, 29.33)
+
+    def test_anytime_touchdown_yes_price_can_qualify(self) -> None:
+        quote = PropQuote(
+            sport="NFL",
+            event_id="nfl-1",
+            start_time="2026-09-10T00:00:00Z",
+            matchup="Buffalo @ Toronto",
+            player="Sam Receiver",
+            market="Anytime touchdown",
+            side="yes",
+            line=None,
+            price_decimal=3.2,
+            price_american=220,
+            book="DraftKings",
+            provider="fixture",
+        )
+        projection = Projection(
+            sport="NFL",
+            player="Sam Receiver",
+            team="Toronto Northmen",
+            matchup="Buffalo @ Toronto",
+            market="Anytime touchdown",
+            projection=0.8,
+            samples=4,
+            confidence=0.56,
+            standard_deviation=0.5,
+            recent=[1.0, 0.0, 1.0, 0.0],
+            trend=0.0,
+        )
+        row = evaluate_quotes_against_projections([quote], [projection], load_settings())[0]
+        self.assertEqual(row["tier"], "GOOD")
+        self.assertGreater(row["recommended_stake"], 0)
+        self.assertLessEqual(row["recommended_stake"], 50)
 
     def test_espn_projection_fallback_has_no_odds(self) -> None:
         summaries = fixture("espn_summaries.json")

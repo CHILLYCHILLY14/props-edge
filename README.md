@@ -10,6 +10,15 @@ Sportsbook odds produce model-ranked **Best**, **Good**, and **Lean** rows. ESPN
 
 Qualified plays are displayed in three separate Best, Good, and Lean areas. Every qualified card has an **Add to ledger** button. The ledger stores the selection, line, odds, edge, editable stake, result status, and calculated profit/loss. It can be exported to CSV.
 
+## NFL Pro upgrade
+
+- A dedicated NFL Prop Command Center appears when the NFL tab is selected.
+- NFL filters include touchdowns, passing, rushing, receiving, targets, defense, and kicking.
+- Supported NFL projections and normalized odds markets include passing yards, completions, attempts, touchdowns and interceptions; rushing yards, carries and touchdowns; receiving yards, receptions, targets and touchdowns; anytime touchdowns; longest-play props; field goals, kicking points, tackles plus assists, and sacks when the source publishes them.
+- Anytime-touchdown Yes/No prices are evaluated with a conservative touchdown-frequency model instead of being treated as a normal over/under line.
+- The default NFL bankroll is $500, quarter-Kelly staking is used, and a single recommendation is capped at $50.
+- The NFL dashboard shows starting bankroll, open exposure, available bankroll, settled profit/loss and ROI.
+
 ## Fast GitHub setup
 
 1. Create a new public GitHub repository named `props-edge`.
@@ -48,8 +57,9 @@ This mode may legitimately show no rows during an offseason, before schedules ar
 On the dashboard, choose **Download CSV template**, enter current lines, then choose **Import sportsbook lines**. Required columns are:
 
 ```csv
-sport,player,market,line,over_odds,under_odds,book,matchup
-WNBA,Player Name,Points,20.5,-110,-110,theScore Bet,Away @ Home
+sport,player,market,line,over_odds,under_odds,yes_odds,no_odds,book,matchup
+NFL,Player Name,Receiving yards,64.5,-110,-110,,,DraftKings,Away @ Home
+NFL,Player Name,Anytime touchdown,,,,+150,,DraftKings,Away @ Home
 ```
 
 The CSV is read only by that browser tab and is not uploaded, committed, or retained after the page closes. Player and market names must match a displayed ESPN projection.
@@ -57,20 +67,22 @@ The CSV is read only by that browser tab and is not uploaded, committed, or reta
 ## Bet ledger
 
 - Choose **Add to ledger** on any Best, Good, or Lean card.
-- Change the stake and set the result to Pending, Win, Loss, or Void.
+- Change the stake and set the result to Pending, Win, Loss, Push, or Void.
 - Win/loss profit is calculated from the saved American price and stake.
+- Add closing odds to calculate CLV, and keep injury, role, or line-movement notes with the bet.
+- The dashboard calculates open exposure, available bankroll, settled P/L, and ROI.
 - Choose **Export ledger CSV** to download the complete ledger.
 - Ledger entries use browser storage and persist on that browser and device. They are not uploaded to GitHub and do not automatically sync to another phone or computer.
 
 ## Data and model rules
 
 - DraftKings is the target book for automatically priced plays. FanDuel is the second primary comparison book so the free Odds-API.io account stays within its two-book maximum.
-- Generic Odds-API.io labels are normalized into real prop markets, including MLB batter and pitcher props plus WNBA points, rebounds, assists, threes, and combination props.
+- Generic odds-provider labels are normalized into real prop markets, including the full NFL group above, MLB batter and pitcher props, and WNBA points, rebounds, assists, threes, and combination props.
 - Consensus probabilities use complete two-sided prices from at least two books and remove the two-way market margin before comparison.
 - If DraftKings has a current price but fewer than two consensus books are available, the model can conservatively compare that price with the matching ESPN player projection. These cards are explicitly labeled `DraftKings price vs ESPN projection`.
 - Model probabilities are shrunk toward 50% to reduce overconfidence.
 - A positive expected value and at least a 2% model edge are required for a Lean; 4% is Good and 6% is Best.
-- Prices outside -250 to +500 are rejected.
+- Prices outside -250 to +500 are rejected, except NFL anytime-touchdown prices may extend to +750 because that market naturally contains longer odds; the conservative touchdown model and $50 stake cap still apply.
 - ESPN projections use up to eight recent player games, weight recent games more heavily, and show the sample count and confidence.
 - Action Network and OddsShark are not scraped because automated extraction is prohibited or blocked. Sportsbook sites can also be geo-, age-, and bot-gated, so they are not a reliable unattended GitHub Actions feed.
 
