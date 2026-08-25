@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-25T02:06:26.196608+00:00",
+  "generated_at": "2026-08-25T02:07:12.367883+00:00",
   "provider_priority": [
     "Odds-API.io",
     "The Odds API",
@@ -19,7 +19,7 @@
     "best": 57,
     "good": 4,
     "leans": 14,
-    "projections": 6065
+    "projections": 5754
   },
   "source_by_sport": {
     "NFL": {
@@ -41,7 +41,7 @@
     "MLB": {
       "source": "Odds-API.io + ESPN public statistics",
       "priced_quotes": 3652,
-      "projections": 2818,
+      "projections": 2507,
       "errors": []
     },
     "WNBA": {
