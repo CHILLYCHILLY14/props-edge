@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-25T00:07:44.694784+00:00",
+  "generated_at": "2026-08-25T00:13:44.624208+00:00",
   "provider_priority": [
     "Odds-API.io",
     "The Odds API",
@@ -47,7 +47,7 @@
       "errors": []
     }
   },
-  "workflow_url": "",
+  "workflow_url": "https://github.com/CHILLYCHILLY14/props-edge/actions/workflows/refresh.yml",
   "notes": [
     "API credentials are optional and are read only from GitHub Actions secrets.",
     "If both odds providers are unavailable, ESPN schedules and box-score statistics produce projection-only rows.",
