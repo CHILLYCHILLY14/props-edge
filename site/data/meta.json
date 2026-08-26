@@ -1,6 +1,6 @@
 {
   "league": "NFL",
-  "generated_at": "2026-08-26T14:27:16.345080+00:00",
+  "generated_at": "2026-08-26T17:02:37.589754+00:00",
   "provider_priority": [
     "Odds-API.io",
     "The Odds API",
@@ -13,7 +13,9 @@
     "espn_keyless": true
   },
   "counts": {
-    "priced_quotes": 0,
+    "priced_quotes": 100,
+    "priced_events": 3,
+    "priced_markets": 5,
     "board": 0,
     "actionable": 0,
     "best": 0,
@@ -21,24 +23,36 @@
     "leans": 0,
     "watch": 0,
     "projections": 240,
+    "projected_markets": 27,
+    "scheduled_projections": 240,
     "suggested_exposure": 0
   },
   "source_by_sport": {
     "NFL": {
-      "source": "ESPN regular-season form",
-      "priced_quotes": 0,
+      "source": "Odds-API.io + ESPN regular-season form",
+      "priced_quotes": 100,
       "projections": 240,
-      "errors": [
-        "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)"
-      ]
+      "errors": []
     }
   },
-  "workflow_url": "https://github.com/CHILLYCHILLY14/props-edge/actions/workflows/refresh.yml",
-  "model_status": "NFL data is still thin. The model will not force a wager.",
+  "lookahead_days": 21,
+  "next_scheduled_game": "2026-09-10T00:20Z",
+  "model_status": "Live NFL prices and regular-season player samples are available.",
   "ledger_mode": "manual-browser",
+  "market_coverage": [
+    "Passing yards, touchdowns, attempts, completions, interceptions and longest completion",
+    "Rushing yards, attempts, touchdowns and longest rush",
+    "Receptions, receiving yards, targets, touchdowns and longest reception",
+    "Combined passing/rushing/receiving yards and touchdowns",
+    "Anytime touchdowns and total touchdowns scored",
+    "Field goals made, extra points and kicking points",
+    "Sacks, solo tackles and tackles + assists"
+  ],
   "notes": [
     "Only NFL player props are collected and published.",
     "Preseason box scores are excluded from every projection and betting decision.",
+    "Prior-season form is automatically reduced until four current-season games are available.",
+    "Touchdowns, field goals, interceptions and sacks use count-stat probability handling and stricter reliability gates.",
     "Sportsbook consensus is never treated as an independent model by itself.",
     "A wager enters My Ledger only after the user reviews the live price and clicks Add.",
     "API credentials remain GitHub Actions secrets and are never written to site data."
