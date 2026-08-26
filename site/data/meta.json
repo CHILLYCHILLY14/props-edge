@@ -1,6 +1,6 @@
 {
   "league": "NFL",
-  "generated_at": "2026-08-26T12:27:41.242135+00:00",
+  "generated_at": "2026-08-26T12:33:32.204575+00:00",
   "provider_priority": [
     "Odds-API.io",
     "The Odds API",
@@ -20,17 +20,16 @@
     "good": 0,
     "leans": 0,
     "watch": 0,
-    "projections": 0,
+    "projections": 240,
     "suggested_exposure": 0
   },
   "source_by_sport": {
     "NFL": {
-      "source": "No source available",
+      "source": "ESPN regular-season form",
       "priced_quotes": 0,
-      "projections": 0,
+      "projections": 240,
       "errors": [
-        "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)",
-        "ESPN regular-season statistics request failed (HTTP 400: \u001f\ufffd\b\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\ufffdVJ\ufffdOIU\ufffd210\ufffdQ\ufffdM-.NL\u0007\ufffd\ufffd\u00123sRS\u0014J\ufffd\u0015\ufffdSK\u0014R\ufffdR\ufffdJ\ufffd\u0015R\ufffdR\n\ufffd3\ufffdJ\ufffd\ufffdj\u0001\u0000\u0000\u0000\ufffd\ufffd\u0003\u0000\ufffd,\u0003\ufffd7\u0000\u0000\u0000)"
+        "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)"
       ]
     }
   },
