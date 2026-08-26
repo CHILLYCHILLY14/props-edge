@@ -1,4 +1,5 @@
 name: Refresh NFL Props Edge
+# The public dashboard stays read-only; refreshes run here on schedule or dispatch.
 
 on:
   push:
