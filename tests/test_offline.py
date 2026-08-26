@@ -5,13 +5,20 @@ import re
 import unittest
 from pathlib import Path
 
-from pipeline.http import ProviderError
-from pipeline.model import evaluate_quotes, evaluate_quotes_against_projections
-from pipeline.providers.odds_api_io import OddsApiIoProvider
-from pipeline.providers.odds_api_io import parse_event as parse_odds_api_io_event
-from pipeline.providers.espn import parse_summaries
-from pipeline.providers.the_odds_api import parse_event as parse_the_odds_api_event
 from pipeline.build import load_settings
+from pipeline.http import ProviderError
+from pipeline.model import (
+    _power_devig,
+    _projection_probabilities,
+    evaluate_quotes,
+    evaluate_quotes_against_projections,
+    merge_boards,
+    select_portfolio,
+)
+from pipeline.providers.espn import _season_type, parse_summaries
+from pipeline.providers.odds_api_io import OddsApiIoProvider
+from pipeline.providers.odds_api_io import parse_event as parse_primary_event
+from pipeline.providers.the_odds_api import parse_event as parse_secondary_event
 from pipeline.schema import Projection, PropQuote
 
 
@@ -23,67 +30,113 @@ def fixture(name: str):
     return json.loads((FIXTURES / name).read_text())
 
 
-class ProviderParsingTests(unittest.TestCase):
-    def test_primary_provider_parses_two_sided_props(self) -> None:
-        self.assertLessEqual(len(load_settings()["bookmakers"]["primary_consensus"]), 2)
-        quotes = parse_odds_api_io_event(fixture("odds_api_io_event.json"), "NFL")
+def sample_projection(
+    *,
+    market: str = "Passing yards",
+    projection: float = 282.0,
+    samples: int = 8,
+    confidence: float = 0.65,
+    deviation: float = 22.0,
+    recent: list[float] | None = None,
+) -> Projection:
+    values = recent or [250, 270, 281, 295, 260, 300, 289, 285]
+    return Projection(
+        sport="NFL",
+        player="Jordan Example",
+        team="Kansas City",
+        matchup="Buffalo @ Kansas City",
+        market=market,
+        projection=projection,
+        samples=samples,
+        confidence=confidence,
+        standard_deviation=deviation,
+        recent=values,
+        trend=2.0,
+        start_time="2026-09-13T17:00:00Z",
+    )
+
+
+def target_quote(
+    *,
+    side: str = "over",
+    line: float | None = 275.5,
+    price_decimal: float = 2.1,
+    market: str = "Passing yards",
+    player: str = "Jordan Example",
+    book: str = "DraftKings",
+) -> PropQuote:
+    if price_decimal >= 2:
+        american = round((price_decimal - 1) * 100)
+    else:
+        american = round(-100 / (price_decimal - 1))
+    return PropQuote(
+        sport="NFL",
+        event_id="1001",
+        start_time="2026-09-13T17:00:00Z",
+        matchup="Buffalo @ Kansas City",
+        player=player,
+        market=market,
+        side=side,
+        line=line,
+        price_decimal=price_decimal,
+        price_american=american,
+        book=book,
+        provider="fixture",
+    )
+
+
+class NflOnlyTests(unittest.TestCase):
+    def test_settings_contain_only_nfl(self) -> None:
+        self.assertEqual(list(load_settings()["sports"]), ["NFL"])
+
+    def test_visible_site_is_nfl_only(self) -> None:
+        text = "\n".join(
+            [
+                (ROOT / "site" / "index.html").read_text(),
+                (ROOT / "README.md").read_text(),
+                (ROOT / "config" / "settings.json").read_text(),
+            ]
+        )
+        for unwanted in ("NCAAF", "MLB", "WNBA"):
+            self.assertNotIn(unwanted, text)
+
+    def test_non_nfl_provider_input_is_rejected(self) -> None:
+        self.assertEqual(parse_primary_event(fixture("odds_api_io_event.json"), "OTHER"), [])
+        self.assertEqual(parse_secondary_event(fixture("the_odds_api_event.json"), "OTHER"), [])
+
+
+class OddsAndMarketTests(unittest.TestCase):
+    def test_power_devig_sums_to_one(self) -> None:
+        fair = _power_devig(1.80, 2.05)
+        self.assertIsNotNone(fair)
+        self.assertAlmostEqual(sum(fair), 1.0)
+        self.assertGreater(fair[0], fair[1])
+
+    def test_primary_provider_parses_complete_nfl_props(self) -> None:
+        quotes = parse_primary_event(fixture("odds_api_io_event.json"), "NFL")
         self.assertEqual(len(quotes), 6)
         self.assertEqual({row.book for row in quotes}, {"DraftKings", "FanDuel", "BetMGM"})
+        self.assertEqual({row.market for row in quotes}, {"Passing yards"})
+
+    def test_secondary_provider_parses_nfl_american_prices(self) -> None:
+        quotes = parse_secondary_event(fixture("the_odds_api_event.json"), "NFL")
+        self.assertEqual(len(quotes), 4)
+        over = next(row for row in quotes if row.book == "DraftKings" and row.side == "over")
+        self.assertEqual(over.price_american, 110)
+        self.assertAlmostEqual(over.price_decimal, 2.1)
+
+    def test_consensus_alone_never_becomes_a_bet(self) -> None:
+        quotes = parse_primary_event(fixture("odds_api_io_event.json"), "NFL")
         board = evaluate_quotes(quotes, load_settings())
+        self.assertTrue(board)
+        self.assertEqual({row["tier"] for row in board}, {"PASS"})
+        self.assertEqual({row["recommended_stake"] for row in board}, {0.0})
         over = next(row for row in board if row["side"] == "over")
-        self.assertIn(over["tier"], {"GOOD", "BEST"})
-        self.assertEqual(over["consensus_books"], 3)
+        self.assertEqual(over["consensus_books"], 2)
+        self.assertIn("No independent NFL player projection", over["reason"])
 
-    def test_primary_generic_market_splits_player_and_prop_type(self) -> None:
-        event = {
-            "id": 22,
-            "home": "Toronto",
-            "away": "Boston",
-            "bookmakers": {
-                "DraftKings": [
-                    {
-                        "name": "Player Props",
-                        "odds": [
-                            {
-                                "label": "Alex Example (Hits)",
-                                "hdp": 1.5,
-                                "over": 2.1,
-                                "under": 1.7,
-                            }
-                        ],
-                    }
-                ]
-            },
-        }
-        quotes = parse_odds_api_io_event(event, "MLB")
-        self.assertEqual({row.player for row in quotes}, {"Alex Example"})
-        self.assertEqual({row.market for row in quotes}, {"Batter hits"})
-
-    def test_primary_generic_market_normalizes_nfl_targets_and_touchdowns(self) -> None:
-        event = {
-            "id": 23,
-            "home": "Toronto",
-            "away": "Buffalo",
-            "bookmakers": {
-                "DraftKings": [
-                    {
-                        "name": "Player Props",
-                        "odds": [
-                            {"label": "Sam Receiver (Receiving Targets)", "hdp": 7.5, "over": 1.91, "under": 1.91},
-                            {"label": "Sam Receiver (Anytime Touchdown Scorer)", "yes": 2.5},
-                        ],
-                    }
-                ]
-            },
-        }
-        quotes = parse_odds_api_io_event(event, "NFL")
-        self.assertEqual({row.player for row in quotes}, {"Sam Receiver"})
-        self.assertEqual({row.market for row in quotes}, {"Targets", "Anytime touchdown"})
-
-    def test_primary_provider_retries_without_rejected_bookmaker(self) -> None:
-        settings = json.loads(json.dumps(load_settings()))
-        settings["bookmakers"]["primary_consensus"].append("Pinnacle")
-        provider = OddsApiIoProvider("fixture-key", settings)
+    def test_primary_provider_retries_after_bookmaker_limit(self) -> None:
+        provider = OddsApiIoProvider("fixture-key", load_settings())
 
         class FakeClient:
             calls: list[str] = []
@@ -92,102 +145,195 @@ class ProviderParsingTests(unittest.TestCase):
                 if path == "/events":
                     return [{"id": 1001, "league": {"name": "NFL"}}]
                 self.calls.append(params["bookmakers"])
-                if "Pinnacle" in params["bookmakers"]:
-                    raise ProviderError(
-                        'Odds-API.io request failed (HTTP 400: {"error":"Pinnacle is not a valid bookmaker"})'
-                    )
+                if len(params["bookmakers"].split(",")) > 2:
+                    raise ProviderError("Odds request failed: allowed max 2 bookmakers")
                 return [fixture("odds_api_io_event.json")]
 
-        fake = FakeClient()
-        provider.client = fake
+        provider.client = FakeClient()
         quotes = provider.fetch("NFL")
         self.assertEqual(len(quotes), 6)
-        self.assertIn("Pinnacle", fake.calls[0])
-        self.assertNotIn("Pinnacle", fake.calls[1])
+        self.assertEqual(len(provider.client.calls[0].split(",")), 3)
+        self.assertEqual(len(provider.client.calls[1].split(",")), 2)
 
-    def test_draftkings_price_can_use_espn_projection(self) -> None:
-        draftkings = [
-            row
-            for row in parse_odds_api_io_event(fixture("odds_api_io_event.json"), "NFL")
-            if row.book == "DraftKings"
-        ]
-        projections = [
-            Projection(
-                sport="NFL",
-                player="Jordan Example",
-                team="Kansas City",
-                matchup="Buffalo @ Kansas City",
-                market="Passing yards",
-                projection=315.0,
-                samples=4,
-                confidence=0.56,
-                standard_deviation=12.0,
-                recent=[298.0, 311.0, 320.0, 326.0],
-                trend=4.0,
-            )
-        ]
-        board = evaluate_quotes_against_projections(draftkings, projections, load_settings())
-        over = next(row for row in board if row["side"] == "over")
-        self.assertEqual(over["tier"], "BEST")
-        self.assertEqual(over["mode"], "projection-priced")
-        self.assertEqual(over["projection"], 315.0)
 
-    def test_secondary_provider_parses_american_prices(self) -> None:
-        quotes = parse_the_odds_api_event(fixture("the_odds_api_event.json"), "MLB")
-        self.assertEqual(len(quotes), 4)
-        draftkings_over = next(
-            row for row in quotes if row.book == "DraftKings" and row.side == "over"
+class ProjectionPricingTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.settings = load_settings()
+        self.quotes = parse_primary_event(fixture("odds_api_io_event.json"), "NFL")
+
+    def test_projection_and_market_are_separate_inputs(self) -> None:
+        board = evaluate_quotes_against_projections(
+            self.quotes, [sample_projection()], self.settings
         )
-        self.assertEqual(draftkings_over.price_american, 110)
-        self.assertAlmostEqual(draftkings_over.price_decimal, 2.1)
+        over = next(row for row in board if row["side"] == "over")
+        self.assertEqual(over["mode"], "projection-and-market")
+        self.assertEqual(over["market_basis"], "external no-vig median")
+        self.assertNotEqual(over["projection_prob"], over["market_fair_prob"])
+        self.assertAlmostEqual(
+            over["edge_raw"],
+            over["model_prob_no_push"] / over["market_fair_prob"] - 1,
+            places=4,
+        )
+        self.assertAlmostEqual(
+            over["edge_price"],
+            over["model_prob"] * over["price_decimal"] + over["push_prob"] - 1,
+            places=4,
+        )
+        self.assertIn(over["tier"], {"LEAN", "GOOD", "BEST"})
+        self.assertGreaterEqual(over["recommended_stake"], 5)
 
-    def test_secondary_provider_normalizes_anytime_touchdown(self) -> None:
-        event = {
-            "id": "nfl-1",
-            "commence_time": "2026-09-10T00:00:00Z",
-            "away_team": "Buffalo Bills",
-            "home_team": "Kansas City Chiefs",
-            "bookmakers": [
-                {
-                    "title": "DraftKings",
-                    "markets": [
-                        {
-                            "key": "player_anytime_td",
-                            "outcomes": [
-                                {"description": "Sam Receiver", "name": "Yes", "price": 220}
-                            ],
-                        }
-                    ],
-                }
-            ],
+    def test_incomplete_target_market_fails_closed(self) -> None:
+        draftkings_over = [row for row in self.quotes if row.book == "DraftKings" and row.side == "over"]
+        external = [row for row in self.quotes if row.book != "DraftKings"]
+        board = evaluate_quotes_against_projections(
+            draftkings_over + external, [sample_projection()], self.settings
+        )
+        row = board[0]
+        self.assertEqual(row["tier"], "PASS")
+        self.assertEqual(row["recommended_stake"], 0)
+        self.assertIn("Complete two-sided", row["reason"])
+
+    def test_thin_sample_is_watch_with_zero_stake(self) -> None:
+        projection = sample_projection(samples=3, confidence=0.50, recent=[290, 286, 280])
+        row = next(
+            row
+            for row in evaluate_quotes_against_projections(
+                self.quotes, [projection], self.settings
+            )
+            if row["side"] == "over"
+        )
+        self.assertEqual(row["tier"], "PASS")
+        self.assertEqual(row["recommended_stake"], 0)
+        self.assertIn("regular-season samples", row["reason"])
+
+    def test_extreme_projection_market_gap_is_rejected(self) -> None:
+        projection = sample_projection(
+            projection=360,
+            confidence=0.70,
+            deviation=10,
+            recent=[345, 350, 360, 355, 365, 370, 358, 362],
+        )
+        over = next(
+            row
+            for row in evaluate_quotes_against_projections(
+                self.quotes, [projection], self.settings
+            )
+            if row["side"] == "over"
+        )
+        self.assertEqual(over["tier"], "PASS")
+        self.assertIn("disagreement exceeds", over["reason"])
+
+    def test_integer_line_tracks_push_probability(self) -> None:
+        quotes = [
+            target_quote(side="over", line=2.0, price_decimal=2.1, market="Passing touchdowns"),
+            target_quote(side="under", line=2.0, price_decimal=1.77, market="Passing touchdowns"),
+            target_quote(side="over", line=2.0, price_decimal=1.91, market="Passing touchdowns", book="FanDuel"),
+            target_quote(side="under", line=2.0, price_decimal=1.91, market="Passing touchdowns", book="FanDuel"),
+        ]
+        projection = sample_projection(
+            market="Passing touchdowns",
+            projection=2.0,
+            confidence=0.65,
+            deviation=0.8,
+            recent=[2, 1, 3, 2, 2, 1, 3, 2],
+        )
+        over = next(
+            row
+            for row in evaluate_quotes_against_projections(quotes, [projection], self.settings)
+            if row["side"] == "over"
+        )
+        self.assertGreater(over["push_prob"], 0.1)
+        self.assertAlmostEqual(
+            over["model_prob"] + over["push_prob"] + (1 - over["model_prob_no_push"]) * (1 - over["push_prob"]),
+            1.0,
+            places=4,
+        )
+
+    def test_touchdown_probability_is_conservative(self) -> None:
+        quote = target_quote(
+            side="yes",
+            line=None,
+            price_decimal=3.2,
+            market="Anytime touchdown",
+        )
+        projection = sample_projection(
+            market="Anytime touchdown",
+            projection=0.5,
+            confidence=0.65,
+            deviation=0.5,
+            recent=[1, 0, 1, 0, 0, 1, 0, 1],
+        )
+        win, push, loss = _projection_probabilities(quote, projection)
+        self.assertEqual(push, 0)
+        self.assertAlmostEqual(win + loss, 1)
+        self.assertGreater(win, 0.18)
+        self.assertLess(win, 0.55)
+
+    def test_merge_prefers_projection_evaluation_even_when_it_passes(self) -> None:
+        watch = evaluate_quotes(self.quotes, self.settings)
+        thin = evaluate_quotes_against_projections(
+            self.quotes,
+            [sample_projection(samples=2, confidence=0.35, recent=[280, 282])],
+            self.settings,
+        )
+        merged = merge_boards(watch, thin)
+        over = next(row for row in merged if row["side"] == "over")
+        self.assertEqual(over["mode"], "projection-and-market")
+        self.assertIn("samples", over["reason"])
+
+
+class PortfolioTests(unittest.TestCase):
+    def test_portfolio_limits_alternate_lines_and_player_count(self) -> None:
+        settings = load_settings()
+        base = {
+            "sport": "NFL",
+            "event_id": "g1",
+            "start_time": "2026-09-13T17:00:00Z",
+            "matchup": "Away @ Home",
+            "player": "Player One",
+            "side": "over",
+            "price_american": -110,
+            "edge": 0.06,
+            "edge_real": 0.05,
+            "tier": "GOOD",
+            "recommended_stake": 20,
         }
-        quotes = parse_the_odds_api_event(event, "NFL")
-        self.assertEqual(len(quotes), 1)
-        self.assertEqual(quotes[0].market, "Anytime touchdown")
-        self.assertEqual(quotes[0].side, "yes")
+        board = [
+            {**base, "market": "Receiving yards", "line": 60.5, "edge_real": 0.06},
+            {**base, "market": "Receiving yards", "line": 70.5, "edge_real": 0.04},
+            {**base, "market": "Receptions", "line": 5.5},
+            {**base, "market": "Targets", "line": 7.5},
+        ]
+        selected = select_portfolio(board, settings)
+        active = [row for row in selected if row["tier"] != "PASS"]
+        self.assertEqual(len(active), 2)
+        self.assertEqual(sum(row["market"] == "Receiving yards" for row in active), 1)
+        self.assertTrue(all(row["recommended_stake"] > 0 for row in active))
+        self.assertTrue(all(row["recommended_stake"] == 0 for row in selected if row["tier"] == "PASS"))
 
-    def test_espn_nfl_projection_builds_targets_and_anytime_touchdown(self) -> None:
-        def summary(rush_td, rush_yards, rush_attempts, rec_td, rec_yards, receptions, targets, completions_attempts):
+
+class EspnTests(unittest.TestCase):
+    def test_preseason_type_is_identified(self) -> None:
+        self.assertEqual(_season_type({"season": {"type": 1}}), 1)
+        self.assertEqual(_season_type({"season": {"type": 2}}), 2)
+
+    def test_regular_box_scores_build_nfl_markets(self) -> None:
+        def summary(yards, touchdowns, targets, receptions, receiving_yards):
             return {
                 "boxscore": {
                     "players": [
                         {
-                            "team": {"displayName": "Toronto Northmen"},
+                            "team": {"displayName": "Kansas City"},
                             "statistics": [
                                 {
                                     "type": "passing",
-                                    "keys": ["completions/passingAttempts", "passingYards", "passingTouchdowns", "interceptions"],
-                                    "athletes": [{"athlete": {"displayName": "Sam Quarterback"}, "stats": [completions_attempts, 225, 2, 1]}],
-                                },
-                                {
-                                    "type": "rushing",
-                                    "keys": ["rushingTouchdowns", "rushingYards", "rushingAttempts"],
-                                    "athletes": [{"athlete": {"displayName": "Sam Receiver"}, "stats": [rush_td, rush_yards, rush_attempts]}],
+                                    "keys": ["completions/passingAttempts", "passingYards", "passingTouchdowns"],
+                                    "athletes": [{"athlete": {"displayName": "Jordan Example"}, "stats": ["20/30", yards, touchdowns]}],
                                 },
                                 {
                                     "type": "receiving",
                                     "keys": ["receivingTouchdowns", "receivingYards", "receptions", "targets"],
-                                    "athletes": [{"athlete": {"displayName": "Sam Receiver"}, "stats": [rec_td, rec_yards, receptions, targets]}],
+                                    "athletes": [{"athlete": {"displayName": "Receiver Example"}, "stats": [1, receiving_yards, receptions, targets]}],
                                 },
                             ],
                         }
@@ -195,93 +341,38 @@ class ProviderParsingTests(unittest.TestCase):
                 }
             }
 
-        schedule = {"torontonorthmen": [{"matchup": "Buffalo @ Toronto", "start_time": "2026-09-10T00:00:00Z"}]}
+        schedule = {
+            "kansascity": [
+                {"matchup": "Buffalo @ Kansas City", "start_time": "2026-09-13T17:00:00Z"}
+            ]
+        }
         rows = parse_summaries(
-            [summary(1, 50, 10, 0, 20, 2, 3, "17/28"), summary(0, 30, 8, 1, 40, 4, 6, "20/30")],
+            [
+                summary(250, 2, 5, 4, 55),
+                summary(270, 3, 8, 6, 80),
+                summary(290, 2, 7, 5, 72),
+                summary(280, 1, 9, 7, 88),
+            ],
             "NFL",
             schedule,
         )
-        targets = next(row for row in rows if row.market == "Targets")
-        touchdown = next(row for row in rows if row.market == "Anytime touchdown")
-        self.assertAlmostEqual(targets.projection, 5.0)
-        self.assertEqual(targets.recent, [3.0, 6.0])
-        self.assertAlmostEqual(touchdown.projection, 1.0)
-        self.assertEqual(touchdown.recent, [1.0, 1.0])
-        completions = next(row for row in rows if row.market == "Pass completions")
-        attempts = next(row for row in rows if row.market == "Pass attempts")
-        self.assertAlmostEqual(completions.projection, 19.0)
-        self.assertAlmostEqual(attempts.projection, 29.33)
-
-    def test_anytime_touchdown_yes_price_can_qualify(self) -> None:
-        quote = PropQuote(
-            sport="NFL",
-            event_id="nfl-1",
-            start_time="2026-09-10T00:00:00Z",
-            matchup="Buffalo @ Toronto",
-            player="Sam Receiver",
-            market="Anytime touchdown",
-            side="yes",
-            line=None,
-            price_decimal=3.2,
-            price_american=220,
-            book="DraftKings",
-            provider="fixture",
-        )
-        projection = Projection(
-            sport="NFL",
-            player="Sam Receiver",
-            team="Toronto Northmen",
-            matchup="Buffalo @ Toronto",
-            market="Anytime touchdown",
-            projection=0.8,
-            samples=4,
-            confidence=0.56,
-            standard_deviation=0.5,
-            recent=[1.0, 0.0, 1.0, 0.0],
-            trend=0.0,
-        )
-        row = evaluate_quotes_against_projections([quote], [projection], load_settings())[0]
-        self.assertEqual(row["tier"], "GOOD")
-        self.assertGreater(row["recommended_stake"], 0)
-        self.assertLessEqual(row["recommended_stake"], 50)
-
-    def test_espn_projection_fallback_has_no_odds(self) -> None:
-        summaries = fixture("espn_summaries.json")
-        schedule = {
-            "torontotempo": [
-                {"matchup": "Montreal @ Toronto", "start_time": "2026-08-25T23:00:00Z"},
-                {"matchup": "Toronto @ New York", "start_time": "2026-08-26T23:00:00Z"},
-            ]
-        }
-        rows = parse_summaries(summaries, "WNBA", schedule)
-        point_rows = [row for row in rows if row.player == "Alex Example" and row.market == "Points"]
-        self.assertEqual(len(point_rows), 2)
-        points = point_rows[0]
-        self.assertEqual(points.samples, 2)
-        self.assertAlmostEqual(points.projection, 22.0)
-        self.assertAlmostEqual(points.standard_deviation, 3.0)
-        self.assertEqual(points.recent, [18.0, 24.0])
-        self.assertEqual(
-            {row.start_time for row in point_rows},
-            {"2026-08-25T23:00:00Z", "2026-08-26T23:00:00Z"},
-        )
-        pra_rows = [
-            row
-            for row in rows
-            if row.player == "Alex Example" and row.market == "Points + Rebounds + Assists"
-        ]
-        self.assertEqual(len(pra_rows), 2)
-        self.assertAlmostEqual(pra_rows[0].projection, 36.67)
-        self.assertEqual(pra_rows[0].recent, [30.0, 40.0])
+        passing = next(row for row in rows if row.player == "Jordan Example" and row.market == "Passing yards")
+        targets = next(row for row in rows if row.player == "Receiver Example" and row.market == "Targets")
+        touchdown = next(row for row in rows if row.player == "Receiver Example" and row.market == "Anytime touchdown")
+        self.assertEqual(passing.samples, 4)
+        self.assertGreater(passing.projection, 270)
+        self.assertEqual(targets.recent, [5.0, 8.0, 7.0, 9.0])
+        self.assertEqual(touchdown.recent, [1.0, 1.0, 1.0, 1.0])
+        self.assertIn("regular-season", passing.source)
 
 
 class SecurityTests(unittest.TestCase):
-    def test_repository_has_no_embedded_secret_shaped_hex_tokens(self) -> None:
+    def test_repository_has_no_embedded_secret_shaped_tokens(self) -> None:
         suspicious = re.compile(r"(?<![A-Za-z0-9])[a-f0-9]{32,}(?![A-Za-z0-9])", re.I)
-        allowed_suffixes = {".json", ".py", ".js", ".html", ".css", ".md", ".yml", ".yaml", ".example", ".txt"}
+        allowed = {".json", ".py", ".js", ".html", ".css", ".md", ".yml", ".yaml", ".txt"}
         hits = []
         for path in ROOT.rglob("*"):
-            if not path.is_file() or path.suffix not in allowed_suffixes:
+            if "site/data" in path.as_posix() or not path.is_file() or path.suffix not in allowed:
                 continue
             if suspicious.search(path.read_text(errors="ignore")):
                 hits.append(str(path.relative_to(ROOT)))

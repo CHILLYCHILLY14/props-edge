@@ -9,6 +9,53 @@ from ..schema import PropQuote, as_float, decimal_to_american
 
 
 PRIMARY_URL = "https://api.odds-api.io/v3"
+NFL_MARKETS = {
+    "passing-yards": "Passing yards",
+    "pass-yards": "Passing yards",
+    "passing-touchdowns": "Passing touchdowns",
+    "passing-tds": "Passing touchdowns",
+    "pass-tds": "Passing touchdowns",
+    "passing-attempts": "Pass attempts",
+    "pass-attempts": "Pass attempts",
+    "passing-completions": "Pass completions",
+    "pass-completions": "Pass completions",
+    "completions": "Pass completions",
+    "interceptions-thrown": "Pass interceptions",
+    "passing-interceptions": "Pass interceptions",
+    "pass-interceptions": "Pass interceptions",
+    "rushing-yards": "Rushing yards",
+    "rush-yards": "Rushing yards",
+    "rushing-attempts": "Rush attempts",
+    "rush-attempts": "Rush attempts",
+    "carries": "Rush attempts",
+    "rushing-touchdowns": "Rushing touchdowns",
+    "rushing-tds": "Rushing touchdowns",
+    "rush-tds": "Rushing touchdowns",
+    "receiving-yards": "Receiving yards",
+    "reception-yards": "Receiving yards",
+    "rec-yards": "Receiving yards",
+    "receptions": "Receptions",
+    "receptions-made": "Receptions",
+    "receiving-targets": "Targets",
+    "targets": "Targets",
+    "receiving-touchdowns": "Receiving touchdowns",
+    "receiving-tds": "Receiving touchdowns",
+    "reception-tds": "Receiving touchdowns",
+    "anytime-touchdown": "Anytime touchdown",
+    "anytime-touchdown-scorer": "Anytime touchdown",
+    "anytime-td-scorer": "Anytime touchdown",
+    "to-score-a-touchdown": "Anytime touchdown",
+    "longest-pass": "Longest pass",
+    "longest-pass-completion": "Longest pass",
+    "longest-rush": "Longest rush",
+    "longest-reception": "Longest reception",
+    "field-goals-made": "Field goals made",
+    "extra-points-made": "Extra points made",
+    "kicking-points": "Kicking points",
+    "tackles-assists": "Tackles + assists",
+    "tackles-and-assists": "Tackles + assists",
+    "sacks": "Sacks",
+}
 
 
 def _norm(value: str) -> str:
@@ -24,7 +71,10 @@ def _is_league(event: dict[str, Any], aliases: Iterable[str]) -> bool:
 def _is_prop_market(name: str, rows: list[dict[str, Any]]) -> bool:
     lowered = name.casefold()
     if any(row.get("label") for row in rows):
-        return not any(token in lowered for token in ("team total", "correct score", "moneyline", "spread"))
+        return not any(
+            token in lowered
+            for token in ("team total", "correct score", "moneyline", "spread")
+        )
     return any(
         token in lowered
         for token in (
@@ -37,132 +87,32 @@ def _is_prop_market(name: str, rows: list[dict[str, Any]]) -> bool:
             "kicking",
             "field goal",
             "defense",
-            "batter",
-            "pitcher",
         )
     )
 
 
-def _canonical_detail_market(sport: str, detail: str) -> str:
-    key = _norm(detail)
-    maps = {
-        "NFL": {
-            "passing-yards": "Passing yards",
-            "pass-yards": "Passing yards",
-            "passing-touchdowns": "Passing touchdowns",
-            "passing-tds": "Passing touchdowns",
-            "pass-tds": "Passing touchdowns",
-            "passing-attempts": "Pass attempts",
-            "pass-attempts": "Pass attempts",
-            "passing-completions": "Pass completions",
-            "pass-completions": "Pass completions",
-            "completions": "Pass completions",
-            "interceptions-thrown": "Pass interceptions",
-            "passing-interceptions": "Pass interceptions",
-            "pass-interceptions": "Pass interceptions",
-            "rushing-yards": "Rushing yards",
-            "rush-yards": "Rushing yards",
-            "rushing-attempts": "Rush attempts",
-            "rush-attempts": "Rush attempts",
-            "carries": "Rush attempts",
-            "rushing-touchdowns": "Rushing touchdowns",
-            "rushing-tds": "Rushing touchdowns",
-            "rush-tds": "Rushing touchdowns",
-            "receiving-yards": "Receiving yards",
-            "reception-yards": "Receiving yards",
-            "rec-yards": "Receiving yards",
-            "receptions": "Receptions",
-            "receptions-made": "Receptions",
-            "receiving-targets": "Targets",
-            "targets": "Targets",
-            "receiving-touchdowns": "Receiving touchdowns",
-            "receiving-tds": "Receiving touchdowns",
-            "reception-tds": "Receiving touchdowns",
-            "anytime-touchdown": "Anytime touchdown",
-            "anytime-touchdown-scorer": "Anytime touchdown",
-            "anytime-td-scorer": "Anytime touchdown",
-            "to-score-a-touchdown": "Anytime touchdown",
-            "longest-pass": "Longest pass",
-            "longest-pass-completion": "Longest pass",
-            "longest-rush": "Longest rush",
-            "longest-reception": "Longest reception",
-            "field-goals-made": "Field goals made",
-            "extra-points-made": "Extra points made",
-            "kicking-points": "Kicking points",
-            "tackles-assists": "Tackles + assists",
-            "tackles-and-assists": "Tackles + assists",
-            "sacks": "Sacks",
-        },
-        "NCAAF": {
-            "passing-yards": "Passing yards",
-            "pass-yards": "Passing yards",
-            "passing-touchdowns": "Passing touchdowns",
-            "passing-tds": "Passing touchdowns",
-            "passing-attempts": "Pass attempts",
-            "passing-completions": "Pass completions",
-            "interceptions-thrown": "Pass interceptions",
-            "rushing-yards": "Rushing yards",
-            "rushing-attempts": "Rush attempts",
-            "carries": "Rush attempts",
-            "rushing-touchdowns": "Rushing touchdowns",
-            "receiving-yards": "Receiving yards",
-            "receptions": "Receptions",
-            "targets": "Targets",
-            "receiving-touchdowns": "Receiving touchdowns",
-            "anytime-touchdown": "Anytime touchdown",
-            "anytime-touchdown-scorer": "Anytime touchdown",
-        },
-        "MLB": {
-            "total-bases": "Batter total bases",
-            "hits-runs-rbis": "Batter hits + runs + RBIs",
-            "hits": "Batter hits",
-            "runs-batted-in": "Batter RBIs",
-            "runs-scored": "Batter runs",
-            "home-runs": "Batter home runs",
-            "batter-walks": "Batter walks",
-            "stolen-bases": "Batter stolen bases",
-            "doubles": "Batter doubles",
-            "triples": "Batter triples",
-            "singles": "Batter singles",
-            "pitcher-strikeouts": "Pitcher strikeouts",
-            "pitcher-outs": "Pitcher outs",
-            "earned-runs": "Pitcher earned runs",
-            "pitcher-hits-allowed": "Pitcher hits allowed",
-        },
-        "WNBA": {
-            "points": "Points",
-            "rebounds": "Rebounds",
-            "assists": "Assists",
-            "pts-rebs": "Points + Rebounds",
-            "pts-asts": "Points + Assists",
-            "pts-rebs-asts": "Points + Rebounds + Assists",
-            "rebs-asts": "Rebounds + Assists",
-            "3-point-fg": "Threes",
-        },
-    }
-    sport_map = maps.get(sport, {})
-    if key in sport_map:
-        return sport_map[key]
-    if sport in ("NFL", "NCAAF"):
-        simplified = re.sub(r"^(?:player-)?(?:total-)?", "", key)
-        if simplified in sport_map:
-            return sport_map[simplified]
-        for alias in sorted(sport_map, key=len, reverse=True):
-            if simplified.endswith(alias):
-                return sport_map[alias]
+def _canonical_market(detail: str) -> str:
+    key = re.sub(r"^(?:player-)?(?:total-)?", "", _norm(detail))
+    if key in NFL_MARKETS:
+        return NFL_MARKETS[key]
+    for alias in sorted(NFL_MARKETS, key=len, reverse=True):
+        if key.endswith(alias):
+            return NFL_MARKETS[alias]
     return detail.strip()
 
 
-def _player_and_market(player_label: str, market_name: str, sport: str) -> tuple[str, str]:
+def _player_and_market(player_label: str, market_name: str) -> tuple[str, str]:
     if _norm(market_name) not in ("player-prop", "player-props"):
-        return player_label.strip(), _canonical_detail_market(sport, market_name)
+        return player_label.strip(), _canonical_market(market_name)
     match = re.match(r"^(.*?)\s*\(([^()]*)\)\s*$", player_label.strip())
     if not match:
         return player_label.strip(), market_name
-    return match.group(1).strip(), _canonical_detail_market(sport, match.group(2))
+    return match.group(1).strip(), _canonical_market(match.group(2))
 
 
 def parse_event(event: dict[str, Any], sport: str) -> list[PropQuote]:
+    if sport != "NFL":
+        return []
     quotes: list[PropQuote] = []
     matchup = f"{event.get('away', 'Away')} @ {event.get('home', 'Home')}"
     for book, markets in (event.get("bookmakers") or {}).items():
@@ -173,7 +123,7 @@ def parse_event(event: dict[str, Any], sport: str) -> list[PropQuote]:
                 continue
             for row in rows:
                 player, parsed_market = _player_and_market(
-                    str(row.get("label") or ""), market_name, sport
+                    str(row.get("label") or ""), market_name
                 )
                 if not player:
                     continue
@@ -183,7 +133,7 @@ def parse_event(event: dict[str, Any], sport: str) -> list[PropQuote]:
                         continue
                     quotes.append(
                         PropQuote(
-                            sport=sport,
+                            sport="NFL",
                             event_id=str(event.get("id") or ""),
                             start_time=str(event.get("date") or ""),
                             matchup=matchup,
@@ -210,7 +160,9 @@ class OddsApiIoProvider:
         self.client = JsonClient(self.name, PRIMARY_URL)
 
     def fetch(self, sport: str) -> list[PropQuote]:
-        cfg = self.settings["sports"][sport]
+        if sport != "NFL":
+            return []
+        cfg = self.settings["sports"]["NFL"]
         now = dt.datetime.now(dt.timezone.utc)
         lookahead = int(self.settings["fetch"]["lookahead_days"])
         events = self.client.get(
@@ -255,4 +207,4 @@ class OddsApiIoProvider:
                         raise
                     active_books = remaining
             detailed.extend(response if isinstance(response, list) else [response])
-        return [quote for event in detailed for quote in parse_event(event, sport)]
+        return [quote for event in detailed for quote in parse_event(event, "NFL")]

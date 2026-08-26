@@ -3,67 +3,59 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#08101f" />
-    <title>Props Edge</title>
+    <meta name="theme-color" content="#071019" />
+    <meta name="description" content="NFL-only player prop projections, live prices, no-vig market comparisons, and a manual wager ledger." />
+    <title>NFL Props Edge</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <header class="hero">
-      <div class="shell hero-grid">
-        <div>
-          <p class="eyebrow">NFL · NCAAF · MLB · WNBA</p>
-          <h1>Props <span>Edge</span></h1>
-          <p class="lede">DraftKings prop prices, model-ranked Best/Good/Lean plays, and ESPN-powered player projections across every supported market.</p>
-        </div>
-        <div class="hero-actions">
-          <a id="workflowButton" class="button primary" href="#" target="_blank" rel="noopener">Run GitHub update</a>
-          <button id="importButton" class="button secondary">Import sportsbook lines</button>
-          <input id="lineFile" type="file" accept=".csv,text/csv" hidden />
-        </div>
+    <header class="topbar">
+      <div class="shell topbar-inner">
+        <a class="brand" href="#" aria-label="NFL Props Edge home">
+          <span class="brand-mark">PE</span>
+          <span><strong>NFL PROPS</strong><small>EDGE LAB</small></span>
+        </a>
+        <nav class="nav-tabs" aria-label="Primary navigation">
+          <button class="active" data-view="best">Best Bets</button>
+          <button data-view="board">Full Board</button>
+          <button data-view="projections">Projections</button>
+          <button data-view="ledger">My Ledger</button>
+          <button data-view="model">Model &amp; Sources</button>
+        </nav>
+        <a id="workflowButton" class="refresh-link" href="#" target="_blank" rel="noopener">Run update</a>
       </div>
     </header>
 
     <main class="shell">
-      <section id="statusBanner" class="status-banner loading">Loading the latest board…</section>
-
-      <section class="metrics" aria-label="Board totals">
-        <article><strong id="metricBest">—</strong><span>Best Bets</span></article>
-        <article><strong id="metricGood">—</strong><span>Good Plays</span></article>
-        <article><strong id="metricLean">—</strong><span>Leans</span></article>
-        <article><strong id="metricProjection">—</strong><span>ESPN Projections</span></article>
+      <section class="masthead">
+        <div>
+          <p class="eyebrow">NFL PLAYER PROP COMMAND DESK</p>
+          <h1>Find the number.<br /><span>Respect the uncertainty.</span></h1>
+          <p class="lede">Live DraftKings prices are compared with complete no-vig markets and conservative NFL regular-season form. Thin data stays a watch—not a forced bet.</p>
+        </div>
+        <div class="masthead-badge">
+          <span class="pulse"></span>
+          <div><strong id="feedState">LOADING</strong><small id="lastUpdated">Waiting for data</small></div>
+        </div>
       </section>
 
-      <section class="panel controls">
-        <div id="sportTabs" class="tabs" role="tablist" aria-label="Sport filter">
-          <button class="active" data-sport="ALL">All</button>
-          <button data-sport="NFL">NFL</button>
-          <button data-sport="NCAAF">NCAAF</button>
-          <button data-sport="MLB">MLB</button>
-          <button data-sport="WNBA">WNBA</button>
-        </div>
-        <label class="date-filter"><span>Game date</span><select id="dateSelect"><option value="ALL">All upcoming dates</option></select></label>
-        <label class="search"><span>Search</span><input id="searchInput" type="search" placeholder="Player or market" /></label>
+      <section id="statusBanner" class="status-banner loading">Loading the latest NFL prop board…</section>
+
+      <section class="kpi-strip" aria-label="NFL props summary">
+        <article><span>Qualified</span><strong id="metricQualified">—</strong><small>Best + Good + Lean</small></article>
+        <article><span>Live price rows</span><strong id="metricPriced">—</strong><small>Current provider pull</small></article>
+        <article><span>Projections</span><strong id="metricProjection">—</strong><small>Regular season only</small></article>
+        <article><span>My bankroll</span><strong id="metricBankroll">C$500.00</strong><small>Browser-local ledger</small></article>
+        <article><span>Open exposure</span><strong id="metricExposure">C$0.00</strong><small id="metricExposurePct">0.0% of bankroll</small></article>
+        <article><span>My P/L</span><strong id="metricPnl">C$0.00</strong><small id="metricRoi">0.0% ROI</small></article>
       </section>
 
-      <section id="nflDashboard" class="nfl-command" hidden>
-        <div class="nfl-command-head">
-          <div>
-            <p class="eyebrow">NFL Prop Command Center</p>
-            <h2>Sunday starts here.</h2>
-            <p>Touchdowns, targets, passing, rushing, receiving, kicking and defensive props—ranked by edge with controlled quarter-Kelly staking.</p>
-          </div>
-          <span class="nfl-live-pill">NFL PRO</span>
-        </div>
-        <div class="nfl-scoreboard" aria-label="NFL bankroll dashboard">
-          <article><span>Starting bankroll</span><strong id="nflBankroll">$500.00</strong></article>
-          <article><span>Open exposure</span><strong id="nflExposure">$0.00</strong></article>
-          <article><span>Available bankroll</span><strong id="nflAvailable">$500.00</strong></article>
-          <article><span>Settled P/L</span><strong id="nflProfit">+$0.00</strong></article>
-          <article><span>ROI</span><strong id="nflRoi">0.0%</strong></article>
-        </div>
-        <div id="nflMarketTabs" class="nfl-market-tabs" role="tablist" aria-label="NFL prop market filter">
-          <button class="active" data-market="ALL">All NFL props</button>
-          <button data-market="TOUCHDOWNS">Touchdowns</button>
+      <section class="filterbar panel">
+        <label><span>Game date</span><select id="dateSelect"><option value="ALL">All upcoming dates</option></select></label>
+        <label class="search-field"><span>Find player or market</span><input id="searchInput" type="search" placeholder="e.g. passing yards" /></label>
+        <div class="market-filter" id="marketTabs" role="tablist" aria-label="NFL prop market">
+          <button class="active" data-market="ALL">All</button>
+          <button data-market="TOUCHDOWNS">TDs</button>
           <button data-market="PASSING">Passing</button>
           <button data-market="RUSHING">Rushing</button>
           <button data-market="RECEIVING">Receiving</button>
@@ -73,68 +65,97 @@
         </div>
       </section>
 
-      <section class="section-head tier-head best-head">
-        <div><p class="eyebrow">6%+ model edge</p><h2 id="bestTitle">Best Bets</h2></div>
-        <p id="bestDescription">Highest-rated qualified plays for the selected sport and date.</p>
-      </section>
-      <section id="bestBoard" class="card-grid tier-board"></section>
+      <section id="view-best" class="view active">
+        <div class="section-title">
+          <div><p class="eyebrow gold">TOP OF THE BOARD</p><h2>Best Bets</h2></div>
+          <p>Requires the strongest edge, price value, sample size, confidence, external no-vig confirmation, and an acceptable price.</p>
+        </div>
+        <div id="bestBoard" class="card-grid"></div>
 
-      <section class="section-head tier-head good-head">
-        <div><p class="eyebrow">4%+ model edge</p><h2 id="goodTitle">Good Plays</h2></div>
-        <p>Strong qualified plays that sit below the Best threshold.</p>
-      </section>
-      <section id="goodBoard" class="card-grid tier-board"></section>
+        <div class="section-title compact">
+          <div><p class="eyebrow green">MODEL QUALIFIED</p><h2>Good Plays</h2></div>
+          <p>Strong value with more uncertainty than a Best Bet.</p>
+        </div>
+        <div id="goodBoard" class="card-grid"></div>
 
-      <section class="section-head tier-head lean-head">
-        <div><p class="eyebrow">2%+ model edge</p><h2 id="leanTitle">Leans</h2></div>
-        <p>Smaller model advantages to monitor or stake more cautiously.</p>
+        <div class="section-title compact">
+          <div><p class="eyebrow blue">SMALLER ADVANTAGE</p><h2>Leans</h2></div>
+          <p>Passed every safety gate, but carries a smaller modeled advantage.</p>
+        </div>
+        <div id="leanBoard" class="card-grid"></div>
       </section>
-      <section id="leanBoard" class="card-grid tier-board"></section>
 
-      <section class="panel ledger-panel">
-        <div class="ledger-head">
-          <div><p class="eyebrow">Saved in this browser</p><h2>Pro Bet Ledger</h2><p>Track recommended stakes, results, exposure, closing-line value and notes.</p></div>
-          <div class="ledger-tools">
-            <label>Bankroll <input id="bankrollInput" type="number" min="1" step="25" value="500" /></label>
-            <label>Max bet <input id="maxStakeInput" type="number" min="1" step="5" value="50" /></label>
-            <button id="exportLedger" class="button secondary">Export ledger CSV</button>
+      <section id="view-board" class="view">
+        <div class="section-title">
+          <div><p class="eyebrow">EVERY LIVE TARGET PRICE</p><h2>Full NFL Prop Board</h2></div>
+          <p>Qualified rows and watch rows stay visible so a missing bet has an exact reason.</p>
+        </div>
+        <div class="table-wrap panel">
+          <table class="data-table board-table">
+            <thead>
+              <tr><th>Tier</th><th>Player / Pick</th><th>Game</th><th>Book</th><th class="num">Price</th><th class="num">Model</th><th class="num">No-vig</th><th class="num">Push</th><th class="num">Edge</th><th class="num">Price value</th><th>Data</th><th>Decision</th></tr>
+            </thead>
+            <tbody id="boardBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="view-projections" class="view">
+        <div class="section-title">
+          <div><p class="eyebrow">NO PRICE, NO BET</p><h2>NFL Projection Board</h2></div>
+          <p>These are regular-season form estimates, not recommendations. A current sportsbook line must pass every model gate first.</p>
+        </div>
+        <div id="projectionBoard" class="projection-grid"></div>
+      </section>
+
+      <section id="view-ledger" class="view">
+        <div class="section-title ledger-title">
+          <div><p class="eyebrow">MANUAL CONFIRMATION ONLY</p><h2>My Ledger</h2><p>Nothing enters here automatically. Add a card only after checking and placing the current price.</p></div>
+          <div class="ledger-actions">
+            <label>Starting bankroll <input id="bankrollInput" type="number" min="1" step="25" value="500" /></label>
+            <button id="exportCsv" class="button">Export CSV</button>
+            <button id="exportJson" class="button">Backup JSON</button>
+            <button id="importJson" class="button">Restore JSON</button>
+            <input id="ledgerFile" type="file" accept=".json,application/json" hidden />
+            <button id="clearLedger" class="button danger">Clear</button>
           </div>
         </div>
         <div id="ledgerSummary" class="ledger-summary"></div>
-        <div class="ledger-table-wrap">
-          <table class="ledger-table">
-            <thead><tr><th>Date</th><th>Sport</th><th>Tier</th><th>Market</th><th>Pick</th><th>Book / Odds</th><th>Edge / Confidence</th><th>Stake</th><th>Status</th><th>Closing / CLV</th><th>P/L</th><th>Notes</th><th></th></tr></thead>
+        <div class="table-wrap panel">
+          <table class="data-table ledger-table">
+            <thead>
+              <tr><th>Date</th><th>Tier</th><th>Pick</th><th>Book</th><th class="num">Edge</th><th class="num">Stake</th><th>Result</th><th>Closing</th><th class="num">CLV</th><th class="num">P/L</th><th>Notes</th><th></th></tr>
+            </thead>
             <tbody id="ledgerBody"></tbody>
           </table>
         </div>
       </section>
 
-      <section class="section-head projections-head">
-        <div><p class="eyebrow">No-odds fallback</p><h2 id="projectionTitle">Best projections</h2></div>
-        <p>Projected stat numbers—not bets—until a current sportsbook line is added.</p>
-      </section>
-      <section id="projectionBoard" class="projection-grid"></section>
-
-      <section class="panel import-help">
-        <div>
-          <p class="eyebrow">Optional keyless comparison</p>
-          <h2>Add Canadian sportsbook lines</h2>
-          <p>Upload a CSV from your device. It stays in this browser and is never committed to GitHub.</p>
+      <section id="view-model" class="view">
+        <div class="section-title">
+          <div><p class="eyebrow">AUDITABLE BY DESIGN</p><h2>Model &amp; Data Sources</h2></div>
+          <p>The board separates projection disagreement, no-vig market probability, offered-price value, and wager sizing.</p>
         </div>
-        <div>
-          <code>sport,player,market,line,over_odds,under_odds,yes_odds,no_odds,book,matchup</code>
-          <button id="downloadTemplate" class="text-button">Download CSV template</button>
+        <div class="method-grid">
+          <article class="panel"><span class="step">01</span><h3>Real NFL data only</h3><p>Live prop prices come from the configured odds providers. ESPN supplies completed regular-season box scores. Preseason is excluded.</p></article>
+          <article class="panel"><span class="step">02</span><h3>Robust projection</h3><p>Up to eight recent games feed a recency-weighted, median-stabilized projection with sample variability and empirical hit rates.</p></article>
+          <article class="panel"><span class="step">03</span><h3>Power-method no-vig</h3><p>Complete Over/Under or Yes/No prices are de-vigged. External books are preferred; DraftKings is the target price.</p></article>
+          <article class="panel"><span class="step">04</span><h3>Separate value checks</h3><p>Model edge compares the blended NFL probability with the no-vig market. Price value separately measures expected return at the offered odds.</p></article>
+          <article class="panel"><span class="step">05</span><h3>Fail-closed gates</h3><p>Thin samples, low confidence, incomplete prices, excessive disagreement, extreme odds, correlated alternates, and exposure excess remain passes.</p></article>
+          <article class="panel"><span class="step">06</span><h3>Conservative staking</h3><p>Suggested stakes use 0.15 Kelly, then scale for confidence and data maturity. PASS rows always receive C$0.</p></article>
         </div>
-      </section>
-
-      <section class="source-grid">
-        <article class="panel"><h3>Source health</h3><div id="sourceHealth"></div></article>
-        <article class="panel"><h3>How tiers work</h3><p>Best: 6%+ probability edge. Good: 4%+. Lean: 2%+. Prices outside the configured range remain passes.</p></article>
-        <article class="panel"><h3>Security</h3><p>API credentials are used only by GitHub Actions. No key is placed in this page, its JavaScript, or generated JSON.</p></article>
+        <div class="source-grid">
+          <article class="panel"><h3>Feed health</h3><div id="sourceHealth"></div></article>
+          <article class="panel"><h3>Current model status</h3><p id="modelStatus">Loading…</p><ul id="modelNotes"></ul></article>
+          <article class="panel"><h3>Important limit</h3><p>Public data cannot fully observe late injury news, snap restrictions, weather changes, or a sportsbook line move after refresh. Verify each card before placing it.</p></article>
+        </div>
       </section>
     </main>
 
-    <footer class="shell">For informational and entertainment use only. Verify every line at the sportsbook before wagering. Bet responsibly.</footer>
+    <footer>
+      <div class="shell">NFL Props Edge · Informational use only · Verify the live line, player availability, and limits before wagering.</div>
+    </footer>
+    <script src="ledger.js" defer></script>
     <script src="app.js" defer></script>
   </body>
 </html>

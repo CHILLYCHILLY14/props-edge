@@ -10,15 +10,11 @@ from .schema import Projection, PropQuote
 
 
 OPPOSITE = {"over": "under", "under": "over", "yes": "no", "no": "yes"}
+TIER_ORDER = {"BEST": 0, "GOOD": 1, "LEAN": 2, "PASS": 3}
 
 
 def _book_key(value: str) -> str:
     return "".join(ch for ch in value.casefold() if ch.isalnum())
-
-
-def _selection(quote: PropQuote) -> str:
-    line = "" if quote.line is None else f" {quote.line:g}"
-    return f"{quote.player} — {quote.side.title()}{line} {quote.market}"
 
 
 def _name_key(value: str) -> str:
@@ -34,10 +30,6 @@ def _market_key(value: str) -> str:
         "yds": "yards",
         "td": "touchdowns",
         "tds": "touchdowns",
-        "reb": "rebounds",
-        "rebs": "rebounds",
-        "ast": "assists",
-        "asts": "assists",
     }
     ignored = {"player", "players", "prop", "props", "total", "alternate", "alternative"}
     tokens = [
@@ -45,30 +37,50 @@ def _market_key(value: str) -> str:
         for token in re.findall(r"[a-z0-9]+", value.casefold())
         if token not in ignored
     ]
-    result = "".join(tokens)
-    return result.replace("receptionyards", "receivingyards")
+    return "".join(tokens).replace("receptionyards", "receivingyards")
+
+
+def _selection(quote: PropQuote) -> str:
+    line = "" if quote.line is None else f" {quote.line:g}"
+    return f"{quote.player} — {quote.side.title()}{line} {quote.market}"
 
 
 def _normal_cdf(value: float) -> float:
     return 0.5 * (1 + math.erf(value / math.sqrt(2)))
 
 
-def _recommended_stake(model_prob: float | None, decimal_price: float, cfg: dict[str, Any]) -> tuple[float, float]:
-    if model_prob is None or decimal_price <= 1:
-        return 0.0, 0.0
-    full_kelly = max(0.0, (model_prob * decimal_price - 1) / (decimal_price - 1))
-    fraction = float(cfg.get("kelly_fraction", 0.25))
-    bankroll = float(cfg.get("bankroll", 500))
-    max_stake = float(cfg.get("max_stake", 50))
-    stake = min(max_stake, bankroll * full_kelly * fraction)
-    return round(full_kelly, 5), round(stake, 2)
+def _compress(value: float, ceiling: float) -> float:
+    if not value or ceiling <= 0:
+        return value
+    return math.copysign(ceiling * (1 - math.exp(-abs(value) / ceiling)), value)
+
+
+def _power_devig(decimal_a: float, decimal_b: float) -> tuple[float, float] | None:
+    """Return power-method fair probabilities for a complete two-way market."""
+    if decimal_a <= 1 or decimal_b <= 1:
+        return None
+    implied_a, implied_b = 1 / decimal_a, 1 / decimal_b
+    low, high = 0.01, 20.0
+    for _ in range(80):
+        exponent = (low + high) / 2
+        total = implied_a**exponent + implied_b**exponent
+        if total > 1:
+            low = exponent
+        else:
+            high = exponent
+    exponent = (low + high) / 2
+    fair_a, fair_b = implied_a**exponent, implied_b**exponent
+    total = fair_a + fair_b
+    if total <= 0:
+        return None
+    return fair_a / total, fair_b / total
 
 
 def _allowed_price(quote: PropQuote, cfg: dict[str, Any]) -> bool:
-    maximum = float(cfg.get("max_price", 500))
-    if quote.sport == "NFL" and _market_key(quote.market) == "anytimetouchdown":
+    maximum = float(cfg.get("max_price", 300))
+    if _market_key(quote.market) == "anytimetouchdown":
         maximum = float(cfg.get("nfl_touchdown_max_price", maximum))
-    return float(cfg["min_price"]) <= quote.price_american <= maximum
+    return float(cfg.get("min_price", -175)) <= quote.price_american <= maximum
 
 
 def _board_key(row: dict[str, Any]) -> tuple[Any, ...]:
@@ -81,177 +93,457 @@ def _board_key(row: dict[str, Any]) -> tuple[Any, ...]:
     )
 
 
+def _groups(quotes: list[PropQuote]) -> list[list[PropQuote]]:
+    grouped: dict[tuple[str, str, str, float | None], list[PropQuote]] = defaultdict(list)
+    for quote in quotes:
+        if quote.sport == "NFL":
+            grouped[
+                (quote.event_id, _name_key(quote.player), _market_key(quote.market), quote.line)
+            ].append(quote)
+    return list(grouped.values())
+
+
+def _market_context(
+    group: list[PropQuote], quote: PropQuote, target_book: str
+) -> tuple[float | None, float | None, int, str]:
+    by_book: dict[str, dict[str, PropQuote]] = defaultdict(dict)
+    for row in group:
+        by_book[_book_key(row.book)][row.side] = row
+    opposite = OPPOSITE.get(quote.side)
+    if opposite is None:
+        return None, None, 0, "incomplete market"
+    target_fair: float | None = None
+    external: list[float] = []
+    for book, sides in by_book.items():
+        if quote.side not in sides or opposite not in sides:
+            continue
+        pair = _power_devig(
+            sides[quote.side].price_decimal,
+            sides[opposite].price_decimal,
+        )
+        if pair is None:
+            continue
+        if book == target_book:
+            target_fair = pair[0]
+        else:
+            external.append(pair[0])
+    if external:
+        return statistics.median(external), target_fair, len(external), "external no-vig median"
+    if target_fair is not None:
+        return target_fair, target_fair, 0, "target-book no-vig"
+    return None, None, 0, "offered-price break-even"
+
+
+def _market_watch_row(
+    quote: PropQuote,
+    market_fair: float | None,
+    target_fair: float | None,
+    external_books: int,
+    market_basis: str,
+) -> dict[str, Any]:
+    return {
+        **quote.to_dict(),
+        "pick": _selection(quote),
+        "breakeven": round(1 / quote.price_decimal, 5),
+        "market_fair_prob": None if market_fair is None else round(market_fair, 5),
+        "target_fair_prob": None if target_fair is None else round(target_fair, 5),
+        "market_basis": market_basis,
+        "model_prob": None,
+        "model_prob_no_push": None,
+        "projection_prob": None,
+        "push_prob": 0.0,
+        "edge": None,
+        "edge_raw": None,
+        "edge_real": None,
+        "edge_price": None,
+        "ev": None,
+        "full_kelly": 0.0,
+        "recommended_stake": 0.0,
+        "consensus_books": external_books,
+        "confidence": 0.0,
+        "tier": "PASS",
+        "reason": "No independent NFL player projection for this player and market yet",
+        "mode": "market-watch",
+        "model_label": "Live market watch — not a model bet",
+    }
+
+
 def evaluate_quotes(quotes: list[PropQuote], settings: dict[str, Any]) -> list[dict[str, Any]]:
+    """Build a non-actionable market watch board.
+
+    Sportsbook consensus is useful context, but it is not an independent model.
+    These rows cannot qualify until an NFL player projection is matched.
+    """
+    target = _book_key(settings["bookmakers"]["target"])
+    board: list[dict[str, Any]] = []
+    for group in _groups(quotes):
+        for quote in (row for row in group if _book_key(row.book) == target):
+            fair, target_fair, external_books, basis = _market_context(group, quote, target)
+            board.append(
+                _market_watch_row(
+                    quote, fair, target_fair, external_books, basis
+                )
+            )
+    return sorted(board, key=lambda row: (row["start_time"], row["player"], row["market"]))
+
+
+def _sd_floor(market: str, projection: float) -> float:
+    key = _market_key(market)
+    if "yards" in key or "longest" in key:
+        return max(5.0, abs(projection) * 0.12)
+    if any(token in key for token in ("attempts", "completions", "receptions", "targets")):
+        return 1.25
+    if any(token in key for token in ("touchdowns", "interceptions", "fieldgoals", "sacks")):
+        return 0.65
+    return 0.75
+
+
+def _projection_probabilities(
+    quote: PropQuote, projection: Projection
+) -> tuple[float, float, float] | None:
+    """Return unconditional (win, push, loss) from the NFL form projection."""
+    recent = [float(value) for value in (projection.recent or [projection.projection])]
+    samples = max(1, len(recent))
+    confidence = max(0.0, min(0.75, float(projection.confidence)))
+    market_key = _market_key(quote.market)
+    if quote.side in ("yes", "no"):
+        if market_key != "anytimetouchdown":
+            return None
+        hits = sum(value >= 1 for value in recent)
+        empirical_yes = (hits + 0.75) / (samples + 1.5)
+        poisson_yes = 1 - math.exp(-max(0.0, float(projection.projection)))
+        raw_yes = 0.45 * empirical_yes + 0.55 * poisson_yes
+        reliability = min(0.8, confidence * (0.6 + 0.4 * min(1.0, samples / 8)))
+        yes_probability = max(0.04, min(0.75, 0.18 + (raw_yes - 0.18) * reliability))
+        win = yes_probability if quote.side == "yes" else 1 - yes_probability
+        return win, 0.0, 1 - win
+
+    if quote.side not in ("over", "under") or quote.line is None:
+        return None
+    line = float(quote.line)
+    mean = float(projection.projection)
+    deviation = max(
+        float(projection.standard_deviation),
+        _sd_floor(quote.market, mean),
+    )
+    integer_line = abs(line - round(line)) < 1e-9
+    if integer_line:
+        normal_over = 1 - _normal_cdf((line + 0.5 - mean) / deviation)
+        normal_under = _normal_cdf((line - 0.5 - mean) / deviation)
+        normal_push = max(0.0, 1 - normal_over - normal_under)
+        over_count = sum(value > line for value in recent)
+        under_count = sum(value < line for value in recent)
+        push_count = samples - over_count - under_count
+        empirical_over = (over_count + 0.5) / (samples + 1.5)
+        empirical_under = (under_count + 0.5) / (samples + 1.5)
+        empirical_push = (push_count + 0.5) / (samples + 1.5)
+    else:
+        normal_over = 1 - _normal_cdf((line - mean) / deviation)
+        normal_under = 1 - normal_over
+        normal_push = 0.0
+        over_count = sum(value > line for value in recent)
+        empirical_over = (over_count + 1) / (samples + 2)
+        empirical_under = 1 - empirical_over
+        empirical_push = 0.0
+    normal_weight = 0.62
+    over = normal_weight * normal_over + (1 - normal_weight) * empirical_over
+    under = normal_weight * normal_under + (1 - normal_weight) * empirical_under
+    push = normal_weight * normal_push + (1 - normal_weight) * empirical_push
+    total = over + under + push
+    if total <= 0:
+        return None
+    over, under, push = over / total, under / total, push / total
+    if quote.side == "over":
+        return over, push, under
+    return under, push, over
+
+
+def _projection_index(projections: list[Projection]) -> dict[tuple[str, str], list[Projection]]:
+    result: dict[tuple[str, str], list[Projection]] = defaultdict(list)
+    for projection in projections:
+        if projection.sport == "NFL":
+            result[
+                (_name_key(projection.player), _market_key(projection.market))
+            ].append(projection)
+    return result
+
+
+def _matching_projection(
+    quote: PropQuote,
+    index: dict[tuple[str, str], list[Projection]],
+) -> Projection | None:
+    candidates = index.get((_name_key(quote.player), _market_key(quote.market)), [])
+    if not candidates:
+        return None
+    quote_date = str(quote.start_time)[:10]
+    exact = [row for row in candidates if str(row.start_time)[:10] == quote_date]
+    return (exact or candidates)[0]
+
+
+def _tier_and_reason(
+    quote: PropQuote,
+    projection: Projection,
+    target_fair: float | None,
+    external_books: int,
+    raw_projection_gap: float,
+    edge: float,
+    price_ev: float,
+    cfg: dict[str, Any],
+) -> tuple[str, str]:
+    samples = int(projection.samples)
+    confidence = float(projection.confidence)
+    if quote.side in ("over", "under") and quote.line is None:
+        return "PASS", "A real prop line is required"
+    if quote.side in ("over", "under") and target_fair is None:
+        return "PASS", "Complete two-sided target-book prices are required"
+    if samples < int(cfg["minimum_samples"]):
+        return "PASS", f"Only {samples} regular-season samples; {cfg['minimum_samples']} required"
+    if confidence < float(cfg["minimum_confidence"]):
+        return "PASS", "Projection confidence is below the Lean gate"
+    if not _allowed_price(quote, cfg):
+        return "PASS", "Price outside the allowable range"
+    if raw_projection_gap > float(cfg["max_raw_market_gap"]):
+        return "PASS", "Raw projection/market disagreement exceeds the safety limit"
+    if edge < float(cfg["lean_edge"]) or price_ev < float(cfg["lean_price_ev"]):
+        return "PASS", "Does not clear both model-edge and offered-price value gates"
+
+    tier = "LEAN"
+    if (
+        edge >= float(cfg["best_edge"])
+        and price_ev >= float(cfg["best_price_ev"])
+        and samples >= int(cfg["best_minimum_samples"])
+        and confidence >= float(cfg["best_minimum_confidence"])
+        and external_books >= int(cfg["min_external_books"])
+        and float(cfg["best_min_price"]) <= quote.price_american <= float(cfg["best_max_price"])
+    ):
+        tier = "BEST"
+    elif (
+        edge >= float(cfg["good_edge"])
+        and price_ev >= float(cfg["good_price_ev"])
+        and samples >= int(cfg["good_minimum_samples"])
+        and confidence >= float(cfg["good_minimum_confidence"])
+    ):
+        tier = "GOOD"
+    if external_books == 0 and target_fair is None and tier == "BEST":
+        tier = "GOOD"
+    return tier, ""
+
+
+def _recommended_stake(
+    win_probability: float,
+    loss_probability: float,
+    decimal_price: float,
+    confidence: float,
+    samples: int,
+    cfg: dict[str, Any],
+) -> tuple[float, float]:
+    if decimal_price <= 1:
+        return 0.0, 0.0
+    profit_multiple = decimal_price - 1
+    full_kelly = max(
+        0.0,
+        (profit_multiple * win_probability - loss_probability) / profit_multiple,
+    )
+    maturity = min(1.0, samples / max(1, int(cfg["full_sample_size"])))
+    stake = (
+        float(cfg["bankroll"])
+        * full_kelly
+        * float(cfg["kelly_fraction"])
+        * max(0.25, confidence)
+        * maturity
+    )
+    stake = min(float(cfg["max_stake"]), stake)
+    stake = round(stake * 2) / 2
+    return round(full_kelly, 5), round(stake, 2)
+
+
+def evaluate_quotes_against_projections(
+    quotes: list[PropQuote],
+    projections: list[Projection],
+    settings: dict[str, Any],
+) -> list[dict[str, Any]]:
+    """Combine independent NFL form with live no-vig market information."""
     cfg = settings["projection_model"]
     target = _book_key(settings["bookmakers"]["target"])
-    groups: dict[tuple[str, str, str, float | None], list[PropQuote]] = defaultdict(list)
-    for quote in quotes:
-        groups[(quote.event_id, quote.player.casefold(), quote.market.casefold(), quote.line)].append(quote)
+    index = _projection_index(projections)
     board: list[dict[str, Any]] = []
-    for group in groups.values():
-        by_book: dict[str, dict[str, PropQuote]] = defaultdict(dict)
-        for quote in group:
-            by_book[_book_key(quote.book)][quote.side] = quote
-        for quote in [row for row in group if _book_key(row.book) == target]:
-            fair_samples = []
-            opposite = OPPOSITE.get(quote.side)
-            for sides in by_book.values():
-                if quote.side not in sides or opposite not in sides:
-                    continue
-                p_side = 1 / sides[quote.side].price_decimal
-                p_other = 1 / sides[opposite].price_decimal
-                fair_samples.append(p_side / (p_side + p_other))
-            fair = statistics.median(fair_samples) if fair_samples else None
+    for group in _groups(quotes):
+        for quote in (row for row in group if _book_key(row.book) == target):
+            projection = _matching_projection(quote, index)
+            if projection is None:
+                continue
+            probabilities = _projection_probabilities(quote, projection)
+            fair, target_fair, external_books, market_basis = _market_context(
+                group, quote, target
+            )
             breakeven = 1 / quote.price_decimal
-            model_prob = None if fair is None else 0.5 + (fair - 0.5) * float(cfg["probability_shrink"])
-            edge = None if model_prob is None else model_prob - breakeven
-            ev = None if model_prob is None else model_prob * quote.price_decimal - 1
-            full_kelly, recommended_stake = _recommended_stake(model_prob, quote.price_decimal, cfg)
-            tier = "PASS"
-            reason = ""
-            if len(fair_samples) < int(cfg["min_consensus_books"]):
-                reason = f"needs {cfg['min_consensus_books']} complete two-sided books"
-            elif not _allowed_price(quote, cfg):
-                reason = "price outside allowed range"
-            elif edge is None or edge < float(cfg["lean_edge"]) or (ev or 0) <= 0:
-                reason = "edge below Lean threshold"
-            elif edge >= float(cfg["best_edge"]):
-                tier = "BEST"
-            elif edge >= float(cfg["good_edge"]):
-                tier = "GOOD"
+            market_conditional = fair if fair is not None else breakeven
+            if probabilities is None:
+                projection_win, projection_push, projection_loss = 0.0, 0.0, 1.0
+                projection_conditional = 0.0
             else:
-                tier = "LEAN"
+                projection_win, projection_push, projection_loss = probabilities
+                non_push = projection_win + projection_loss
+                projection_conditional = projection_win / non_push if non_push else 0.0
+            samples = int(projection.samples)
+            confidence = max(0.0, min(0.75, float(projection.confidence)))
+            maturity = min(1.0, samples / max(1, int(cfg["full_sample_size"])))
+            projection_weight = min(
+                float(cfg["maximum_projection_weight"]),
+                confidence * maturity,
+            )
+            model_conditional = (
+                market_conditional
+                + (projection_conditional - market_conditional) * projection_weight
+            )
+            push_probability = projection_push
+            model_win = model_conditional * (1 - push_probability)
+            model_loss = (1 - model_conditional) * (1 - push_probability)
+            raw_edge = model_conditional / max(0.0001, market_conditional) - 1
+            raw_price_ev = model_win * quote.price_decimal + push_probability - 1
+            edge = _compress(raw_edge, float(cfg["edge_ceiling"]))
+            price_ev = _compress(raw_price_ev, float(cfg["price_ev_ceiling"]))
+            raw_projection_gap = abs(projection_conditional - market_conditional)
+            tier, reason = _tier_and_reason(
+                quote,
+                projection,
+                target_fair,
+                external_books,
+                raw_projection_gap,
+                edge,
+                price_ev,
+                cfg,
+            )
+            full_kelly, stake = _recommended_stake(
+                model_win,
+                model_loss,
+                quote.price_decimal,
+                confidence,
+                samples,
+                cfg,
+            )
+            if tier == "PASS":
+                stake = 0.0
+            elif stake < float(cfg["minimum_stake"]):
+                tier = "PASS"
+                reason = "Calculated stake is below the minimum wager"
+                stake = 0.0
+            model_label = (
+                "NFL form + external no-vig market"
+                if external_books
+                else "NFL form + target price"
+            )
             board.append(
                 {
                     **quote.to_dict(),
                     "pick": _selection(quote),
                     "breakeven": round(breakeven, 5),
-                    "market_fair_prob": None if fair is None else round(fair, 5),
-                    "model_prob": None if model_prob is None else round(model_prob, 5),
-                    "edge": None if edge is None else round(edge, 5),
-                    "ev": None if ev is None else round(ev, 5),
+                    "market_fair_prob": round(market_conditional, 5),
+                    "target_fair_prob": None if target_fair is None else round(target_fair, 5),
+                    "market_basis": market_basis,
+                    "projection_prob": round(projection_conditional, 5),
+                    "model_prob": round(model_win, 5),
+                    "model_prob_no_push": round(model_conditional, 5),
+                    "push_prob": round(push_probability, 5),
+                    "edge": round(edge, 5),
+                    "edge_raw": round(raw_edge, 5),
+                    "edge_real": round(price_ev, 5),
+                    "edge_price": round(raw_price_ev, 5),
+                    "ev": round(raw_price_ev, 5),
                     "full_kelly": full_kelly,
-                    "recommended_stake": recommended_stake,
-                    "consensus_books": len(fair_samples),
-                    "confidence": round(min(0.85, 0.42 + 0.09 * len(fair_samples)), 2),
+                    "recommended_stake": stake,
+                    "consensus_books": external_books,
+                    "confidence": round(confidence, 2),
                     "tier": tier,
                     "reason": reason,
-                    "mode": "priced",
+                    "mode": "projection-and-market",
+                    "model_label": model_label,
+                    "projection": projection.projection,
+                    "projection_samples": samples,
+                    "projection_standard_deviation": projection.standard_deviation,
+                    "raw_projection_market_gap": round(raw_projection_gap, 5),
                 }
             )
-    return sorted(board, key=lambda row: ({"BEST": 0, "GOOD": 1, "LEAN": 2, "PASS": 3}[row["tier"]], -(row.get("edge") or -1)))
-
-
-def evaluate_quotes_against_projections(
-    quotes: list[PropQuote], projections: list[Projection], settings: dict[str, Any]
-) -> list[dict[str, Any]]:
-    """Price DraftKings props with a conservative ESPN-stat projection when consensus is absent."""
-    cfg = settings["projection_model"]
-    target = _book_key(settings["bookmakers"]["target"])
-    projection_index = {
-        (row.sport, _name_key(row.player), _market_key(row.market)): row for row in projections
-    }
-    board: list[dict[str, Any]] = []
-    seen: set[tuple[Any, ...]] = set()
-    for quote in quotes:
-        if _book_key(quote.book) != target or quote.side not in ("over", "under", "yes", "no"):
-            continue
-        market_key = _market_key(quote.market)
-        is_touchdown_yes_no = quote.side in ("yes", "no") and market_key == "anytimetouchdown"
-        if quote.side in ("over", "under") and quote.line is None:
-            continue
-        if quote.side in ("yes", "no") and not is_touchdown_yes_no:
-            continue
-        row_key = (
-            quote.event_id,
-            _name_key(quote.player),
-            _market_key(quote.market),
-            quote.side,
-            quote.line,
-        )
-        if row_key in seen:
-            continue
-        seen.add(row_key)
-        projection = projection_index.get((quote.sport, row_key[1], row_key[2]))
-        if projection is None:
-            continue
-        recent = projection.recent or [projection.projection]
-        confidence = max(0.2, min(0.72, float(projection.confidence)))
-        if is_touchdown_yes_no:
-            touchdown_hits = sum(value >= 1 for value in recent)
-            empirical_yes = (touchdown_hits + 0.5) / (len(recent) + 2)
-            poisson_yes = 1 - math.exp(-max(0.0, float(projection.projection)))
-            raw_yes = (empirical_yes + poisson_yes) / 2
-            conservative_yes = max(0.04, min(0.85, 0.2 + (raw_yes - 0.2) * confidence))
-            model_prob = conservative_yes if quote.side == "yes" else 1 - conservative_yes
-        else:
-            deviation = max(float(projection.standard_deviation), 0.75)
-            normal_over = 1 - _normal_cdf((quote.line - projection.projection) / deviation)
-            over_wins = sum(value > quote.line for value in recent)
-            empirical_over = (over_wins + 1) / (len(recent) + 2)
-            raw_over = (normal_over + empirical_over) / 2
-            raw_probability = raw_over if quote.side == "over" else 1 - raw_over
-            model_prob = 0.5 + (raw_probability - 0.5) * confidence
-        breakeven = 1 / quote.price_decimal
-        edge = model_prob - breakeven
-        ev = model_prob * quote.price_decimal - 1
-        full_kelly, recommended_stake = _recommended_stake(model_prob, quote.price_decimal, cfg)
-        tier = "PASS"
-        reason = ""
-        if not _allowed_price(quote, cfg):
-            reason = "price outside allowed range"
-        elif edge < float(cfg["lean_edge"]) or ev <= 0:
-            reason = "ESPN projection edge below Lean threshold"
-        elif edge >= float(cfg["best_edge"]):
-            tier = "BEST"
-        elif edge >= float(cfg["good_edge"]):
-            tier = "GOOD"
-        else:
-            tier = "LEAN"
-        board.append(
-            {
-                **quote.to_dict(),
-                "pick": _selection(quote),
-                "breakeven": round(breakeven, 5),
-                "market_fair_prob": None,
-                "model_prob": round(model_prob, 5),
-                "edge": round(edge, 5),
-                "ev": round(ev, 5),
-                "full_kelly": full_kelly,
-                "recommended_stake": recommended_stake,
-                "consensus_books": 0,
-                "confidence": round(confidence, 2),
-                "tier": tier,
-                "reason": reason,
-                "mode": "projection-priced",
-                "model_label": f"DraftKings price vs {projection.source}",
-                "projection": projection.projection,
-                "projection_samples": projection.samples,
-            }
-        )
     return sorted(
         board,
         key=lambda row: (
-            {"BEST": 0, "GOOD": 1, "LEAN": 2, "PASS": 3}[row["tier"]],
+            TIER_ORDER[row["tier"]],
+            -(row.get("edge_real") or -1),
             -(row.get("edge") or -1),
         ),
     )
 
 
 def merge_boards(
-    consensus: list[dict[str, Any]], projected: list[dict[str, Any]]
+    market_watch: list[dict[str, Any]],
+    projected: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
-    """Prefer consensus plays, replacing only consensus PASS rows with actionable projections."""
-    combined = {_board_key(row): row for row in consensus}
+    """Prefer every projection-evaluated row over its market-watch counterpart."""
+    combined = {_board_key(row): row for row in market_watch}
     for row in projected:
-        key = _board_key(row)
-        existing = combined.get(key)
-        if existing is None or (existing["tier"] == "PASS" and row["tier"] != "PASS"):
-            combined[key] = row
+        combined[_board_key(row)] = row
     return sorted(
         combined.values(),
         key=lambda row: (
-            {"BEST": 0, "GOOD": 1, "LEAN": 2, "PASS": 3}[row["tier"]],
+            TIER_ORDER[row["tier"]],
+            -(row.get("edge_real") or -1),
+            row.get("start_time") or "",
+        ),
+    )
+
+
+def select_portfolio(
+    board: list[dict[str, Any]],
+    settings: dict[str, Any],
+) -> list[dict[str, Any]]:
+    """Apply alternate-line, player-correlation, slate and exposure limits."""
+    cfg = settings["projection_model"]
+    rows = [dict(row) for row in board]
+    candidates = sorted(
+        (row for row in rows if row["tier"] != "PASS"),
+        key=lambda row: (
+            TIER_ORDER[row["tier"]],
+            -(row.get("edge_real") or -1),
             -(row.get("edge") or -1),
+        ),
+    )
+    seen_market: set[tuple[str, str, str]] = set()
+    player_counts: dict[tuple[str, str], int] = defaultdict(int)
+    selected = 0
+    exposure = 0.0
+    max_exposure = float(cfg["bankroll"]) * float(cfg["max_open_exposure"])
+    for row in candidates:
+        player_key = (str(row["event_id"]), _name_key(str(row["player"])))
+        market_key = (*player_key, _market_key(str(row["market"])))
+        reject_reason = ""
+        if market_key in seen_market:
+            reject_reason = "A stronger side or alternate line was selected for this player market"
+        elif player_counts[player_key] >= int(cfg["max_props_per_player"]):
+            reject_reason = "Player correlation limit reached"
+        elif selected >= int(cfg["max_plays_per_slate"]):
+            reject_reason = "Outside the top plays for this slate"
+        else:
+            remaining = max(0.0, max_exposure - exposure)
+            stake = min(float(row["recommended_stake"]), remaining)
+            stake = round(stake * 2) / 2
+            if stake < float(cfg["minimum_stake"]):
+                reject_reason = "Slate exposure limit leaves less than the minimum wager"
+            else:
+                row["recommended_stake"] = stake
+                seen_market.add(market_key)
+                player_counts[player_key] += 1
+                selected += 1
+                exposure += stake
+        if reject_reason:
+            row["model_tier"] = row["tier"]
+            row["tier"] = "PASS"
+            row["reason"] = reject_reason
+            row["recommended_stake"] = 0.0
+    return sorted(
+        rows,
+        key=lambda row: (
+            TIER_ORDER[row["tier"]],
+            -(row.get("edge_real") or -1),
+            row.get("start_time") or "",
         ),
     )

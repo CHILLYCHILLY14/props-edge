@@ -1,4 +1,4 @@
-name: Refresh Props Edge
+name: Refresh NFL Props Edge
 
 on:
   push:
@@ -10,6 +10,7 @@ on:
       - "tests/**"
       - "site/index.html"
       - "site/app.js"
+      - "site/ledger.js"
       - "site/styles.css"
   schedule:
     - cron: "0 12,16,20 * * *"
@@ -35,10 +36,18 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Run offline tests
-        run: python -m unittest tests.test_offline -v
+      - name: Run NFL model tests
+        run: python -m unittest discover -s tests -v
 
-      - name: Refresh props and projections
+      - name: Test manual My Ledger
+        run: node tests/test_ledger.mjs
+
+      - name: Check browser scripts
+        run: |
+          node --check site/ledger.js
+          node --check site/app.js
+
+      - name: Refresh NFL props and projections
         env:
           ODDS_API_IO_KEY: ${{ secrets.ODDS_API_IO_KEY }}
           THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
@@ -46,7 +55,7 @@ jobs:
 
       - name: Commit generated data
         run: |
-          git config user.name "props-edge bot"
+          git config user.name "nfl-props-edge bot"
           git config user.email "actions@github.com"
           git add site/data
           git diff --staged --quiet || git commit -m "Refresh props $(date -u +'%Y-%m-%d %H:%M UTC')"

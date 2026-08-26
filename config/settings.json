@@ -1,7 +1,7 @@
 {
   "bookmakers": {
     "target": "DraftKings",
-    "primary_consensus": ["DraftKings", "FanDuel"],
+    "primary_consensus": ["DraftKings", "FanDuel", "BetMGM"],
     "secondary_consensus": ["draftkings", "fanduel", "betmgm", "williamhill_us"]
   },
   "sports": {
@@ -10,48 +10,48 @@
       "league_aliases": ["nfl", "national-football-league"],
       "secondary_sport": "americanfootball_nfl",
       "espn_path": "football/nfl"
-    },
-    "NCAAF": {
-      "primary_sport": "american-football",
-      "league_aliases": ["ncaaf", "ncaa", "college-football"],
-      "secondary_sport": "americanfootball_ncaaf",
-      "espn_path": "football/college-football"
-    },
-    "MLB": {
-      "primary_sport": "baseball",
-      "league_aliases": ["mlb", "major-league-baseball"],
-      "secondary_sport": "baseball_mlb",
-      "espn_path": "baseball/mlb"
-    },
-    "WNBA": {
-      "primary_sport": "basketball",
-      "league_aliases": ["wnba", "womens-national-basketball-association"],
-      "secondary_sport": "basketball_wnba",
-      "espn_path": "basketball/wnba"
     }
   },
   "projection_model": {
-    "minimum_samples": 2,
+    "minimum_samples": 4,
+    "good_minimum_samples": 5,
+    "best_minimum_samples": 7,
+    "full_sample_size": 8,
     "maximum_samples": 8,
-    "maximum_rows_per_sport": 120,
-    "min_consensus_books": 2,
-    "probability_shrink": 0.88,
-    "lean_edge": 0.02,
-    "good_edge": 0.04,
-    "best_edge": 0.06,
-    "min_price": -250,
-    "max_price": 500,
-    "nfl_touchdown_max_price": 750,
+    "maximum_rows": 240,
+    "min_external_books": 1,
+    "minimum_confidence": 0.45,
+    "good_minimum_confidence": 0.52,
+    "best_minimum_confidence": 0.62,
+    "maximum_projection_weight": 0.55,
+    "max_raw_market_gap": 0.18,
+    "lean_edge": 0.025,
+    "good_edge": 0.05,
+    "best_edge": 0.08,
+    "lean_price_ev": 0.015,
+    "good_price_ev": 0.03,
+    "best_price_ev": 0.055,
+    "edge_ceiling": 0.10,
+    "price_ev_ceiling": 0.12,
+    "min_price": -175,
+    "max_price": 300,
+    "nfl_touchdown_max_price": 450,
+    "best_min_price": -160,
+    "best_max_price": 200,
     "bankroll": 500,
-    "kelly_fraction": 0.25,
+    "kelly_fraction": 0.15,
+    "minimum_stake": 5,
     "max_stake": 50,
-    "max_open_exposure": 0.5
+    "max_open_exposure": 0.35,
+    "max_plays_per_slate": 8,
+    "max_props_per_player": 2
   },
   "fetch": {
-    "lookahead_days": 7,
+    "lookahead_days": 8,
     "primary_event_limit": 500,
     "secondary_max_markets_per_event": 24,
-    "espn_lookback_days": 21,
-    "espn_max_completed_games": 18
+    "espn_lookback_days": 400,
+    "espn_games_per_team": 8,
+    "espn_max_completed_games": 144
   }
 }

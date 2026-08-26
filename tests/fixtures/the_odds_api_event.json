@@ -1,19 +1,19 @@
 {
-  "id": "mlb-example-1",
-  "commence_time": "2026-08-25T23:10:00Z",
-  "home_team": "Toronto Blue Jays",
-  "away_team": "Boston Red Sox",
+  "id": "nfl-example-1",
+  "commence_time": "2026-09-13T17:00:00Z",
+  "home_team": "Kansas City Chiefs",
+  "away_team": "Buffalo Bills",
   "bookmakers": [
     {
       "key": "draftkings",
       "title": "DraftKings",
-      "last_update": "2026-08-24T20:00:00Z",
+      "last_update": "2026-09-12T18:00:00Z",
       "markets": [
         {
-          "key": "pitcher_strikeouts",
+          "key": "player_pass_yds",
           "outcomes": [
-            {"name": "Over", "description": "Taylor Example", "price": 110, "point": 5.5},
-            {"name": "Under", "description": "Taylor Example", "price": -130, "point": 5.5}
+            {"name": "Over", "description": "Jordan Example", "price": 110, "point": 275.5},
+            {"name": "Under", "description": "Jordan Example", "price": -130, "point": 275.5}
           ]
         }
       ]
@@ -23,10 +23,10 @@
       "title": "FanDuel",
       "markets": [
         {
-          "key": "pitcher_strikeouts",
+          "key": "player_pass_yds",
           "outcomes": [
-            {"name": "Over", "description": "Taylor Example", "price": -110, "point": 5.5},
-            {"name": "Under", "description": "Taylor Example", "price": -110, "point": 5.5}
+            {"name": "Over", "description": "Jordan Example", "price": -110, "point": 275.5},
+            {"name": "Under", "description": "Jordan Example", "price": -110, "point": 275.5}
           ]
         }
       ]

@@ -4,12 +4,16 @@ import argparse
 import datetime as dt
 import json
 import os
-from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
 
 from .http import ProviderError
-from .model import evaluate_quotes, evaluate_quotes_against_projections, merge_boards
+from .model import (
+    evaluate_quotes,
+    evaluate_quotes_against_projections,
+    merge_boards,
+    select_portfolio,
+)
 from .providers.espn import EspnProjectionProvider
 from .providers.odds_api_io import OddsApiIoProvider
 from .providers.the_odds_api import TheOddsApiProvider
@@ -32,92 +36,95 @@ def build() -> dict[str, Any]:
     settings = load_settings()
     primary_key = os.getenv("ODDS_API_IO_KEY", "").strip()
     secondary_key = os.getenv("THE_ODDS_API_KEY", "").strip()
-    primary = OddsApiIoProvider(primary_key, settings) if primary_key else None
-    secondary = TheOddsApiProvider(secondary_key, settings) if secondary_key else None
-    espn = EspnProjectionProvider(settings)
+    errors: list[str] = []
     quotes = []
-    projections = []
-    source_by_sport: dict[str, dict[str, Any]] = {}
-    def fetch_espn(sport_name: str) -> tuple[list[Any], str | None]:
+    odds_source = "No live props source available"
+    if primary_key:
         try:
-            return espn.fetch(sport_name), None
+            quotes = OddsApiIoProvider(primary_key, settings).fetch("NFL")
+            if quotes:
+                odds_source = "Odds-API.io"
         except ProviderError as exc:
-            return [], str(exc)
+            errors.append(str(exc))
+    if not quotes and secondary_key:
+        try:
+            quotes = TheOddsApiProvider(secondary_key, settings).fetch("NFL")
+            if quotes:
+                odds_source = "The Odds API"
+        except ProviderError as exc:
+            errors.append(str(exc))
 
-    with ThreadPoolExecutor(max_workers=2) as pool:
-        espn_futures = {
-            sport_name: pool.submit(fetch_espn, sport_name) for sport_name in settings["sports"]
-        }
-        for sport in settings["sports"]:
-            errors: list[str] = []
-            sport_quotes = []
-            source = None
-            if primary:
-                try:
-                    sport_quotes = primary.fetch(sport)
-                    if sport_quotes:
-                        source = primary.name
-                except ProviderError as exc:
-                    errors.append(str(exc))
-            if not sport_quotes and secondary:
-                try:
-                    sport_quotes = secondary.fetch(sport)
-                    if sport_quotes:
-                        source = secondary.name
-                except ProviderError as exc:
-                    errors.append(str(exc))
-            sport_projections, espn_error = espn_futures[sport].result()
-            if espn_error:
-                errors.append(espn_error)
-            if sport_quotes and sport_projections:
-                source = f"{source} + {espn.name}"
-            elif not sport_quotes and sport_projections:
-                source = espn.name
-            elif not sport_quotes:
-                source = "No source available"
-            quotes.extend(sport_quotes)
-            projections.extend(sport_projections)
-            source_by_sport[sport] = {
-                "source": source,
-                "priced_quotes": len(sport_quotes),
-                "projections": len(sport_projections),
-                "errors": errors,
-            }
+    projections = []
+    try:
+        projections = EspnProjectionProvider(settings).fetch("NFL")
+    except ProviderError as exc:
+        errors.append(str(exc))
+    except Exception as exc:
+        errors.append(f"ESPN regular-season statistics failed: {exc}")
 
-    consensus_board = evaluate_quotes(quotes, settings)
-    projection_board = evaluate_quotes_against_projections(quotes, projections, settings)
-    board = merge_boards(consensus_board, projection_board)
-    projection_rows = [row.to_dict() for row in projections]
+    market_watch = evaluate_quotes(quotes, settings)
+    evaluated = evaluate_quotes_against_projections(quotes, projections, settings)
+    board = select_portfolio(merge_boards(market_watch, evaluated), settings)
+    maximum_rows = int(settings["projection_model"]["maximum_rows"])
+    board = board[:maximum_rows]
+    projection_rows = [row.to_dict() for row in projections[:maximum_rows]]
     now = dt.datetime.now(dt.timezone.utc).isoformat()
     repository = os.getenv("GITHUB_REPOSITORY", "").strip()
+    actionable = [row for row in board if row["tier"] != "PASS"]
+    suggested_exposure = round(
+        sum(float(row.get("recommended_stake") or 0) for row in actionable),
+        2,
+    )
     meta = {
+        "league": "NFL",
         "generated_at": now,
-        "provider_priority": ["Odds-API.io", "The Odds API", "ESPN public statistics"],
+        "provider_priority": ["Odds-API.io", "The Odds API", "ESPN regular-season statistics"],
         "target_book": settings["bookmakers"]["target"],
-        "keyless_fallback": True,
         "configured": {
             "odds_api_io": bool(primary_key),
             "the_odds_api": bool(secondary_key),
-            "espn_keyless": True
+            "espn_keyless": True,
         },
         "counts": {
             "priced_quotes": len(quotes),
             "board": len(board),
-            "actionable": sum(row["tier"] != "PASS" for row in board),
+            "actionable": len(actionable),
             "best": sum(row["tier"] == "BEST" for row in board),
             "good": sum(row["tier"] == "GOOD" for row in board),
             "leans": sum(row["tier"] == "LEAN" for row in board),
+            "watch": sum(row["tier"] == "PASS" for row in board),
             "projections": len(projection_rows),
+            "suggested_exposure": suggested_exposure,
         },
-        "source_by_sport": source_by_sport,
+        "source_by_sport": {
+            "NFL": {
+                "source": (
+                    f"{odds_source} + ESPN regular-season form"
+                    if quotes and projections
+                    else odds_source if quotes else "ESPN regular-season form" if projections else "No source available"
+                ),
+                "priced_quotes": len(quotes),
+                "projections": len(projection_rows),
+                "errors": errors,
+            }
+        },
         "workflow_url": (
-            f"https://github.com/{repository}/actions/workflows/refresh.yml" if repository else ""
+            f"https://github.com/{repository}/actions/workflows/refresh.yml"
+            if repository
+            else ""
         ),
+        "model_status": (
+            "Live NFL prices and regular-season player samples are available."
+            if quotes and projections
+            else "NFL data is still thin. The model will not force a wager."
+        ),
+        "ledger_mode": "manual-browser",
         "notes": [
-            "API credentials are optional and are read only from GitHub Actions secrets.",
-            "If both odds providers are unavailable, ESPN schedules and box-score statistics produce projection-only rows.",
-            "When DraftKings prices exist without enough consensus books, ESPN projections can price the line conservatively.",
-            "Action Network and OddsShark are not scraped because automated extraction is blocked or prohibited.",
+            "Only NFL player props are collected and published.",
+            "Preseason box scores are excluded from every projection and betting decision.",
+            "Sportsbook consensus is never treated as an independent model by itself.",
+            "A wager enters My Ledger only after the user reviews the live price and clicks Add.",
+            "API credentials remain GitHub Actions secrets and are never written to site data.",
         ],
     }
     _write_json("board.json", board)
@@ -127,13 +134,15 @@ def build() -> dict[str, Any]:
 
 
 def main() -> None:
-    argparse.ArgumentParser(description="Build the Props Edge data files").parse_args()
+    argparse.ArgumentParser(description="Build the NFL Props Edge data files").parse_args()
     meta = build()
     counts = meta["counts"]
     print(
-        f"Props Edge refreshed: {counts['actionable']} priced plays, "
-        f"{counts['projections']} ESPN projections"
+        f"NFL Props Edge refreshed: {counts['actionable']} qualified plays, "
+        f"{counts['projections']} regular-season projections, "
+        f"{counts['priced_quotes']} live price rows"
     )
+    print("My Ledger is manual browser storage; 0 automatic wager entries")
 
 
 if __name__ == "__main__":
