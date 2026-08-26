@@ -569,6 +569,39 @@ class EspnProjectionProvider:
                 "limit": 500,
             },
         )
+        upcoming_events = [
+            event
+            for event in upcoming.get("events") or []
+            if not ((event.get("status") or {}).get("type") or {}).get("completed")
+            and _season_type(event) == 2
+        ]
+        roster_targets = _upcoming_teams(upcoming_events)
+
+        def fetch_roster(team_input: tuple[str, str]) -> tuple[str, dict[str, Any]] | None:
+            team_id, team_name = team_input
+            try:
+                payload = self.client.get(
+                    f"/{path}/teams/{team_id}/roster",
+                    {"season": _nfl_season_year(today)},
+                    retries=2,
+                )
+                return team_name, payload
+            except Exception:
+                return None
+
+        # Fetch current rosters before the larger historical-summary sweep so
+        # roster verification remains reliable if ESPN begins throttling the
+        # runner later in the refresh.
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            roster_payloads = [
+                payload for payload in pool.map(fetch_roster, roster_targets) if payload
+            ]
+        current_roster = _roster_info(roster_payloads)
+        verified_roster_teams = {
+            _norm(team_name)
+            for team_name, payload in roster_payloads
+            if any(group.get("items") for group in payload.get("athletes") or [])
+        }
         completed = [
             event
             for event in recent_events
@@ -612,36 +645,6 @@ class EspnProjectionProvider:
 
         with ThreadPoolExecutor(max_workers=10) as pool:
             summaries = [summary for summary in pool.map(fetch_summary, event_inputs) if summary]
-        upcoming_events = [
-            event
-            for event in upcoming.get("events") or []
-            if not ((event.get("status") or {}).get("type") or {}).get("completed")
-            and _season_type(event) == 2
-        ]
-        roster_targets = _upcoming_teams(upcoming_events)
-
-        def fetch_roster(team_input: tuple[str, str]) -> tuple[str, dict[str, Any]] | None:
-            team_id, team_name = team_input
-            try:
-                payload = self.client.get(
-                    f"/{path}/teams/{team_id}/roster",
-                    {"season": _nfl_season_year(today)},
-                    retries=2,
-                )
-                return team_name, payload
-            except Exception:
-                return None
-
-        with ThreadPoolExecutor(max_workers=4) as pool:
-            roster_payloads = [
-                payload for payload in pool.map(fetch_roster, roster_targets) if payload
-            ]
-        current_roster = _roster_info(roster_payloads)
-        verified_roster_teams = {
-            _norm(team_name)
-            for team_name, payload in roster_payloads
-            if any(group.get("items") for group in payload.get("athletes") or [])
-        }
         return parse_summaries(
             summaries,
             "NFL",
