@@ -351,6 +351,8 @@ def _tier_and_reason(
 ) -> tuple[str, str]:
     samples = int(projection.samples)
     confidence = float(projection.confidence)
+    if not bool(getattr(projection, "roster_verified", True)):
+        return "PASS", "Current roster verification is unavailable for this team"
     injury_status = str(getattr(projection, "injury_status", "") or "").casefold()
     if any(
         blocked in injury_status
@@ -552,6 +554,7 @@ def evaluate_quotes_against_projections(
                     "defense_adjustment": projection.defense_adjustment,
                     "matchup_quality": projection.matchup_quality,
                     "injury_status": projection.injury_status,
+                    "roster_verified": projection.roster_verified,
                     "projection_weight": round(projection_weight, 5),
                     "season_maturity": round(season_maturity, 5),
                     "market_reliability": round(market_reliability, 5),

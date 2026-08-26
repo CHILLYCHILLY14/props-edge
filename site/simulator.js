@@ -96,6 +96,7 @@
     if (number(row?.opponent_defense_samples) < 6) flags.push("Thin opponent sample");
     if (number(row?.confidence) < 0.52) flags.push("Lower projection confidence");
     if (String(row?.injury_status || "").trim()) flags.push(`Roster status: ${row.injury_status}`);
+    if (row?.roster_verified === false) flags.push("Current roster verification unavailable");
     const market = String(row?.market || "").toLowerCase();
     if (["touchdown", "interception", "field goal", "sack", "longest"].some((token) => market.includes(token))) {
       flags.push("High-variance market");

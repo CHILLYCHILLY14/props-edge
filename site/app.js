@@ -513,6 +513,7 @@ function renderModel() {
     <div class="source-row"><span>Form projections</span><strong>${Number(source.projections) || 0}</strong></div>
     <div class="source-row"><span>Matchup-adjusted rows</span><strong>${Number(state.meta.counts?.matchup_adjusted) || 0}</strong></div>
     <div class="source-row"><span>Simulator players</span><strong>${Number(state.meta.counts?.simulator_players) || 0}</strong></div>
+    <div class="source-row"><span>Roster-verified teams</span><strong>${Number(state.meta.counts?.roster_verified_teams) || 0}</strong></div>
     <div class="source-row"><span>Projected markets</span><strong>${Number(state.meta.counts?.projected_markets) || 0}</strong></div>
     <div class="source-row"><span>Errors</span><strong>${(source.errors || []).length}</strong></div>`;
   $("#modelStatus").textContent = state.meta.model_status || "Model status unavailable.";

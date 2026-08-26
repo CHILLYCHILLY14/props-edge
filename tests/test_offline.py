@@ -354,6 +354,13 @@ class ProjectionPricingTests(unittest.TestCase):
         self.assertTrue(all(row["recommended_stake"] == 0 for row in rows))
         self.assertTrue(all("roster status" in row["reason"] for row in rows))
 
+    def test_unverified_roster_cannot_qualify(self) -> None:
+        projection = replace(sample_projection(), roster_verified=False)
+        rows = evaluate_quotes_against_projections(self.quotes, [projection], self.settings)
+        self.assertEqual({row["tier"] for row in rows}, {"PASS"})
+        self.assertTrue(all(row["recommended_stake"] == 0 for row in rows))
+        self.assertTrue(all("roster verification" in row["reason"] for row in rows))
+
     def test_merge_prefers_projection_evaluation_even_when_it_passes(self) -> None:
         watch = evaluate_quotes(self.quotes, self.settings)
         thin = evaluate_quotes_against_projections(
@@ -520,6 +527,38 @@ class EspnTests(unittest.TestCase):
         self.assertEqual({row.player for row in rows}, {"Active Example"})
         self.assertEqual({row.position for row in rows}, {"WR"})
         self.assertEqual({row.injury_status for row in rows}, {"Questionable"})
+
+    def test_partial_roster_feed_keeps_unverified_team_visible(self) -> None:
+        summary = {
+            "_props_edge_season_year": 2026,
+            "boxscore": {"players": [{
+                "team": {"displayName": "Kansas City"},
+                "statistics": [{
+                    "type": "passing",
+                    "keys": ["passingYards"],
+                    "athletes": [{
+                        "athlete": {"displayName": "Jordan Example"},
+                        "stats": [275],
+                    }],
+                }],
+            }]},
+        }
+        rows = parse_summaries(
+            [summary, summary],
+            "NFL",
+            {"kansascity": [{
+                "matchup": "Buffalo @ Kansas City",
+                "start_time": "2026-09-13T17:00:00Z",
+                "opponent": "Buffalo",
+            }]},
+            current_season_year=2026,
+            current_roster={
+                ("buffalo", "caseyexample"): {"position": "QB", "injury_status": ""}
+            },
+            verified_roster_teams={"buffalo"},
+        )
+        self.assertTrue(rows)
+        self.assertTrue(all(row.roster_verified is False for row in rows))
 
     def test_regular_box_scores_build_nfl_markets(self) -> None:
         def summary(yards, touchdowns, targets, receptions, receiving_yards):

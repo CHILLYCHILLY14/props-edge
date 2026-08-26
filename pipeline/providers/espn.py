@@ -238,6 +238,7 @@ def parse_summaries(
     defense_prior_season_weight: float = 0.55,
     defense_current_season_full_weight_games: int = 4,
     current_roster: dict[tuple[str, str], dict[str, str]] | None = None,
+    verified_roster_teams: set[str] | None = None,
 ) -> list[Projection]:
     """Build player form plus a conservative opponent-allowance adjustment.
 
@@ -410,7 +411,8 @@ def parse_summaries(
         if upcoming_matchups and key[1] not in upcoming_matchups:
             continue
         roster_entry = (current_roster or {}).get((key[1], _norm(player)))
-        if current_roster is not None and roster_entry is None:
+        roster_verified = verified_roster_teams is None or key[1] in verified_roster_teams
+        if roster_verified and current_roster is not None and roster_entry is None:
             continue
         recent = values[-8:]
         recent_seasons = history_seasons[key][-8:]
@@ -521,6 +523,7 @@ def parse_summaries(
                     defense_adjustment=round(adjustment, 5),
                     matchup_quality=matchup_quality,
                     injury_status=str((roster_entry or {}).get("injury_status") or ""),
+                    roster_verified=roster_verified,
                 )
             )
     return sorted(
@@ -623,17 +626,22 @@ class EspnProjectionProvider:
                 payload = self.client.get(
                     f"/{path}/teams/{team_id}/roster",
                     {"season": _nfl_season_year(today)},
-                    retries=1,
+                    retries=2,
                 )
                 return team_name, payload
             except Exception:
                 return None
 
-        with ThreadPoolExecutor(max_workers=8) as pool:
+        with ThreadPoolExecutor(max_workers=4) as pool:
             roster_payloads = [
                 payload for payload in pool.map(fetch_roster, roster_targets) if payload
             ]
         current_roster = _roster_info(roster_payloads)
+        verified_roster_teams = {
+            _norm(team_name)
+            for team_name, payload in roster_payloads
+            if any(group.get("items") for group in payload.get("athletes") or [])
+        }
         return parse_summaries(
             summaries,
             "NFL",
@@ -651,5 +659,6 @@ class EspnProjectionProvider:
                     "defense_current_season_full_weight_games", 4
                 )
             ),
-            current_roster=current_roster or None,
+            current_roster=current_roster,
+            verified_roster_teams=verified_roster_teams,
         )

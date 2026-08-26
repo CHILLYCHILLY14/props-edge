@@ -54,6 +54,7 @@ class Projection:
     defense_adjustment: float = 0.0
     matchup_quality: str = "Unknown"
     injury_status: str = ""
+    roster_verified: bool = True
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

@@ -119,6 +119,8 @@ def build() -> dict[str, Any]:
             "scheduled_projections": sum(bool(row.get("start_time")) for row in projection_rows),
             "matchup_adjusted": sum(int(row.get("opponent_defense_samples") or 0) >= 2 for row in projection_rows),
             "simulator_players": len({row["player"] for row in projection_rows}),
+            "roster_verified": sum(bool(row.get("roster_verified")) for row in projection_rows),
+            "roster_verified_teams": len({row["team"] for row in projection_rows if row.get("roster_verified")}),
             "suggested_exposure": suggested_exposure,
         },
         "source_by_sport": {
