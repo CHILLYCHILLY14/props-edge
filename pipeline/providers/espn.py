@@ -22,6 +22,11 @@ def _date_range(start: dt.date, end: dt.date) -> str:
     return f"{start:%Y%m%d}-{end:%Y%m%d}"
 
 
+def _nfl_season_year(day: dt.date) -> int:
+    """NFL season labels follow the fall year, including January Week 18 games."""
+    return day.year if day.month >= 7 else day.year - 1
+
+
 def _season_type(event: dict[str, Any]) -> int | None:
     raw = (event.get("season") or {}).get("type")
     if raw is None:
@@ -102,15 +107,22 @@ def _canonical_market(group: str, name: str) -> str | None:
         },
         "kicking": {
             "fieldgoalsmade": "Field goals made",
+            "fieldgoalattempts": "Field goal attempts",
+            "fieldgoalsattempted": "Field goal attempts",
             "fg": "Field goals made",
             "extrapointsmade": "Extra points made",
+            "extrapointattempts": "Extra point attempts",
+            "extrapointsattempted": "Extra point attempts",
             "xp": "Extra points made",
             "points": "Kicking points",
             "kickingpoints": "Kicking points",
+            "totalkickingpoints": "Kicking points",
         },
         "defensive": {
             "totaltackles": "Tackles + assists",
             "tackles": "Tackles + assists",
+            "solotackles": "Solo tackles",
+            "solo": "Solo tackles",
             "sacks": "Sacks",
         },
     }
@@ -124,13 +136,19 @@ def parse_summaries(
     summaries: list[dict[str, Any]],
     sport: str,
     upcoming_matchups: dict[str, Any],
+    current_season_year: int | None = None,
 ) -> list[Projection]:
     """Parse completed regular-season NFL box scores into conservative form rows."""
     if sport != "NFL":
         return []
     history: dict[tuple[str, str, str], list[float]] = defaultdict(list)
+    history_seasons: dict[tuple[str, str, str], list[int]] = defaultdict(list)
     display: dict[tuple[str, str, str], tuple[str, str]] = {}
     for summary in summaries:
+        try:
+            summary_season = int(summary.get("_props_edge_season_year") or 0)
+        except (TypeError, ValueError):
+            summary_season = 0
         observed_by_player: dict[tuple[str, str], dict[str, Any]] = defaultdict(
             lambda: {"player": "", "team": "", "markets": {}}
         )
@@ -162,16 +180,12 @@ def parse_summaries(
                             r"^\s*(\d+(?:\.\d+)?)\s*/\s*(\d+(?:\.\d+)?)\s*$",
                             str(raw),
                         )
-                        if (
-                            "passing" in group_key
-                            and "completion" in stat_key
-                            and "attempt" in stat_key
-                            and combined
-                        ):
-                            values = (
-                                ("Pass completions", float(combined.group(1))),
-                                ("Pass attempts", float(combined.group(2))),
-                            )
+                        if combined and "passing" in group_key and "completion" in stat_key and "attempt" in stat_key:
+                            values = (("Pass completions", float(combined.group(1))), ("Pass attempts", float(combined.group(2))))
+                        elif combined and "kicking" in group_key and "fieldgoal" in stat_key:
+                            values = (("Field goals made", float(combined.group(1))), ("Field goal attempts", float(combined.group(2))))
+                        elif combined and "kicking" in group_key and ("extrapoint" in stat_key or stat_key.startswith("xp")):
+                            values = (("Extra points made", float(combined.group(1))), ("Extra point attempts", float(combined.group(2))))
                         else:
                             market = _canonical_market(group, str(name))
                             value = as_float(raw)
@@ -182,15 +196,34 @@ def parse_summaries(
                             observed_by_player[game_key]["markets"][market] = value
                             key = (player.casefold(), _norm(team), market)
                             history[key].append(value)
+                            history_seasons[key].append(summary_season)
                             display[key] = (player, team)
         for (player_key, team_key), info in observed_by_player.items():
             markets = info["markets"]
-            touchdown_types = ("Rushing touchdowns", "Receiving touchdowns")
-            if not any(name in markets for name in touchdown_types):
-                continue
-            combined_key = (player_key, team_key, "Anytime touchdown")
-            history[combined_key].append(sum(markets.get(name, 0.0) for name in touchdown_types))
-            display[combined_key] = (info["player"], info["team"])
+            derived: list[tuple[str, float]] = []
+            rush_receiving_tds = sum(markets.get(name, 0.0) for name in ("Rushing touchdowns", "Receiving touchdowns"))
+            if any(name in markets for name in ("Rushing touchdowns", "Receiving touchdowns")):
+                derived.extend([
+                    ("Anytime touchdown", rush_receiving_tds),
+                    ("Rush + receiving touchdowns", rush_receiving_tds),
+                    ("Touchdowns scored", rush_receiving_tds),
+                ])
+            if "Passing touchdowns" in markets:
+                derived.append(("Pass + rush + receiving touchdowns", markets["Passing touchdowns"] + rush_receiving_tds))
+            if "Passing yards" in markets:
+                derived.extend([
+                    ("Pass + rush yards", markets["Passing yards"] + markets.get("Rushing yards", 0.0)),
+                    ("Pass + rush + receiving yards", markets["Passing yards"] + markets.get("Rushing yards", 0.0) + markets.get("Receiving yards", 0.0)),
+                ])
+            if any(name in markets for name in ("Rushing yards", "Receiving yards")):
+                derived.append(("Rush + receiving yards", markets.get("Rushing yards", 0.0) + markets.get("Receiving yards", 0.0)))
+            if "Kicking points" not in markets and any(name in markets for name in ("Field goals made", "Extra points made")):
+                derived.append(("Kicking points", markets.get("Field goals made", 0.0) * 3 + markets.get("Extra points made", 0.0)))
+            for market, value in derived:
+                combined_key = (player_key, team_key, market)
+                history[combined_key].append(value)
+                history_seasons[combined_key].append(summary_season)
+                display[combined_key] = (info["player"], info["team"])
 
     projections: list[Projection] = []
     for key, values in history.items():
@@ -198,6 +231,7 @@ def parse_summaries(
         if upcoming_matchups and key[1] not in upcoming_matchups:
             continue
         recent = values[-8:]
+        recent_seasons = history_seasons[key][-8:]
         if len(recent) < 2:
             continue
         weights = list(range(1, len(recent) + 1))
@@ -233,6 +267,11 @@ def parse_summaries(
                     trend=round(projection - average, 2),
                     start_time=str(matchup.get("start_time") or ""),
                     source="ESPN regular-season form",
+                    current_season_samples=(
+                        len(recent)
+                        if current_season_year is None
+                        else sum(year == current_season_year for year in recent_seasons)
+                    ),
                 )
             )
     return sorted(
@@ -301,24 +340,35 @@ class EspnProjectionProvider:
             ):
                 break
         # Parse oldest to newest so recency weighting is pointed in the right direction.
-        event_ids = [
-            str(event["id"])
+        event_inputs = [
+            (
+                str(event["id"]),
+                int((event.get("season") or {}).get("year") or str(event.get("date") or "")[:4] or 0),
+            )
             for event in reversed(selected)
             if event.get("id")
         ]
 
-        def fetch_summary(event_id: str) -> dict[str, Any] | None:
+        def fetch_summary(event_input: tuple[str, int]) -> dict[str, Any] | None:
+            event_id, season_year = event_input
             try:
-                return self.client.get(f"/{path}/summary", {"event": event_id}, retries=1)
+                summary = self.client.get(f"/{path}/summary", {"event": event_id}, retries=1)
+                summary["_props_edge_season_year"] = season_year
+                return summary
             except Exception:
                 return None
 
         with ThreadPoolExecutor(max_workers=6) as pool:
-            summaries = [summary for summary in pool.map(fetch_summary, event_ids) if summary]
+            summaries = [summary for summary in pool.map(fetch_summary, event_inputs) if summary]
         upcoming_events = [
             event
             for event in upcoming.get("events") or []
             if not ((event.get("status") or {}).get("type") or {}).get("completed")
             and _season_type(event) == 2
         ]
-        return parse_summaries(summaries, "NFL", _team_and_matchups(upcoming_events))
+        return parse_summaries(
+            summaries,
+            "NFL",
+            _team_and_matchups(upcoming_events),
+            current_season_year=_nfl_season_year(today),
+        )

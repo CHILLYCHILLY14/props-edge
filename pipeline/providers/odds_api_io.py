@@ -23,6 +23,8 @@ NFL_MARKETS = {
     "interceptions-thrown": "Pass interceptions",
     "passing-interceptions": "Pass interceptions",
     "pass-interceptions": "Pass interceptions",
+    "pass-rush-yards": "Pass + rush yards",
+    "passing-rushing-yards": "Pass + rush yards",
     "rushing-yards": "Rushing yards",
     "rush-yards": "Rushing yards",
     "rushing-attempts": "Rush attempts",
@@ -31,6 +33,14 @@ NFL_MARKETS = {
     "rushing-touchdowns": "Rushing touchdowns",
     "rushing-tds": "Rushing touchdowns",
     "rush-tds": "Rushing touchdowns",
+    "rush-receiving-yards": "Rush + receiving yards",
+    "rushing-receiving-yards": "Rush + receiving yards",
+    "pass-rush-receiving-yards": "Pass + rush + receiving yards",
+    "passing-rushing-receiving-yards": "Pass + rush + receiving yards",
+    "rush-receiving-touchdowns": "Rush + receiving touchdowns",
+    "rushing-receiving-touchdowns": "Rush + receiving touchdowns",
+    "pass-rush-receiving-touchdowns": "Pass + rush + receiving touchdowns",
+    "passing-rushing-receiving-touchdowns": "Pass + rush + receiving touchdowns",
     "receiving-yards": "Receiving yards",
     "reception-yards": "Receiving yards",
     "rec-yards": "Receiving yards",
@@ -45,15 +55,21 @@ NFL_MARKETS = {
     "anytime-touchdown-scorer": "Anytime touchdown",
     "anytime-td-scorer": "Anytime touchdown",
     "to-score-a-touchdown": "Anytime touchdown",
+    "touchdowns": "Touchdowns scored",
+    "touchdowns-scored": "Touchdowns scored",
     "longest-pass": "Longest pass",
     "longest-pass-completion": "Longest pass",
     "longest-rush": "Longest rush",
     "longest-reception": "Longest reception",
     "field-goals-made": "Field goals made",
+    "field-goals": "Field goals made",
+    "points-after-touchdown": "Extra points made",
+    "extra-points": "Extra points made",
     "extra-points-made": "Extra points made",
     "kicking-points": "Kicking points",
     "tackles-assists": "Tackles + assists",
     "tackles-and-assists": "Tackles + assists",
+    "solo-tackles": "Solo tackles",
     "sacks": "Sacks",
 }
 
@@ -93,6 +109,7 @@ def _is_prop_market(name: str, rows: list[dict[str, Any]]) -> bool:
 
 def _canonical_market(detail: str) -> str:
     key = re.sub(r"^(?:player-)?(?:total-)?", "", _norm(detail))
+    key = re.sub(r"-(?:o-u|over-under)$", "", key)
     if key in NFL_MARKETS:
         return NFL_MARKETS[key]
     for alias in sorted(NFL_MARKETS, key=len, reverse=True):

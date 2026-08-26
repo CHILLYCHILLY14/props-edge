@@ -13,8 +13,16 @@ correct output is a watch row or an empty qualified board.
 
 - The pipeline fetches and publishes only NFL player props.
 - Preseason results are excluded from projections and betting decisions.
+- The schedule and price search now reaches 21 days ahead so the opening slate
+  appears before it enters the old eight-day window.
 - Historical selection covers up to eight regular-season games per team instead
   of taking only the league's most recent handful of games.
+- Prior-season form is deliberately reduced until a player has four games in
+  the current regular season.
+- Official provider coverage now includes core passing, rushing, receiving,
+  touchdown, combined-yardage, kicking, and defensive player props.
+- ESPN field-goal and extra-point made/attempted pairs are parsed correctly;
+  kicking points and supported combined markets are derived game by game.
 - Sportsbook consensus alone is never called a model or allowed to qualify.
 - A player-form projection must match the live player and market.
 - Complete two-way prices are de-vigged with the power method. External books
@@ -34,13 +42,14 @@ correct output is a watch row or an empty qualified board.
    each player and market.
 2. The stat projection blends a recency-weighted mean with the sample median,
    then measures sample variability and stability.
-3. Normal-distribution and empirical hit-rate estimates are blended. Integer
-   lines reserve probability for a push. Touchdown props use empirical scoring
-   frequency plus a Poisson estimate and are regressed toward a conservative
-   baseline.
+3. Yardage and volume markets blend a continuous distribution with empirical
+   hit rates. Low-count markets such as touchdowns, field goals, interceptions,
+   and sacks blend a Poisson count model with the observed game sample. Integer
+   lines reserve probability for a push.
 4. Complete sportsbook pairs are de-vigged. The independent player-form
    probability is blended toward the market according to sample maturity and
-   confidence, with a hard maximum projection weight.
+   confidence, with a hard maximum projection weight. Prior-season and volatile
+   markets receive additional reliability reductions.
 5. Model edge is the relative difference between the blended no-push model
    probability and the no-vig market probability.
 6. Price value is the expected return at the offered decimal odds, including
@@ -59,7 +68,16 @@ Current compressed gates:
 
 A Best Bet also requires an external no-vig comparison and a price from -160
 through +200. All qualified prices must remain within the broader configured
-range. These are model-selection thresholds, not promises of profit.
+range. Touchdowns, field goals, interceptions, sacks, and longest-play markets
+require at least six samples even at the Lean tier. These are model-selection
+thresholds, not promises of profit.
+
+Supported projection families include passing yards/touchdowns/attempts/
+completions/interceptions, rushing yards/attempts/touchdowns, receptions/
+receiving yards/targets/touchdowns, longest plays, anytime and total touchdowns,
+combined passing-rushing-receiving markets, field goals, extra points, kicking
+points, sacks, solo tackles, and tackles plus assists. A market is shown as a
+watch—not a bet—when its provider label cannot be matched to a real projection.
 
 ## My Ledger
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 import unittest
+from dataclasses import replace
 from pathlib import Path
 
 from pipeline.build import load_settings
@@ -15,7 +16,7 @@ from pipeline.model import (
     merge_boards,
     select_portfolio,
 )
-from pipeline.providers.espn import EspnProjectionProvider, _season_type, parse_summaries
+from pipeline.providers.espn import EspnProjectionProvider, _nfl_season_year, _season_type, parse_summaries
 from pipeline.providers.odds_api_io import OddsApiIoProvider
 from pipeline.providers.odds_api_io import parse_event as parse_primary_event
 from pipeline.providers.the_odds_api import parse_event as parse_secondary_event
@@ -53,6 +54,7 @@ def sample_projection(
         recent=values,
         trend=2.0,
         start_time="2026-09-13T17:00:00Z",
+        current_season_samples=samples,
     )
 
 
@@ -99,6 +101,10 @@ class NflOnlyTests(unittest.TestCase):
         )
         for unwanted in ("NCAAF", "MLB", "WNBA"):
             self.assertNotIn(unwanted, text)
+        self.assertNotIn("Run update", text)
+
+    def test_schedule_window_reaches_the_opening_slate(self) -> None:
+        self.assertGreaterEqual(load_settings()["fetch"]["lookahead_days"], 21)
 
     def test_non_nfl_provider_input_is_rejected(self) -> None:
         self.assertEqual(parse_primary_event(fixture("odds_api_io_event.json"), "OTHER"), [])
@@ -148,6 +154,22 @@ class OddsAndMarketTests(unittest.TestCase):
         over = next(row for row in quotes if row.book == "DraftKings" and row.side == "over")
         self.assertEqual(over.price_american, 110)
         self.assertAlmostEqual(over.price_decimal, 2.1)
+
+    def test_secondary_provider_supports_combined_and_kicking_markets(self) -> None:
+        event = fixture("the_odds_api_event.json")
+        event["bookmakers"] = event["bookmakers"][:1]
+        event["bookmakers"][0]["markets"] = [
+            {
+                "key": "player_pass_rush_yds",
+                "outcomes": [{"description": "Jordan Example", "name": "Over", "price": -110, "point": 310.5}],
+            },
+            {
+                "key": "player_field_goals",
+                "outcomes": [{"description": "Kicker Example", "name": "Over", "price": 105, "point": 1.5}],
+            },
+        ]
+        markets = {quote.market for quote in parse_secondary_event(event, "NFL")}
+        self.assertEqual(markets, {"Pass + rush yards", "Field goals made"})
 
     def test_consensus_alone_never_becomes_a_bet(self) -> None:
         quotes = parse_primary_event(fixture("odds_api_io_event.json"), "NFL")
@@ -293,6 +315,20 @@ class ProjectionPricingTests(unittest.TestCase):
         self.assertGreater(win, 0.18)
         self.assertLess(win, 0.55)
 
+    def test_prior_season_form_receives_less_weight(self) -> None:
+        current = sample_projection()
+        prior = replace(current, current_season_samples=0)
+        current_row = next(
+            row for row in evaluate_quotes_against_projections(self.quotes, [current], self.settings)
+            if row["side"] == "over"
+        )
+        prior_row = next(
+            row for row in evaluate_quotes_against_projections(self.quotes, [prior], self.settings)
+            if row["side"] == "over"
+        )
+        self.assertLess(prior_row["projection_weight"], current_row["projection_weight"])
+        self.assertLess(prior_row["season_maturity"], current_row["season_maturity"])
+
     def test_merge_prefers_projection_evaluation_even_when_it_passes(self) -> None:
         watch = evaluate_quotes(self.quotes, self.settings)
         thin = evaluate_quotes_against_projections(
@@ -337,6 +373,12 @@ class PortfolioTests(unittest.TestCase):
 
 
 class EspnTests(unittest.TestCase):
+    def test_january_belongs_to_the_previous_nfl_season(self) -> None:
+        import datetime as dt
+
+        self.assertEqual(_nfl_season_year(dt.date(2027, 1, 3)), 2026)
+        self.assertEqual(_nfl_season_year(dt.date(2026, 8, 26)), 2026)
+
     def test_preseason_type_is_identified(self) -> None:
         self.assertEqual(_season_type({"season": {"type": 1}}), 1)
         self.assertEqual(_season_type({"season": {"type": 2}}), 2)
@@ -388,6 +430,38 @@ class EspnTests(unittest.TestCase):
         self.assertEqual(targets.recent, [5.0, 8.0, 7.0, 9.0])
         self.assertEqual(touchdown.recent, [1.0, 1.0, 1.0, 1.0])
         self.assertIn("regular-season", passing.source)
+
+    def test_kicking_and_combined_props_are_projected(self) -> None:
+        summary = {
+            "boxscore": {
+                "players": [{
+                    "team": {"displayName": "Kansas City"},
+                    "statistics": [
+                        {
+                            "type": "passing",
+                            "keys": ["passingYards", "passingTouchdowns"],
+                            "athletes": [{"athlete": {"displayName": "Quarterback Example"}, "stats": [250, 2]}],
+                        },
+                        {
+                            "type": "rushing",
+                            "keys": ["rushingYards", "rushingTouchdowns"],
+                            "athletes": [{"athlete": {"displayName": "Quarterback Example"}, "stats": [35, 1]}],
+                        },
+                        {
+                            "type": "kicking",
+                            "keys": ["fieldGoalsMade/fieldGoalAttempts", "extraPointsMade/extraPointAttempts"],
+                            "athletes": [{"athlete": {"displayName": "Kicker Example"}, "stats": ["2/3", "3/3"]}],
+                        },
+                    ],
+                }]
+            }
+        }
+        rows = parse_summaries([summary, summary], "NFL", {}, current_season_year=2026)
+        by_market = {(row.player, row.market): row for row in rows}
+        self.assertEqual(by_market[("Quarterback Example", "Pass + rush yards")].projection, 285.0)
+        self.assertEqual(by_market[("Quarterback Example", "Pass + rush + receiving touchdowns")].projection, 3.0)
+        self.assertEqual(by_market[("Kicker Example", "Field goals made")].projection, 2.0)
+        self.assertEqual(by_market[("Kicker Example", "Kicking points")].projection, 9.0)
 
 
 class SecurityTests(unittest.TestCase):

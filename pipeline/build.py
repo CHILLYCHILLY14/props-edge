@@ -69,8 +69,11 @@ def build() -> dict[str, Any]:
     board = board[:maximum_rows]
     projection_rows = [row.to_dict() for row in projections[:maximum_rows]]
     now = dt.datetime.now(dt.timezone.utc).isoformat()
-    repository = os.getenv("GITHUB_REPOSITORY", "").strip()
     actionable = [row for row in board if row["tier"] != "PASS"]
+    lookahead_days = int(settings["fetch"]["lookahead_days"])
+    scheduled_starts = sorted(
+        {str(row.get("start_time") or "") for row in projection_rows if row.get("start_time")}
+    )
     suggested_exposure = round(
         sum(float(row.get("recommended_stake") or 0) for row in actionable),
         2,
@@ -87,6 +90,8 @@ def build() -> dict[str, Any]:
         },
         "counts": {
             "priced_quotes": len(quotes),
+            "priced_events": len({quote.event_id for quote in quotes}),
+            "priced_markets": len({quote.market for quote in quotes}),
             "board": len(board),
             "actionable": len(actionable),
             "best": sum(row["tier"] == "BEST" for row in board),
@@ -94,6 +99,8 @@ def build() -> dict[str, Any]:
             "leans": sum(row["tier"] == "LEAN" for row in board),
             "watch": sum(row["tier"] == "PASS" for row in board),
             "projections": len(projection_rows),
+            "projected_markets": len({row["market"] for row in projection_rows}),
+            "scheduled_projections": sum(bool(row.get("start_time")) for row in projection_rows),
             "suggested_exposure": suggested_exposure,
         },
         "source_by_sport": {
@@ -108,20 +115,37 @@ def build() -> dict[str, Any]:
                 "errors": errors,
             }
         },
-        "workflow_url": (
-            f"https://github.com/{repository}/actions/workflows/refresh.yml"
-            if repository
-            else ""
-        ),
+        "lookahead_days": lookahead_days,
+        "next_scheduled_game": scheduled_starts[0] if scheduled_starts else "",
         "model_status": (
             "Live NFL prices and regular-season player samples are available."
             if quotes and projections
-            else "NFL data is still thin. The model will not force a wager."
+            else (
+                f"The next {lookahead_days} days of regular-season schedule and form are ready, "
+                f"but {settings['bookmakers']['target']} player-prop prices have not been returned yet."
+                if projections and scheduled_starts
+                else (
+                    f"Regular-season form is available, but no game is scheduled inside the next {lookahead_days} days."
+                    if projections
+                    else "NFL data is still too thin. The model will not force a wager."
+                )
+            )
         ),
         "ledger_mode": "manual-browser",
+        "market_coverage": [
+            "Passing yards, touchdowns, attempts, completions, interceptions and longest completion",
+            "Rushing yards, attempts, touchdowns and longest rush",
+            "Receptions, receiving yards, targets, touchdowns and longest reception",
+            "Combined passing/rushing/receiving yards and touchdowns",
+            "Anytime touchdowns and total touchdowns scored",
+            "Field goals made, extra points and kicking points",
+            "Sacks, solo tackles and tackles + assists",
+        ],
         "notes": [
             "Only NFL player props are collected and published.",
             "Preseason box scores are excluded from every projection and betting decision.",
+            "Prior-season form is automatically reduced until four current-season games are available.",
+            "Touchdowns, field goals, interceptions and sacks use count-stat probability handling and stricter reliability gates.",
             "Sportsbook consensus is never treated as an independent model by itself.",
             "A wager enters My Ledger only after the user reviews the live price and clicks Add.",
             "API credentials remain GitHub Actions secrets and are never written to site data.",

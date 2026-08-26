@@ -153,6 +153,24 @@ function renderStatus() {
   const ageHours = (Date.now() - generated.getTime()) / 3600000;
   const counts = state.meta.counts || {};
   const source = (state.meta.source_by_sport || {}).NFL || {};
+  const lookahead = Number(state.meta.lookahead_days) || 21;
+  const formReady = Number(source.projections) > 0;
+  const pricesReady = Number(source.priced_quotes) > 0;
+  const qualified = Number(counts.actionable) > 0;
+  const setStage = (selector, status, label) => {
+    const stage = $(selector);
+    stage.className = `readiness-step ${status}`;
+    stage.querySelector("b").textContent = label;
+  };
+  setStage("#stageForm", formReady ? "done" : "waiting", formReady ? "READY" : "WAIT");
+  setStage("#stagePrices", pricesReady ? "done" : "waiting", pricesReady ? "PRICED" : "WAIT");
+  setStage(
+    "#stageQualify",
+    qualified ? "done" : pricesReady ? "hold" : "locked",
+    qualified ? "QUALIFIED" : pricesReady ? "NO PLAY" : "LOCKED",
+  );
+  const readyCount = Number(formReady) + Number(pricesReady) + Number(qualified);
+  $("#readinessState").textContent = qualified ? "BOARD LIVE" : `${readyCount}/3 READY`;
   $("#lastUpdated").textContent = Number.isNaN(generated.getTime())
     ? "Update time unavailable"
     : generated.toLocaleString();
@@ -162,7 +180,7 @@ function renderStatus() {
     $("#feedState").textContent = "REFRESHING";
   } else if (ageHours > 12) {
     banner.className = "status-banner warn";
-    banner.textContent = `NFL data is ${Math.floor(ageHours)} hours old. Run an update and verify every sportsbook price.`;
+    banner.textContent = `NFL data is ${Math.floor(ageHours)} hours old. Treat every displayed price as stale and verify it at the sportsbook.`;
     $("#feedState").textContent = "STALE";
   } else if (Number(source.priced_quotes) > 0) {
     banner.className = "status-banner ok";
@@ -170,15 +188,13 @@ function renderStatus() {
     $("#feedState").textContent = "LIVE";
   } else if (Number(source.projections) > 0) {
     banner.className = "status-banner warn";
-    banner.textContent = "Regular-season projections are available, but no current target-book prices were returned. No wager can qualify.";
+    banner.textContent = `Regular-season form is ready and the model checks ${lookahead} days ahead, but no current ${state.meta.target_book || "target-book"} player-prop prices were returned. Books often post these closer to kickoff; no wager can qualify without a complete live price.`;
     $("#feedState").textContent = "NO PRICES";
   } else {
     banner.className = "status-banner warn";
     banner.textContent = "NFL data is still too thin for a qualified prop. The model is correctly refusing to force a wager.";
     $("#feedState").textContent = "THIN DATA";
   }
-  if (state.meta.workflow_url) $("#workflowButton").href = state.meta.workflow_url;
-  else $("#workflowButton").hidden = true;
 }
 
 function renderMetrics() {
@@ -279,7 +295,7 @@ function renderProjections() {
       <div class="projection-value">${Number(row.projection).toFixed(1)}</div>
       <strong>${escapeHtml(row.market)}</strong>
       <p class="recent-values">Recent: ${(row.recent || []).map((value) => Number(value).toFixed(0)).join(" · ")}</p>
-      <div class="projection-foot"><span>${pct(row.confidence)} confidence</span><span>SD ${Number(row.standard_deviation || 0).toFixed(1)}</span><span>${Number(row.trend) >= 0 ? "▲" : "▼"} ${Math.abs(Number(row.trend) || 0).toFixed(1)}</span></div>
+      <div class="projection-foot"><span>${pct(row.confidence)} confidence</span><span>${Number(row.current_season_samples) || 0} current</span><span>SD ${Number(row.standard_deviation || 0).toFixed(1)}</span><span>${Number(row.trend) >= 0 ? "▲" : "▼"} ${Math.abs(Number(row.trend) || 0).toFixed(1)}</span></div>
     </article>`).join("");
 }
 
@@ -326,11 +342,15 @@ function renderModel() {
   $("#sourceHealth").innerHTML = `
     <div class="source-row"><span>League</span><strong>NFL only</strong></div>
     <div class="source-row"><span>Combined source</span><strong>${escapeHtml(source.source || "Unavailable")}</strong></div>
+    <div class="source-row"><span>Schedule window</span><strong>${Number(state.meta.lookahead_days) || 21} days</strong></div>
     <div class="source-row"><span>Live price rows</span><strong>${Number(source.priced_quotes) || 0}</strong></div>
+    <div class="source-row"><span>Priced markets</span><strong>${Number(state.meta.counts?.priced_markets) || 0}</strong></div>
     <div class="source-row"><span>Form projections</span><strong>${Number(source.projections) || 0}</strong></div>
+    <div class="source-row"><span>Projected markets</span><strong>${Number(state.meta.counts?.projected_markets) || 0}</strong></div>
     <div class="source-row"><span>Errors</span><strong>${(source.errors || []).length}</strong></div>`;
   $("#modelStatus").textContent = state.meta.model_status || "Model status unavailable.";
   $("#modelNotes").innerHTML = (state.meta.notes || []).map((note) => `<li>${escapeHtml(note)}</li>`).join("");
+  $("#marketCoverage").innerHTML = (state.meta.market_coverage || []).map((market) => `<li>${escapeHtml(market)}</li>`).join("");
 }
 
 function switchView(view) {

@@ -39,6 +39,7 @@ class Projection:
     trend: float
     start_time: str = ""
     source: str = "ESPN public statistics"
+    current_season_samples: int = 0
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
