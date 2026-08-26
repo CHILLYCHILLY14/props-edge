@@ -15,7 +15,7 @@ from pipeline.model import (
     merge_boards,
     select_portfolio,
 )
-from pipeline.providers.espn import _season_type, parse_summaries
+from pipeline.providers.espn import EspnProjectionProvider, _season_type, parse_summaries
 from pipeline.providers.odds_api_io import OddsApiIoProvider
 from pipeline.providers.odds_api_io import parse_event as parse_primary_event
 from pipeline.providers.the_odds_api import parse_event as parse_secondary_event
@@ -103,6 +103,30 @@ class NflOnlyTests(unittest.TestCase):
     def test_non_nfl_provider_input_is_rejected(self) -> None:
         self.assertEqual(parse_primary_event(fixture("odds_api_io_event.json"), "OTHER"), [])
         self.assertEqual(parse_secondary_event(fixture("the_odds_api_event.json"), "OTHER"), [])
+
+
+class EspnFetchTests(unittest.TestCase):
+    def test_fetches_seasons_instead_of_an_invalid_long_range(self) -> None:
+        provider = EspnProjectionProvider(load_settings())
+
+        class FakeClient:
+            calls: list[dict] = []
+
+            def get(self, path, params, retries=2):
+                self.calls.append({"path": path, "params": dict(params)})
+                return {"events": []}
+
+        client = FakeClient()
+        provider.client = client
+        self.assertEqual(provider.fetch("NFL"), [])
+        scoreboard_calls = [
+            call for call in client.calls if call["path"].endswith("/scoreboard")
+        ]
+        self.assertEqual(len(scoreboard_calls), 3)
+        historical = scoreboard_calls[:2]
+        self.assertTrue(all(len(call["params"]["dates"]) == 4 for call in historical))
+        self.assertTrue(all(call["params"]["seasontype"] == 2 for call in historical))
+        self.assertIn("-", scoreboard_calls[2]["params"]["dates"])
 
 
 class OddsAndMarketTests(unittest.TestCase):

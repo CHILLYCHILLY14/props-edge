@@ -50,7 +50,6 @@
     "lookahead_days": 8,
     "primary_event_limit": 500,
     "secondary_max_markets_per_event": 24,
-    "espn_lookback_days": 400,
     "espn_games_per_team": 8,
     "espn_max_completed_games": 144
   }

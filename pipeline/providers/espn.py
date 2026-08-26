@@ -254,16 +254,20 @@ class EspnProjectionProvider:
         path = self.settings["sports"]["NFL"]["espn_path"]
         today = dt.datetime.now(dt.timezone.utc).date()
         fetch = self.settings["fetch"]
-        recent = self.client.get(
-            f"/{path}/scoreboard",
-            {
-                "dates": _date_range(
-                    today - dt.timedelta(days=int(fetch["espn_lookback_days"])),
-                    today,
-                ),
-                "limit": 1000,
-            },
-        )
+        # ESPN rejects very long date ranges (including a 400-day offseason
+        # lookback). Query season identifiers instead so an August refresh can
+        # still use the prior regular season while the new one has no games.
+        recent_events: list[dict[str, Any]] = []
+        for season_year in (today.year - 1, today.year):
+            season = self.client.get(
+                f"/{path}/scoreboard",
+                {
+                    "dates": str(season_year),
+                    "seasontype": 2,
+                    "limit": 1000,
+                },
+            )
+            recent_events.extend(season.get("events") or [])
         upcoming = self.client.get(
             f"/{path}/scoreboard",
             {
@@ -276,7 +280,7 @@ class EspnProjectionProvider:
         )
         completed = [
             event
-            for event in recent.get("events") or []
+            for event in recent_events
             if ((event.get("status") or {}).get("type") or {}).get("completed")
             and _season_type(event) == 2
         ]
