@@ -1,10 +1,10 @@
 {
   "league": "NFL",
-  "generated_at": "2026-08-26T21:19:48.486047+00:00",
+  "generated_at": "2026-08-26T21:51:21.086181+00:00",
   "provider_priority": [
     "Odds-API.io",
     "The Odds API",
-    "ESPN regular-season statistics"
+    "ESPN regular-season statistics and current rosters"
   ],
   "target_book": "DraftKings",
   "configured": {
@@ -14,7 +14,9 @@
   },
   "counts": {
     "priced_quotes": 100,
+    "target_priced_quotes": 0,
     "priced_events": 3,
+    "target_priced_events": 0,
     "priced_markets": 5,
     "board": 0,
     "actionable": 0,
@@ -22,22 +24,25 @@
     "good": 0,
     "leans": 0,
     "watch": 0,
-    "projections": 240,
+    "projections": 2585,
     "projected_markets": 27,
-    "scheduled_projections": 240,
+    "scheduled_projections": 2585,
+    "matchup_adjusted": 2585,
+    "simulator_players": 472,
     "suggested_exposure": 0
   },
   "source_by_sport": {
     "NFL": {
       "source": "Odds-API.io + ESPN regular-season form",
       "priced_quotes": 100,
-      "projections": 240,
+      "target_priced_quotes": 0,
+      "projections": 2585,
       "errors": []
     }
   },
   "lookahead_days": 21,
   "next_scheduled_game": "2026-09-10T00:20Z",
-  "model_status": "Live NFL prices and regular-season player samples are available.",
+  "model_status": "The next 21 days of regular-season schedule and form are ready, but DraftKings player-prop prices have not been returned yet.",
   "ledger_mode": "manual-browser",
   "market_coverage": [
     "Passing yards, touchdowns, attempts, completions, interceptions and longest completion",
@@ -51,7 +56,10 @@
   "notes": [
     "Only NFL player props are collected and published.",
     "Preseason box scores are excluded from every projection and betting decision.",
+    "Current ESPN rosters remove players who are no longer on the upcoming team and supply position and injury context.",
     "Prior-season form is automatically reduced until four current-season games are available.",
+    "Opponent adjustments compare position-level production allowed with the league median, then shrink and cap the result at 12%.",
+    "The 10,000-run matchup simulator refreshes from the same ESPN form and defense data as the betting model.",
     "Touchdowns, field goals, interceptions and sacks use count-stat probability handling and stricter reliability gates.",
     "Sportsbook consensus is never treated as an independent model by itself.",
     "A wager enters My Ledger only after the user reviews the live price and clicks Add.",
