@@ -1,6 +1,6 @@
 {
   "league": "NFL",
-  "generated_at": "2026-08-26T21:55:37.093347+00:00",
+  "generated_at": "2026-08-26T21:58:40.008792+00:00",
   "provider_priority": [
     "Odds-API.io",
     "The Odds API",
@@ -24,13 +24,13 @@
     "good": 0,
     "leans": 0,
     "watch": 0,
-    "projections": 6885,
+    "projections": 5004,
     "projected_markets": 27,
-    "scheduled_projections": 6885,
-    "matchup_adjusted": 6885,
-    "simulator_players": 1253,
-    "roster_verified": 921,
-    "roster_verified_teams": 6,
+    "scheduled_projections": 5004,
+    "matchup_adjusted": 5004,
+    "simulator_players": 894,
+    "roster_verified": 5004,
+    "roster_verified_teams": 32,
     "suggested_exposure": 0
   },
   "source_by_sport": {
@@ -38,7 +38,7 @@
       "source": "Odds-API.io + ESPN regular-season form",
       "priced_quotes": 100,
       "target_priced_quotes": 0,
-      "projections": 6885,
+      "projections": 5004,
       "errors": []
     }
   },
