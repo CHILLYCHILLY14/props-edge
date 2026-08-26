@@ -1,61 +1,47 @@
 {
-  "generated_at": "2026-08-26T07:34:22.345213+00:00",
+  "league": "NFL",
+  "generated_at": "2026-08-26T12:27:41.242135+00:00",
   "provider_priority": [
     "Odds-API.io",
     "The Odds API",
-    "ESPN public statistics"
+    "ESPN regular-season statistics"
   ],
   "target_book": "DraftKings",
-  "keyless_fallback": true,
   "configured": {
     "odds_api_io": true,
     "the_odds_api": true,
     "espn_keyless": true
   },
   "counts": {
-    "priced_quotes": 8530,
-    "board": 5062,
-    "actionable": 236,
-    "best": 178,
-    "good": 29,
-    "leans": 29,
-    "projections": 5368
+    "priced_quotes": 0,
+    "board": 0,
+    "actionable": 0,
+    "best": 0,
+    "good": 0,
+    "leans": 0,
+    "watch": 0,
+    "projections": 0,
+    "suggested_exposure": 0
   },
   "source_by_sport": {
     "NFL": {
-      "source": "ESPN public statistics",
-      "priced_quotes": 0,
-      "projections": 417,
-      "errors": [
-        "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)"
-      ]
-    },
-    "NCAAF": {
       "source": "No source available",
       "priced_quotes": 0,
       "projections": 0,
       "errors": [
-        "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)"
+        "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)",
+        "ESPN regular-season statistics request failed (HTTP 400: \u001f\ufffd\b\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\ufffdVJ\ufffdOIU\ufffd210\ufffdQ\ufffdM-.NL\u0007\ufffd\ufffd\u00123sRS\u0014J\ufffd\u0015\ufffdSK\u0014R\ufffdR\ufffdJ\ufffd\u0015R\ufffdR\n\ufffd3\ufffdJ\ufffd\ufffdj\u0001\u0000\u0000\u0000\ufffd\ufffd\u0003\u0000\ufffd,\u0003\ufffd7\u0000\u0000\u0000)"
       ]
-    },
-    "MLB": {
-      "source": "Odds-API.io + ESPN public statistics",
-      "priced_quotes": 7825,
-      "projections": 2601,
-      "errors": []
-    },
-    "WNBA": {
-      "source": "Odds-API.io + ESPN public statistics",
-      "priced_quotes": 705,
-      "projections": 2350,
-      "errors": []
     }
   },
   "workflow_url": "https://github.com/CHILLYCHILLY14/props-edge/actions/workflows/refresh.yml",
+  "model_status": "NFL data is still thin. The model will not force a wager.",
+  "ledger_mode": "manual-browser",
   "notes": [
-    "API credentials are optional and are read only from GitHub Actions secrets.",
-    "If both odds providers are unavailable, ESPN schedules and box-score statistics produce projection-only rows.",
-    "When DraftKings prices exist without enough consensus books, ESPN projections can price the line conservatively.",
-    "Action Network and OddsShark are not scraped because automated extraction is blocked or prohibited."
+    "Only NFL player props are collected and published.",
+    "Preseason box scores are excluded from every projection and betting decision.",
+    "Sportsbook consensus is never treated as an independent model by itself.",
+    "A wager enters My Ledger only after the user reviews the live price and clicks Add.",
+    "API credentials remain GitHub Actions secrets and are never written to site data."
   ]
 }
