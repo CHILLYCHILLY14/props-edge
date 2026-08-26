@@ -19,7 +19,17 @@ market were not portfolio-deduplicated.
 ## Current decision rules
 
 - Only NFL regular-season player history is used.
+- The schedule and market search spans 21 days; a wager still requires a
+  currently posted target-book price.
 - Up to eight games per team are selected across the league.
+- Prior-season form receives 65% of normal projection influence, increasing to
+  full weight after four current-season games.
+- Low-count props use Poisson plus empirical probabilities; integer lines retain
+  explicit push probability.
+- Touchdowns, field goals, interceptions, sacks, and longest-play props require
+  at least six regular-season samples and receive a volatility reduction.
+- Field goals, extra points, kicking points, and supported combined yardage and
+  touchdown markets are built from actual game-level box scores.
 - Market-only rows are watches and cannot qualify.
 - A matched player and market projection is required.
 - Complete target-book Over/Under prices are required.

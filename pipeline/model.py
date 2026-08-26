@@ -49,6 +49,33 @@ def _normal_cdf(value: float) -> float:
     return 0.5 * (1 + math.erf(value / math.sqrt(2)))
 
 
+def _poisson_pmf(mean: float, value: int) -> float:
+    if value < 0:
+        return 0.0
+    safe_mean = max(0.0001, float(mean))
+    return math.exp(-safe_mean + value * math.log(safe_mean) - math.lgamma(value + 1))
+
+
+def _poisson_cdf(mean: float, value: int) -> float:
+    if value < 0:
+        return 0.0
+    return min(1.0, sum(_poisson_pmf(mean, index) for index in range(value + 1)))
+
+
+def _poisson_over_under(mean: float, line: float) -> tuple[float, float, float]:
+    """Return over, under and push probabilities for a count-stat line."""
+    integer_line = abs(line - round(line)) < 1e-9
+    floor_line = math.floor(line)
+    if integer_line:
+        point = int(round(line))
+        over = 1 - _poisson_cdf(mean, point)
+        under = _poisson_cdf(mean, point - 1)
+        push = _poisson_pmf(mean, point)
+        return over, under, push
+    over = 1 - _poisson_cdf(mean, floor_line)
+    return over, 1 - over, 0.0
+
+
 def _compress(value: float, ceiling: float) -> float:
     if not value or ceiling <= 0:
         return value
@@ -198,6 +225,30 @@ def _sd_floor(market: str, projection: float) -> float:
     return 0.75
 
 
+def _is_volatile_market(market: str) -> bool:
+    key = _market_key(market)
+    return any(
+        token in key
+        for token in ("touchdowns", "interceptions", "fieldgoals", "extrapoints", "sacks", "longest")
+    )
+
+
+def _market_reliability(market: str, cfg: dict[str, Any]) -> float:
+    key = _market_key(market)
+    if "longest" in key:
+        return float(cfg.get("longest_market_weight", 0.70))
+    if _is_volatile_market(market):
+        return float(cfg.get("volatile_market_weight", 0.78))
+    return 1.0
+
+
+def _season_maturity(projection: Projection, cfg: dict[str, Any]) -> float:
+    prior_weight = max(0.0, min(1.0, float(cfg.get("prior_season_weight", 1.0))))
+    current_samples = max(0, int(getattr(projection, "current_season_samples", 0)))
+    full_weight_games = max(1, int(cfg.get("current_season_full_weight_games", 4)))
+    return prior_weight + (1 - prior_weight) * min(1.0, current_samples / full_weight_games)
+
+
 def _projection_probabilities(
     quote: PropQuote, projection: Projection
 ) -> tuple[float, float, float] | None:
@@ -227,10 +278,21 @@ def _projection_probabilities(
         _sd_floor(quote.market, mean),
     )
     integer_line = abs(line - round(line)) < 1e-9
+    low_count = any(
+        token in market_key
+        for token in ("touchdowns", "interceptions", "fieldgoals", "extrapoints", "sacks")
+    )
+    if low_count:
+        distribution_over, distribution_under, distribution_push = _poisson_over_under(mean, line)
+    elif integer_line:
+        distribution_over = 1 - _normal_cdf((line + 0.5 - mean) / deviation)
+        distribution_under = _normal_cdf((line - 0.5 - mean) / deviation)
+        distribution_push = max(0.0, 1 - distribution_over - distribution_under)
+    else:
+        distribution_over = 1 - _normal_cdf((line - mean) / deviation)
+        distribution_under = 1 - distribution_over
+        distribution_push = 0.0
     if integer_line:
-        normal_over = 1 - _normal_cdf((line + 0.5 - mean) / deviation)
-        normal_under = _normal_cdf((line - 0.5 - mean) / deviation)
-        normal_push = max(0.0, 1 - normal_over - normal_under)
         over_count = sum(value > line for value in recent)
         under_count = sum(value < line for value in recent)
         push_count = samples - over_count - under_count
@@ -238,17 +300,14 @@ def _projection_probabilities(
         empirical_under = (under_count + 0.5) / (samples + 1.5)
         empirical_push = (push_count + 0.5) / (samples + 1.5)
     else:
-        normal_over = 1 - _normal_cdf((line - mean) / deviation)
-        normal_under = 1 - normal_over
-        normal_push = 0.0
         over_count = sum(value > line for value in recent)
         empirical_over = (over_count + 1) / (samples + 2)
         empirical_under = 1 - empirical_over
         empirical_push = 0.0
-    normal_weight = 0.62
-    over = normal_weight * normal_over + (1 - normal_weight) * empirical_over
-    under = normal_weight * normal_under + (1 - normal_weight) * empirical_under
-    push = normal_weight * normal_push + (1 - normal_weight) * empirical_push
+    distribution_weight = 0.58 if low_count else 0.62
+    over = distribution_weight * distribution_over + (1 - distribution_weight) * empirical_over
+    under = distribution_weight * distribution_under + (1 - distribution_weight) * empirical_under
+    push = distribution_weight * distribution_push + (1 - distribution_weight) * empirical_push
     total = over + under + push
     if total <= 0:
         return None
@@ -296,8 +355,11 @@ def _tier_and_reason(
         return "PASS", "A real prop line is required"
     if quote.side in ("over", "under") and target_fair is None:
         return "PASS", "Complete two-sided target-book prices are required"
-    if samples < int(cfg["minimum_samples"]):
-        return "PASS", f"Only {samples} regular-season samples; {cfg['minimum_samples']} required"
+    required_samples = int(cfg["minimum_samples"])
+    if _is_volatile_market(quote.market):
+        required_samples = max(required_samples, int(cfg.get("volatile_minimum_samples", required_samples)))
+    if samples < required_samples:
+        return "PASS", f"Only {samples} regular-season samples; {required_samples} required for this market"
     if confidence < float(cfg["minimum_confidence"]):
         return "PASS", "Projection confidence is below the Lean gate"
     if not _allowed_price(quote, cfg):
@@ -388,10 +450,12 @@ def evaluate_quotes_against_projections(
             samples = int(projection.samples)
             confidence = max(0.0, min(0.75, float(projection.confidence)))
             maturity = min(1.0, samples / max(1, int(cfg["full_sample_size"])))
+            season_maturity = _season_maturity(projection, cfg)
+            market_reliability = _market_reliability(quote.market, cfg)
             projection_weight = min(
                 float(cfg["maximum_projection_weight"]),
                 confidence * maturity,
-            )
+            ) * season_maturity * market_reliability
             model_conditional = (
                 market_conditional
                 + (projection_conditional - market_conditional) * projection_weight
@@ -418,7 +482,7 @@ def evaluate_quotes_against_projections(
                 model_win,
                 model_loss,
                 quote.price_decimal,
-                confidence,
+                confidence * season_maturity * market_reliability,
                 samples,
                 cfg,
             )
@@ -433,6 +497,8 @@ def evaluate_quotes_against_projections(
                 if external_books
                 else "NFL form + target price"
             )
+            if season_maturity < 0.999:
+                model_label = model_label.replace("NFL form", "Prior-season-weighted NFL form")
             board.append(
                 {
                     **quote.to_dict(),
@@ -461,6 +527,10 @@ def evaluate_quotes_against_projections(
                     "projection": projection.projection,
                     "projection_samples": samples,
                     "projection_standard_deviation": projection.standard_deviation,
+                    "current_season_samples": int(getattr(projection, "current_season_samples", 0)),
+                    "projection_weight": round(projection_weight, 5),
+                    "season_maturity": round(season_maturity, 5),
+                    "market_reliability": round(market_reliability, 5),
                     "raw_projection_market_gap": round(raw_projection_gap, 5),
                 }
             )

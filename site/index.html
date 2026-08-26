@@ -6,6 +6,9 @@
     <meta name="theme-color" content="#071019" />
     <meta name="description" content="NFL-only player prop projections, live prices, no-vig market comparisons, and a manual wager ledger." />
     <title>NFL Props Edge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&amp;family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -22,24 +25,29 @@
           <button data-view="ledger">My Ledger</button>
           <button data-view="model">Model &amp; Sources</button>
         </nav>
-        <a id="workflowButton" class="refresh-link" href="#" target="_blank" rel="noopener">Run update</a>
       </div>
     </header>
 
     <main class="shell">
       <section class="masthead">
-        <div>
-          <p class="eyebrow">NFL PLAYER PROP COMMAND DESK</p>
-          <h1>Find the number.<br /><span>Respect the uncertainty.</span></h1>
-          <p class="lede">Live DraftKings prices are compared with complete no-vig markets and conservative NFL regular-season form. Thin data stays a watch—not a forced bet.</p>
+        <div class="masthead-copy">
+          <p class="eyebrow">NFL PLAYER PROP COMMAND DESK · 2026</p>
+          <h1>Sharper props.<br /><span>Stricter decisions.</span></h1>
+          <p class="lede">DraftKings prices meet complete no-vig markets, conservative regular-season form, and market-specific probability checks. No posted price means no wager—never a made-up edge.</p>
+          <div class="coverage-chips" aria-label="Core NFL prop markets">
+            <span>Touchdowns</span><span>Passing</span><span>Rushing</span><span>Receiving</span><span>Field goals</span>
+          </div>
         </div>
-        <div class="masthead-badge">
-          <span class="pulse"></span>
-          <div><strong id="feedState">LOADING</strong><small id="lastUpdated">Waiting for data</small></div>
-        </div>
+        <aside class="readiness-panel" aria-label="Market readiness">
+          <div class="readiness-top"><span>MARKET READINESS</span><strong id="readinessState">CHECKING</strong></div>
+          <div id="stageForm" class="readiness-step waiting"><i>01</i><div><strong>Player form</strong><small>Regular-season samples</small></div><b>WAIT</b></div>
+          <div id="stagePrices" class="readiness-step waiting"><i>02</i><div><strong>Book prices</strong><small>Complete target market</small></div><b>WAIT</b></div>
+          <div id="stageQualify" class="readiness-step locked"><i>03</i><div><strong>Qualification</strong><small>Edge + value + safety gates</small></div><b>LOCKED</b></div>
+          <div class="feed-stamp"><span class="pulse"></span><div><strong id="feedState">LOADING</strong><small id="lastUpdated">Waiting for data</small></div></div>
+        </aside>
       </section>
 
-      <section id="statusBanner" class="status-banner loading">Loading the latest NFL prop board…</section>
+      <section id="statusBanner" class="status-banner loading" aria-live="polite">Loading the latest NFL prop board…</section>
 
       <section class="kpi-strip" aria-label="NFL props summary">
         <article><span>Qualified</span><strong id="metricQualified">—</strong><small>Best + Good + Lean</small></article>
@@ -138,15 +146,16 @@
         </div>
         <div class="method-grid">
           <article class="panel"><span class="step">01</span><h3>Real NFL data only</h3><p>Live prop prices come from the configured odds providers. ESPN supplies completed regular-season box scores. Preseason is excluded.</p></article>
-          <article class="panel"><span class="step">02</span><h3>Robust projection</h3><p>Up to eight recent games feed a recency-weighted, median-stabilized projection with sample variability and empirical hit rates.</p></article>
+          <article class="panel"><span class="step">02</span><h3>Early-season restraint</h3><p>Up to eight recent games feed a recency-weighted, median-stabilized projection. Prior-season influence is reduced until four current-season games exist.</p></article>
           <article class="panel"><span class="step">03</span><h3>Power-method no-vig</h3><p>Complete Over/Under or Yes/No prices are de-vigged. External books are preferred; DraftKings is the target price.</p></article>
-          <article class="panel"><span class="step">04</span><h3>Separate value checks</h3><p>Model edge compares the blended NFL probability with the no-vig market. Price value separately measures expected return at the offered odds.</p></article>
+          <article class="panel"><span class="step">04</span><h3>Market-specific probability</h3><p>Yardage uses a continuous distribution; touchdowns, field goals, interceptions and sacks use count-stat handling with explicit push probability.</p></article>
           <article class="panel"><span class="step">05</span><h3>Fail-closed gates</h3><p>Thin samples, low confidence, incomplete prices, excessive disagreement, extreme odds, correlated alternates, and exposure excess remain passes.</p></article>
           <article class="panel"><span class="step">06</span><h3>Conservative staking</h3><p>Suggested stakes use 0.15 Kelly, then scale for confidence and data maturity. PASS rows always receive C$0.</p></article>
         </div>
         <div class="source-grid">
           <article class="panel"><h3>Feed health</h3><div id="sourceHealth"></div></article>
           <article class="panel"><h3>Current model status</h3><p id="modelStatus">Loading…</p><ul id="modelNotes"></ul></article>
+          <article class="panel"><h3>Prop market coverage</h3><ul id="marketCoverage"></ul></article>
           <article class="panel"><h3>Important limit</h3><p>Public data cannot fully observe late injury news, snap restrictions, weather changes, or a sportsbook line move after refresh. Verify each card before placing it.</p></article>
         </div>
       </section>

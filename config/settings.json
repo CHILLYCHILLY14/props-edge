@@ -24,6 +24,11 @@
     "good_minimum_confidence": 0.52,
     "best_minimum_confidence": 0.62,
     "maximum_projection_weight": 0.55,
+    "prior_season_weight": 0.65,
+    "current_season_full_weight_games": 4,
+    "volatile_market_weight": 0.78,
+    "longest_market_weight": 0.70,
+    "volatile_minimum_samples": 6,
     "max_raw_market_gap": 0.18,
     "lean_edge": 0.025,
     "good_edge": 0.05,
@@ -47,9 +52,9 @@
     "max_props_per_player": 2
   },
   "fetch": {
-    "lookahead_days": 8,
+    "lookahead_days": 21,
     "primary_event_limit": 500,
-    "secondary_max_markets_per_event": 24,
+    "secondary_max_markets_per_event": 32,
     "espn_games_per_team": 8,
     "espn_max_completed_games": 144
   }
