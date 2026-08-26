@@ -40,6 +40,20 @@ class Projection:
     start_time: str = ""
     source: str = "ESPN public statistics"
     current_season_samples: int = 0
+    position: str = ""
+    opponent: str = ""
+    venue: str = ""
+    event_id: str = ""
+    base_projection: float | None = None
+    opponent_defense_average: float | None = None
+    league_defense_average: float | None = None
+    opponent_defense_rank: int | None = None
+    opponent_defense_teams: int = 0
+    opponent_defense_samples: int = 0
+    opponent_defense_current_samples: int = 0
+    defense_adjustment: float = 0.0
+    matchup_quality: str = "Unknown"
+    injury_status: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

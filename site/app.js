@@ -10,9 +10,11 @@ const state = {
   search: "",
   bankroll: 500,
   schemaReady: false,
+  simulator: { game: "", player: "", market: "", line: null, side: "over" },
 };
 
 const L = window.NFLPropsLedger;
+const S = window.NFLPropsSimulator;
 const SETTINGS_KEY = "nfl-props-edge-settings-v2";
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -105,7 +107,9 @@ async function loadData() {
     ? (Array.isArray(projections) ? projections : []).filter((row) => row.sport === "NFL")
     : [];
   populateDates();
+  populateSimulator();
   render();
+  renderSimulator();
 }
 
 function populateDates() {
@@ -155,7 +159,8 @@ function renderStatus() {
   const source = (state.meta.source_by_sport || {}).NFL || {};
   const lookahead = Number(state.meta.lookahead_days) || 21;
   const formReady = Number(source.projections) > 0;
-  const pricesReady = Number(source.priced_quotes) > 0;
+  const targetPriceRows = Number(source.target_priced_quotes ?? counts.target_priced_quotes ?? state.board.length) || 0;
+  const pricesReady = targetPriceRows > 0;
   const qualified = Number(counts.actionable) > 0;
   const setStage = (selector, status, label) => {
     const stage = $(selector);
@@ -182,9 +187,9 @@ function renderStatus() {
     banner.className = "status-banner warn";
     banner.textContent = `NFL data is ${Math.floor(ageHours)} hours old. Treat every displayed price as stale and verify it at the sportsbook.`;
     $("#feedState").textContent = "STALE";
-  } else if (Number(source.priced_quotes) > 0) {
+  } else if (pricesReady) {
     banner.className = "status-banner ok";
-    banner.textContent = `${counts.actionable || 0} qualified NFL props from ${source.priced_quotes} live price rows. ${state.meta.model_status || ""}`;
+    banner.textContent = `${counts.actionable || 0} qualified NFL props from ${targetPriceRows} live ${state.meta.target_book || "target-book"} price rows. ${state.meta.model_status || ""}`;
     $("#feedState").textContent = "LIVE";
   } else if (Number(source.projections) > 0) {
     banner.className = "status-banner warn";
@@ -294,9 +299,168 @@ function renderProjections() {
       <p class="game-line">${escapeHtml(formatStart(row.start_time))} · ${escapeHtml(row.matchup)}</p>
       <div class="projection-value">${Number(row.projection).toFixed(1)}</div>
       <strong>${escapeHtml(row.market)}</strong>
+      <p class="matchup-line"><span>${escapeHtml(row.opponent || "Opponent pending")}</span><b class="${String(row.matchup_quality || "unknown").toLowerCase()}">${escapeHtml(row.matchup_quality || "Unknown")}</b><em>${Number(row.defense_adjustment) >= 0 ? "+" : ""}${pct(row.defense_adjustment)}</em></p>
       <p class="recent-values">Recent: ${(row.recent || []).map((value) => Number(value).toFixed(0)).join(" · ")}</p>
       <div class="projection-foot"><span>${pct(row.confidence)} confidence</span><span>${Number(row.current_season_samples) || 0} current</span><span>SD ${Number(row.standard_deviation || 0).toFixed(1)}</span><span>${Number(row.trend) >= 0 ? "▲" : "▼"} ${Math.abs(Number(row.trend) || 0).toFixed(1)}</span></div>
     </article>`).join("");
+}
+
+function simulatorGameKey(row) {
+  return String(row.event_id || `${row.start_time}|${row.matchup}`);
+}
+
+function simulatorRows() {
+  return state.projections
+    .filter((row) => row.sport === "NFL" && Number.isFinite(Number(row.projection)))
+    .sort((a, b) => String(a.start_time).localeCompare(String(b.start_time)) || a.player.localeCompare(b.player) || a.market.localeCompare(b.market));
+}
+
+function setSelectOptions(selector, entries, selected) {
+  const select = $(selector);
+  select.innerHTML = entries.map(([value, label]) => `<option value="${escapeHtml(value)}">${escapeHtml(label)}</option>`).join("");
+  if (entries.some(([value]) => value === selected)) select.value = selected;
+  else if (entries.length) select.value = entries[0][0];
+  return select.value;
+}
+
+function selectedSimulatorRow() {
+  return simulatorRows().find((row) => (
+    simulatorGameKey(row) === state.simulator.game
+    && row.player === state.simulator.player
+    && row.market === state.simulator.market
+  ));
+}
+
+function populateSimulator({ resetPlayer = false, resetMarket = false, resetLine = false } = {}) {
+  const rows = simulatorRows();
+  const gameMap = new Map();
+  rows.forEach((row) => {
+    const key = simulatorGameKey(row);
+    if (!gameMap.has(key)) gameMap.set(key, `${formatStart(row.start_time)} · ${row.matchup}`);
+  });
+  state.simulator.game = setSelectOptions("#simGame", [...gameMap.entries()], state.simulator.game);
+
+  const gameRows = rows.filter((row) => simulatorGameKey(row) === state.simulator.game);
+  const playerMap = new Map();
+  gameRows.forEach((row) => {
+    if (!playerMap.has(row.player)) playerMap.set(row.player, `${row.player} · ${row.position || row.team}`);
+  });
+  if (resetPlayer) state.simulator.player = "";
+  state.simulator.player = setSelectOptions("#simPlayer", [...playerMap.entries()], state.simulator.player);
+
+  const playerRows = gameRows.filter((row) => row.player === state.simulator.player);
+  const markets = [...new Set(playerRows.map((row) => row.market))].sort();
+  if (resetMarket) state.simulator.market = "";
+  state.simulator.market = setSelectOptions("#simMarket", markets.map((market) => [market, market]), state.simulator.market);
+
+  const row = selectedSimulatorRow();
+  const signature = row ? `${simulatorGameKey(row)}|${row.player}|${row.market}` : "";
+  if (row && (resetLine || state.simulator.signature !== signature || state.simulator.line == null)) {
+    state.simulator.line = S.defaultLine(row);
+    $("#simLine").value = state.simulator.line;
+  }
+  state.simulator.signature = signature;
+  $("#simGame").disabled = !rows.length;
+  $("#simPlayer").disabled = !playerRows.length;
+  $("#simMarket").disabled = !markets.length;
+  $("#simLine").disabled = !row;
+  $("#simSide").disabled = !row;
+  $("#runSimulator").disabled = !row;
+}
+
+function matchingLiveQuote(row, side, line) {
+  const candidates = state.board.filter((quote) => (
+    normalized(quote.player) === normalized(row.player)
+    && normalized(quote.market) === normalized(row.market)
+    && dateKey(quote.start_time) === dateKey(row.start_time)
+    && quote.side === side
+  ));
+  return candidates.sort((a, b) => Math.abs(Number(a.line) - line) - Math.abs(Number(b.line) - line))[0] || null;
+}
+
+function renderSimulator() {
+  const row = selectedSimulatorRow();
+  const empty = $("#simulatorEmpty");
+  const resultsPanel = $("#simulatorResults");
+  if (!row || !S) {
+    empty.hidden = false;
+    resultsPanel.hidden = true;
+    return;
+  }
+  empty.hidden = true;
+  resultsPanel.hidden = false;
+  const line = Math.max(0, Number($("#simLine").value) || S.defaultLine(row));
+  state.simulator.line = line;
+  state.simulator.side = $("#simSide").value;
+  const simulation = S.run(row, line, 10000);
+  const isOver = state.simulator.side === "over";
+  const hitProbability = isOver ? simulation.overProbability : simulation.underProbability;
+  const fairOdds = isOver ? simulation.overFairAmerican : simulation.underFairAmerican;
+  const otherSide = isOver ? "Under" : "Over";
+  const sideLabel = isOver ? "Over" : "Under";
+  const anytime = String(row.market).toLowerCase().includes("anytime touchdown");
+  $("#simSide option[value='over']").textContent = anytime ? "Yes" : "Over";
+  $("#simSide option[value='under']").textContent = anytime ? "No" : "Under";
+  const displayedSide = anytime ? (isOver ? "Yes" : "No") : sideLabel;
+
+  $("#simMarketLabel").textContent = `${marketGroup(row.market)} · ${row.market}`;
+  $("#simPlayerLabel").textContent = row.player;
+  $("#simMatchupLabel").textContent = `${formatStart(row.start_time)} · ${row.matchup} · ${row.venue || "Venue pending"}`;
+  $("#simSideLabel").textContent = displayedSide.toUpperCase();
+  $("#simHitProbability").textContent = pct(hitProbability);
+  $("#simProbabilityRing").style.background = `conic-gradient(var(--cyan) 0 ${Math.max(0, Math.min(100, hitProbability * 100))}%, rgba(255,255,255,.07) 0)`;
+  $("#simProbabilityRing").setAttribute("aria-label", `${displayedSide} hit probability ${pct(hitProbability)}`);
+
+  const call = hitProbability >= 0.58
+    ? `${displayedSide} leads the simulation`
+    : hitProbability >= 0.52
+      ? `${displayedSide} has a slight simulation lean`
+      : `${anytime ? (isOver ? "No" : "Yes") : otherSide} appears more often`;
+  $("#simOutcomeCall").textContent = call;
+  $("#simOutcomeDetail").textContent = `${displayedSide} ${line.toFixed(1)} occurred in ${Math.round(hitProbability * simulation.iterations).toLocaleString()} of ${simulation.iterations.toLocaleString()} trials. Scenario only; sportsbook qualification remains separate.`;
+  $("#simBaseProjection").textContent = Number(row.base_projection ?? row.projection).toFixed(1);
+  $("#simAdjustedProjection").textContent = Number(row.projection).toFixed(1);
+  $("#simAverage").textContent = simulation.average.toFixed(1);
+  $("#simRange").textContent = `${simulation.floor.toFixed(1)}–${simulation.ceiling.toFixed(1)}`;
+  $("#simFairOdds").textContent = american(fairOdds);
+
+  const quoteSide = anytime ? (isOver ? "yes" : "no") : state.simulator.side;
+  const live = matchingLiveQuote(row, quoteSide, line);
+  $("#simLivePrice").textContent = live
+    ? `${live.side.toUpperCase()} ${live.line == null ? "" : Number(live.line).toFixed(1)} ${american(live.price_american)}`
+    : "NOT POSTED";
+
+  const quality = String(row.matchup_quality || "Unknown");
+  const badge = $("#simMatchupBadge");
+  badge.className = `matchup-badge ${quality.toLowerCase()}`;
+  badge.textContent = quality.toUpperCase();
+  $("#simOpponentLabel").textContent = `${row.opponent || "Opponent"} vs ${row.position || "player"} ${row.market}`;
+  const rank = Number(row.opponent_defense_rank);
+  const teams = Number(row.opponent_defense_teams);
+  $("#simDefenseRank").textContent = rank > 0 && teams > 0 ? `#${rank} of ${teams}` : "RANK PENDING";
+  const rankPercent = rank > 0 && teams > 1 ? ((rank - 1) / (teams - 1)) * 100 : 50;
+  $("#simRankBar").style.width = `${Math.max(3, Math.min(100, rankPercent))}%`;
+  $("#simDefenseAverage").textContent = row.opponent_defense_average == null ? "—" : Number(row.opponent_defense_average).toFixed(1);
+  $("#simDefenseSamples").textContent = row.opponent_defense_samples
+    ? `${row.opponent_defense_samples} games · ${row.opponent_defense_current_samples || 0} current-season`
+    : "No matched sample";
+  $("#simLeagueAverage").textContent = row.league_defense_average == null ? "—" : Number(row.league_defense_average).toFixed(1);
+  $("#simAdjustment").textContent = `${Number(row.defense_adjustment) >= 0 ? "+" : ""}${pct(row.defense_adjustment)}`;
+  $("#simAdjustment").className = Number(row.defense_adjustment) > 0 ? "positive" : Number(row.defense_adjustment) < 0 ? "negative" : "";
+
+  $("#simSampleLabel").textContent = `${row.samples || 0} regular-season games · ${pct(row.confidence)} confidence`;
+  $("#simRecentResults").innerHTML = (row.recent || []).map((value, index) => `<span><small>G${index + 1}</small><strong>${Number(value).toFixed(1)}</strong></span>`).join("");
+  const checks = [
+    { label: "Preseason excluded", pass: true },
+    { label: `${row.samples || 0} player samples`, pass: Number(row.samples) >= 4 },
+    { label: `${row.opponent_defense_samples || 0} opponent samples`, pass: Number(row.opponent_defense_samples) >= 4 },
+    ...simulation.risks.map((label) => ({ label, pass: false })),
+  ];
+  $("#simRiskFlags").innerHTML = checks.map((item) => `<span class="${item.pass ? "pass" : "risk"}">${item.pass ? "✓" : "!"} ${escapeHtml(item.label)}</span>`).join("");
+
+  const generated = new Date(state.meta?.generated_at);
+  const ageHours = (Date.now() - generated.getTime()) / 3600000;
+  $("#simDataState").textContent = Number.isNaN(generated.getTime()) ? "TIME UNKNOWN" : ageHours > 12 ? "STALE DATA" : "AUTO-UPDATED";
 }
 
 function renderLedger() {
@@ -344,8 +508,11 @@ function renderModel() {
     <div class="source-row"><span>Combined source</span><strong>${escapeHtml(source.source || "Unavailable")}</strong></div>
     <div class="source-row"><span>Schedule window</span><strong>${Number(state.meta.lookahead_days) || 21} days</strong></div>
     <div class="source-row"><span>Live price rows</span><strong>${Number(source.priced_quotes) || 0}</strong></div>
+    <div class="source-row"><span>${escapeHtml(state.meta.target_book || "Target-book")} rows</span><strong>${Number(source.target_priced_quotes ?? state.meta.counts?.target_priced_quotes) || 0}</strong></div>
     <div class="source-row"><span>Priced markets</span><strong>${Number(state.meta.counts?.priced_markets) || 0}</strong></div>
     <div class="source-row"><span>Form projections</span><strong>${Number(source.projections) || 0}</strong></div>
+    <div class="source-row"><span>Matchup-adjusted rows</span><strong>${Number(state.meta.counts?.matchup_adjusted) || 0}</strong></div>
+    <div class="source-row"><span>Simulator players</span><strong>${Number(state.meta.counts?.simulator_players) || 0}</strong></div>
     <div class="source-row"><span>Projected markets</span><strong>${Number(state.meta.counts?.projected_markets) || 0}</strong></div>
     <div class="source-row"><span>Errors</span><strong>${(source.errors || []).length}</strong></div>`;
   $("#modelStatus").textContent = state.meta.model_status || "Model status unavailable.";
@@ -367,7 +534,10 @@ function download(name, content, type) {
   URL.revokeObjectURL(link.href);
 }
 
-$$(".nav-tabs button").forEach((button) => button.addEventListener("click", () => switchView(button.dataset.view)));
+$$(".nav-tabs button").forEach((button) => button.addEventListener("click", () => {
+  switchView(button.dataset.view);
+  if (button.dataset.view === "simulator") renderSimulator();
+}));
 $("#dateSelect").addEventListener("change", (event) => { state.date = event.target.value; render(); });
 $("#searchInput").addEventListener("input", (event) => { state.search = event.target.value.trim().toLowerCase(); render(); });
 $$(".market-filter button").forEach((button) => button.addEventListener("click", () => {
@@ -375,6 +545,33 @@ $$(".market-filter button").forEach((button) => button.addEventListener("click",
   state.market = button.dataset.market;
   render();
 }));
+$("#simGame").addEventListener("change", (event) => {
+  state.simulator.game = event.target.value;
+  populateSimulator({ resetPlayer: true, resetMarket: true, resetLine: true });
+  renderSimulator();
+});
+$("#simPlayer").addEventListener("change", (event) => {
+  state.simulator.player = event.target.value;
+  populateSimulator({ resetMarket: true, resetLine: true });
+  renderSimulator();
+});
+$("#simMarket").addEventListener("change", (event) => {
+  state.simulator.market = event.target.value;
+  populateSimulator({ resetLine: true });
+  renderSimulator();
+});
+$("#simLine").addEventListener("change", renderSimulator);
+$("#simSide").addEventListener("change", renderSimulator);
+$("#runSimulator").addEventListener("click", () => {
+  const button = $("#runSimulator");
+  button.textContent = "Running 10,000 trials…";
+  button.disabled = true;
+  requestAnimationFrame(() => {
+    renderSimulator();
+    button.textContent = "Run 10,000 simulations";
+    button.disabled = false;
+  });
+});
 $("#bankrollInput").addEventListener("change", (event) => {
   state.bankroll = Math.max(1, Number(event.target.value) || 500);
   saveSettings();

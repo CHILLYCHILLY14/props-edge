@@ -22,6 +22,7 @@
           <button class="active" data-view="best">Best Bets</button>
           <button data-view="board">Full Board</button>
           <button data-view="projections">Projections</button>
+          <button data-view="simulator">Matchup Lab</button>
           <button data-view="ledger">My Ledger</button>
           <button data-view="model">Model &amp; Sources</button>
         </nav>
@@ -116,6 +117,75 @@
         <div id="projectionBoard" class="projection-grid"></div>
       </section>
 
+      <section id="view-simulator" class="view">
+        <div class="section-title">
+          <div><p class="eyebrow blue">PLAYER VS DEFENSE</p><h2>10,000-Run Matchup Lab</h2></div>
+          <p>Select an upcoming player and market, adjust the scenario line, and compare recent player form with the opponent's position-level production allowed.</p>
+        </div>
+        <div class="simulator-shell">
+          <aside class="simulator-controls panel">
+            <div class="simulator-control-head"><span>SCENARIO INPUTS</span><strong id="simDataState">LIVE DATA</strong></div>
+            <label><span>Matchup</span><select id="simGame"></select></label>
+            <label><span>Player</span><select id="simPlayer"></select></label>
+            <label><span>Prop market</span><select id="simMarket"></select></label>
+            <div class="sim-control-row">
+              <label><span>Scenario line</span><input id="simLine" type="number" min="0" step="0.5" inputmode="decimal" /></label>
+              <label><span>View side</span><select id="simSide"><option value="over">Over</option><option value="under">Under</option></select></label>
+            </div>
+            <button id="runSimulator" class="sim-run">Run 10,000 simulations</button>
+            <p class="sim-disclaimer">A simulation is not a qualified bet. A wager still requires a complete current DraftKings market and every edge, confidence, price, and exposure gate.</p>
+          </aside>
+
+          <div id="simulatorEmpty" class="empty-state panel" hidden><strong>No matchup simulation is ready</strong><span>Regular-season player and opponent samples will appear automatically after the scheduled refresh.</span></div>
+
+          <div id="simulatorResults" class="simulator-results">
+            <article class="sim-hero panel">
+              <div class="sim-hero-top">
+                <div><p class="eyebrow" id="simMarketLabel">PROP MARKET</p><h3 id="simPlayerLabel">Select a player</h3><p id="simMatchupLabel" class="game-line"></p></div>
+                <span id="simMatchupBadge" class="matchup-badge neutral">NEUTRAL</span>
+              </div>
+              <div class="sim-main-result">
+                <div id="simProbabilityRing" class="probability-ring" role="img" aria-label="Simulation hit probability"><div><strong id="simHitProbability">—</strong><span id="simSideLabel">OVER</span></div></div>
+                <div class="sim-call">
+                  <span>SIMULATED OUTCOME</span>
+                  <strong id="simOutcomeCall">Waiting for inputs</strong>
+                  <p id="simOutcomeDetail">The result will update from 10,000 deterministic trials.</p>
+                </div>
+              </div>
+              <div class="sim-stat-grid">
+                <div><span>Form baseline</span><strong id="simBaseProjection">—</strong></div>
+                <div><span>Matchup projection</span><strong id="simAdjustedProjection">—</strong></div>
+                <div><span>Sim average</span><strong id="simAverage">—</strong></div>
+                <div><span>Middle 80%</span><strong id="simRange">—</strong></div>
+                <div><span>Fair odds</span><strong id="simFairOdds">—</strong></div>
+                <div><span>Live target price</span><strong id="simLivePrice">NOT POSTED</strong></div>
+              </div>
+            </article>
+
+            <article class="defense-card panel">
+              <div class="defense-card-head"><div><span>OPPONENT MATCHUP</span><h3 id="simOpponentLabel">Opponent defense</h3></div><strong id="simDefenseRank">—</strong></div>
+              <div class="rank-track" aria-hidden="true"><i id="simRankBar"></i></div>
+              <div class="rank-scale"><span>TOUGHEST</span><span>LEAGUE MEDIAN</span><span>EASIEST</span></div>
+              <div class="defense-compare">
+                <div><span>Opponent allows</span><strong id="simDefenseAverage">—</strong><small id="simDefenseSamples">No sample</small></div>
+                <div><span>League median</span><strong id="simLeagueAverage">—</strong><small>Same position + market</small></div>
+                <div><span>Projection change</span><strong id="simAdjustment">—</strong><small>Capped at ±12%</small></div>
+              </div>
+            </article>
+
+            <article class="sim-evidence panel">
+              <div><span>RECENT PLAYER RESULTS</span><strong id="simSampleLabel">—</strong></div>
+              <div id="simRecentResults" class="recent-result-strip"></div>
+            </article>
+
+            <article class="sim-evidence panel">
+              <div><span>MODEL CHECKS</span><strong>Fail-closed safeguards</strong></div>
+              <div id="simRiskFlags" class="risk-flags"></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
       <section id="view-ledger" class="view">
         <div class="section-title ledger-title">
           <div><p class="eyebrow">MANUAL CONFIRMATION ONLY</p><h2>My Ledger</h2><p>Nothing enters here automatically. Add a card only after checking and placing the current price.</p></div>
@@ -151,6 +221,8 @@
           <article class="panel"><span class="step">04</span><h3>Market-specific probability</h3><p>Yardage uses a continuous distribution; touchdowns, field goals, interceptions and sacks use count-stat handling with explicit push probability.</p></article>
           <article class="panel"><span class="step">05</span><h3>Fail-closed gates</h3><p>Thin samples, low confidence, incomplete prices, excessive disagreement, extreme odds, correlated alternates, and exposure excess remain passes.</p></article>
           <article class="panel"><span class="step">06</span><h3>Conservative staking</h3><p>Suggested stakes use 0.15 Kelly, then scale for confidence and data maturity. PASS rows always receive C$0.</p></article>
+          <article class="panel"><span class="step">07</span><h3>Opponent defense adjustment</h3><p>Each player market is compared with position-level production allowed by the upcoming opponent and the league median. The adjustment is reliability-shrunk and capped at ±12%.</p></article>
+          <article class="panel"><span class="step">08</span><h3>10,000-run matchup lab</h3><p>The simulator blends the adjusted distribution with recent empirical results. It reports scenario probabilities and fair odds, but cannot qualify a wager without a current complete target-book market.</p></article>
         </div>
         <div class="source-grid">
           <article class="panel"><h3>Feed health</h3><div id="sourceHealth"></div></article>
@@ -165,6 +237,7 @@
       <div class="shell">NFL Props Edge · Informational use only · Verify the live line, player availability, and limits before wagering.</div>
     </footer>
     <script src="ledger.js" defer></script>
+    <script src="simulator.js" defer></script>
     <script src="app.js" defer></script>
   </body>
 </html>

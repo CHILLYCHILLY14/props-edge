@@ -16,7 +16,13 @@ from pipeline.model import (
     merge_boards,
     select_portfolio,
 )
-from pipeline.providers.espn import EspnProjectionProvider, _nfl_season_year, _season_type, parse_summaries
+from pipeline.providers.espn import (
+    EspnProjectionProvider,
+    _nfl_season_year,
+    _season_type,
+    _team_and_matchups,
+    parse_summaries,
+)
 from pipeline.providers.odds_api_io import OddsApiIoProvider
 from pipeline.providers.odds_api_io import parse_event as parse_primary_event
 from pipeline.providers.the_odds_api import parse_event as parse_secondary_event
@@ -103,8 +109,19 @@ class NflOnlyTests(unittest.TestCase):
             self.assertNotIn(unwanted, text)
         self.assertNotIn("Run update", text)
 
+    def test_static_browser_ids_exist(self) -> None:
+        app = (ROOT / "site" / "app.js").read_text()
+        html = (ROOT / "site" / "index.html").read_text()
+        referenced = set(re.findall(r'\$\("#([A-Za-z][A-Za-z0-9_-]*)"\)', app))
+        declared = set(re.findall(r'id="([A-Za-z][A-Za-z0-9_-]*)"', html))
+        self.assertFalse(referenced - declared, f"Missing HTML ids: {sorted(referenced - declared)}")
+
     def test_schedule_window_reaches_the_opening_slate(self) -> None:
         self.assertGreaterEqual(load_settings()["fetch"]["lookahead_days"], 21)
+        self.assertGreaterEqual(
+            load_settings()["projection_model"]["maximum_projection_rows"],
+            5000,
+        )
 
     def test_non_nfl_provider_input_is_rejected(self) -> None:
         self.assertEqual(parse_primary_event(fixture("odds_api_io_event.json"), "OTHER"), [])
@@ -329,6 +346,14 @@ class ProjectionPricingTests(unittest.TestCase):
         self.assertLess(prior_row["projection_weight"], current_row["projection_weight"])
         self.assertLess(prior_row["season_maturity"], current_row["season_maturity"])
 
+    def test_out_player_cannot_qualify(self) -> None:
+        projection = replace(sample_projection(), injury_status="Out")
+        rows = evaluate_quotes_against_projections(self.quotes, [projection], self.settings)
+        self.assertTrue(rows)
+        self.assertEqual({row["tier"] for row in rows}, {"PASS"})
+        self.assertTrue(all(row["recommended_stake"] == 0 for row in rows))
+        self.assertTrue(all("roster status" in row["reason"] for row in rows))
+
     def test_merge_prefers_projection_evaluation_even_when_it_passes(self) -> None:
         watch = evaluate_quotes(self.quotes, self.settings)
         thin = evaluate_quotes_against_projections(
@@ -382,6 +407,119 @@ class EspnTests(unittest.TestCase):
     def test_preseason_type_is_identified(self) -> None:
         self.assertEqual(_season_type({"season": {"type": 1}}), 1)
         self.assertEqual(_season_type({"season": {"type": 2}}), 2)
+
+    def test_upcoming_schedule_identifies_opponent_and_venue(self) -> None:
+        rows = _team_and_matchups([
+            {
+                "id": "401",
+                "date": "2026-09-13T17:00:00Z",
+                "competitions": [{
+                    "competitors": [
+                        {"homeAway": "home", "team": {"displayName": "Kansas City"}},
+                        {"homeAway": "away", "team": {"displayName": "Buffalo"}},
+                    ]
+                }],
+            }
+        ])
+        self.assertEqual(rows["kansascity"][0]["opponent"], "Buffalo")
+        self.assertEqual(rows["kansascity"][0]["venue"], "Home")
+        self.assertEqual(rows["buffalo"][0]["opponent"], "Kansas City")
+        self.assertEqual(rows["buffalo"][0]["event_id"], "401")
+
+    def test_opponent_allowance_adjusts_projection_conservatively(self) -> None:
+        def game(kansas_yards: int, buffalo_yards: int):
+            return {
+                "_props_edge_season_year": 2026,
+                "boxscore": {
+                    "players": [
+                        {
+                            "team": {"displayName": "Kansas City"},
+                            "statistics": [{
+                                "type": "passing",
+                                "keys": ["passingYards"],
+                                "athletes": [{
+                                    "athlete": {
+                                        "displayName": "Jordan Example",
+                                        "position": {"abbreviation": "QB"},
+                                    },
+                                    "stats": [kansas_yards],
+                                }],
+                            }],
+                        },
+                        {
+                            "team": {"displayName": "Buffalo"},
+                            "statistics": [{
+                                "type": "passing",
+                                "keys": ["passingYards"],
+                                "athletes": [{
+                                    "athlete": {
+                                        "displayName": "Casey Example",
+                                        "position": {"abbreviation": "QB"},
+                                    },
+                                    "stats": [buffalo_yards],
+                                }],
+                            }],
+                        },
+                    ]
+                },
+            }
+
+        schedule = {
+            "kansascity": [{
+                "event_id": "next",
+                "matchup": "Kansas City @ Buffalo",
+                "start_time": "2026-09-13T17:00:00Z",
+                "opponent": "Buffalo",
+                "venue": "Away",
+            }]
+        }
+        rows = parse_summaries(
+            [game(250 + index, 350 + index) for index in range(8)],
+            "NFL",
+            schedule,
+            current_season_year=2026,
+        )
+        passing = next(row for row in rows if row.market == "Passing yards")
+        self.assertEqual(passing.position, "QB")
+        self.assertEqual(passing.opponent, "Buffalo")
+        self.assertEqual(passing.opponent_defense_samples, 8)
+        self.assertEqual(passing.opponent_defense_rank, 1)
+        self.assertLess(passing.defense_adjustment, 0)
+        self.assertLess(passing.projection, passing.base_projection)
+        self.assertGreaterEqual(passing.defense_adjustment, -0.12)
+
+    def test_current_roster_filters_stale_players_and_sets_position(self) -> None:
+        def one_team_game(player: str):
+            return {
+                "_props_edge_season_year": 2026,
+                "boxscore": {"players": [{
+                    "team": {"displayName": "Kansas City"},
+                    "statistics": [{
+                        "type": "receiving",
+                        "keys": ["receivingYards"],
+                        "athletes": [{"athlete": {"displayName": player}, "stats": [70]}],
+                    }],
+                }]},
+            }
+
+        schedule = {"kansascity": [{
+            "matchup": "Buffalo @ Kansas City",
+            "start_time": "2026-09-13T17:00:00Z",
+            "opponent": "Buffalo",
+        }]}
+        roster = {
+            ("kansascity", "activeexample"): {"position": "WR", "injury_status": "Questionable"}
+        }
+        rows = parse_summaries(
+            [one_team_game("Active Example"), one_team_game("Active Example"), one_team_game("Stale Example"), one_team_game("Stale Example")],
+            "NFL",
+            schedule,
+            current_season_year=2026,
+            current_roster=roster,
+        )
+        self.assertEqual({row.player for row in rows}, {"Active Example"})
+        self.assertEqual({row.position for row in rows}, {"WR"})
+        self.assertEqual({row.injury_status for row in rows}, {"Questionable"})
 
     def test_regular_box_scores_build_nfl_markets(self) -> None:
         def summary(yards, touchdowns, targets, receptions, receiving_yards):

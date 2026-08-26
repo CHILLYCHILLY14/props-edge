@@ -22,8 +22,15 @@ market were not portfolio-deduplicated.
 - The schedule and market search spans 21 days; a wager still requires a
   currently posted target-book price.
 - Up to eight games per team are selected across the league.
+- Opponent strength is calculated from position-level production allowed in
+  the same completed regular-season box scores as player form.
+- Defensive allowance is compared with the league median, reliability-shrunk,
+  reduced while it is prior-season-only, and capped at plus or minus 12%.
 - Prior-season form receives 65% of normal projection influence, increasing to
   full weight after four current-season games.
+- Current ESPN rosters filter stale team/player combinations and supply
+  position and injury context; Out, Injured Reserve, Doubtful, Suspended, and
+  Physically Unable statuses cannot qualify.
 - Low-count props use Poisson plus empirical probabilities; integer lines retain
   explicit push probability.
 - Touchdowns, field goals, interceptions, sacks, and longest-play props require
@@ -41,6 +48,8 @@ market were not portfolio-deduplicated.
   minimum-stake, and total-exposure rules are enforced.
 - PASS always means a C$0 suggested stake.
 - My Ledger accepts an entry only after a browser click and a positive stake.
+- The 10,000-run Matchup Lab is scenario analysis only and cannot qualify or
+  add a wager by itself.
 
 ## Honest interpretation
 

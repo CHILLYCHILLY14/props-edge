@@ -67,7 +67,21 @@ def build() -> dict[str, Any]:
     board = select_portfolio(merge_boards(market_watch, evaluated), settings)
     maximum_rows = int(settings["projection_model"]["maximum_rows"])
     board = board[:maximum_rows]
-    projection_rows = [row.to_dict() for row in projections[:maximum_rows]]
+    maximum_projection_rows = int(
+        settings["projection_model"].get("maximum_projection_rows", maximum_rows)
+    )
+    projection_rows = [row.to_dict() for row in projections[:maximum_projection_rows]]
+    target_book_key = "".join(
+        character
+        for character in str(settings["bookmakers"]["target"]).casefold()
+        if character.isalnum()
+    )
+    target_quotes = [
+        quote
+        for quote in quotes
+        if "".join(character for character in quote.book.casefold() if character.isalnum())
+        == target_book_key
+    ]
     now = dt.datetime.now(dt.timezone.utc).isoformat()
     actionable = [row for row in board if row["tier"] != "PASS"]
     lookahead_days = int(settings["fetch"]["lookahead_days"])
@@ -81,7 +95,7 @@ def build() -> dict[str, Any]:
     meta = {
         "league": "NFL",
         "generated_at": now,
-        "provider_priority": ["Odds-API.io", "The Odds API", "ESPN regular-season statistics"],
+        "provider_priority": ["Odds-API.io", "The Odds API", "ESPN regular-season statistics and current rosters"],
         "target_book": settings["bookmakers"]["target"],
         "configured": {
             "odds_api_io": bool(primary_key),
@@ -90,7 +104,9 @@ def build() -> dict[str, Any]:
         },
         "counts": {
             "priced_quotes": len(quotes),
+            "target_priced_quotes": len(target_quotes),
             "priced_events": len({quote.event_id for quote in quotes}),
+            "target_priced_events": len({quote.event_id for quote in target_quotes}),
             "priced_markets": len({quote.market for quote in quotes}),
             "board": len(board),
             "actionable": len(actionable),
@@ -101,6 +117,8 @@ def build() -> dict[str, Any]:
             "projections": len(projection_rows),
             "projected_markets": len({row["market"] for row in projection_rows}),
             "scheduled_projections": sum(bool(row.get("start_time")) for row in projection_rows),
+            "matchup_adjusted": sum(int(row.get("opponent_defense_samples") or 0) >= 2 for row in projection_rows),
+            "simulator_players": len({row["player"] for row in projection_rows}),
             "suggested_exposure": suggested_exposure,
         },
         "source_by_sport": {
@@ -111,6 +129,7 @@ def build() -> dict[str, Any]:
                     else odds_source if quotes else "ESPN regular-season form" if projections else "No source available"
                 ),
                 "priced_quotes": len(quotes),
+                "target_priced_quotes": len(target_quotes),
                 "projections": len(projection_rows),
                 "errors": errors,
             }
@@ -118,8 +137,8 @@ def build() -> dict[str, Any]:
         "lookahead_days": lookahead_days,
         "next_scheduled_game": scheduled_starts[0] if scheduled_starts else "",
         "model_status": (
-            "Live NFL prices and regular-season player samples are available."
-            if quotes and projections
+            "Live target-book NFL prices, regular-season player samples, and opponent matchup data are available."
+            if target_quotes and projections
             else (
                 f"The next {lookahead_days} days of regular-season schedule and form are ready, "
                 f"but {settings['bookmakers']['target']} player-prop prices have not been returned yet."
@@ -144,7 +163,10 @@ def build() -> dict[str, Any]:
         "notes": [
             "Only NFL player props are collected and published.",
             "Preseason box scores are excluded from every projection and betting decision.",
+            "Current ESPN rosters remove players who are no longer on the upcoming team and supply position and injury context.",
             "Prior-season form is automatically reduced until four current-season games are available.",
+            "Opponent adjustments compare position-level production allowed with the league median, then shrink and cap the result at 12%.",
+            "The 10,000-run matchup simulator refreshes from the same ESPN form and defense data as the betting model.",
             "Touchdowns, field goals, interceptions and sacks use count-stat probability handling and stricter reliability gates.",
             "Sportsbook consensus is never treated as an independent model by itself.",
             "A wager enters My Ledger only after the user reviews the live price and clicks Add.",

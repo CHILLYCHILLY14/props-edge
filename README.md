@@ -1,8 +1,9 @@
 # NFL Props Edge
 
 NFL Props Edge is an NFL-only player-prop model and GitHub Pages dashboard. It
-combines current target-book prices, complete no-vig two-way markets, and
-conservative ESPN regular-season player form. It never creates a wager merely
+combines current target-book prices, complete no-vig two-way markets,
+conservative ESPN regular-season player form, and opponent-defense matchup
+adjustments. It never creates a wager merely
 because another sportsbook has a different number.
 
 The public site contains no demo slate, sample recommendation, or fabricated
@@ -17,8 +18,16 @@ correct output is a watch row or an empty qualified board.
   appears before it enters the old eight-day window.
 - Historical selection covers up to eight regular-season games per team instead
   of taking only the league's most recent handful of games.
+- Every upcoming projection compares the opponent's position-level production
+  allowed with the league median from the same audited box scores.
+- Matchup adjustments are reliability-shrunk, discounted when they rely on the
+  prior season, and capped at plus or minus 12%.
+- A selectable 10,000-run Matchup Lab reports scenario hit rates, fair odds,
+  outcome ranges, defensive rank, recent results, and model risk flags.
 - Prior-season form is deliberately reduced until a player has four games in
   the current regular season.
+- Current ESPN rosters filter out players who are no longer on the upcoming
+  team and add position and injury context to each projection.
 - Official provider coverage now includes core passing, rushing, receiving,
   touchdown, combined-yardage, kicking, and defensive player props.
 - ESPN field-goal and extra-point made/attempted pairs are parsed correctly;
@@ -42,20 +51,23 @@ correct output is a watch row or an empty qualified board.
    each player and market.
 2. The stat projection blends a recency-weighted mean with the sample median,
    then measures sample variability and stability.
-3. Yardage and volume markets blend a continuous distribution with empirical
+3. Opponent allowance is measured by team, position group, and market. The
+   player projection receives a capped matchup adjustment only when a matched
+   defensive sample is available.
+4. Yardage and volume markets blend a continuous distribution with empirical
    hit rates. Low-count markets such as touchdowns, field goals, interceptions,
    and sacks blend a Poisson count model with the observed game sample. Integer
    lines reserve probability for a push.
-4. Complete sportsbook pairs are de-vigged. The independent player-form
+5. Complete sportsbook pairs are de-vigged. The independent player-form
    probability is blended toward the market according to sample maturity and
    confidence, with a hard maximum projection weight. Prior-season and volatile
    markets receive additional reliability reductions.
-5. Model edge is the relative difference between the blended no-push model
+6. Model edge is the relative difference between the blended no-push model
    probability and the no-vig market probability.
-6. Price value is the expected return at the offered decimal odds, including
+7. Price value is the expected return at the offered decimal odds, including
    push refunds.
-7. Positive edge and price value are compressed separately before tiering.
-8. Suggested stakes use 0.15 Kelly and are scaled again for confidence and
+8. Positive edge and price value are compressed separately before tiering.
+9. Suggested stakes use 0.15 Kelly and are scaled again for confidence and
    sample maturity.
 
 Current compressed gates:
@@ -93,6 +105,20 @@ The ledger is stored only in that browser and device. Use **Backup JSON** for a
 restorable copy or **Export CSV** for a spreadsheet record. The scheduled
 workflow cannot read or modify it.
 
+## Matchup Lab
+
+The Matchup Lab is fed by the same scheduled pipeline as the betting board. It
+lets you select an upcoming game, player, prop market, side, and scenario line.
+Each run uses 10,000 deterministic trials that blend the matchup-adjusted
+distribution with the player's recent empirical results. Low-count props use
+count-stat simulation, while yardage and longest-play props use a continuous
+distribution.
+
+The simulator is an analysis tool, not a back door around qualification. Its
+result cannot enter My Ledger and is never called a wager unless a complete
+current DraftKings market passes every model, price, confidence, and exposure
+gate.
+
 ## GitHub setup and updates
 
 1. In **Settings → Pages**, use **GitHub Actions** as the Pages source.
@@ -122,6 +148,7 @@ the current number and player availability before wagering.
 
     python -m unittest tests.test_offline -v
     node tests/test_ledger.mjs
+    node tests/test_simulator.mjs
     python -m pipeline.build
     python -m http.server 8000 --directory site
 

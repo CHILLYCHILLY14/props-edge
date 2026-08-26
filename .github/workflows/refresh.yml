@@ -41,11 +41,14 @@ jobs:
         run: python -m unittest discover -s tests -v
 
       - name: Test manual My Ledger
-        run: node tests/test_ledger.mjs
+        run: |
+          node tests/test_ledger.mjs
+          node tests/test_simulator.mjs
 
       - name: Check browser scripts
         run: |
           node --check site/ledger.js
+          node --check site/simulator.js
           node --check site/app.js
 
       - name: Refresh NFL props and projections

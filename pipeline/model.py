@@ -351,6 +351,12 @@ def _tier_and_reason(
 ) -> tuple[str, str]:
     samples = int(projection.samples)
     confidence = float(projection.confidence)
+    injury_status = str(getattr(projection, "injury_status", "") or "").casefold()
+    if any(
+        blocked in injury_status
+        for blocked in ("out", "injured reserve", "doubtful", "suspended", "physically unable")
+    ):
+        return "PASS", f"Player roster status is {projection.injury_status}"
     if quote.side in ("over", "under") and quote.line is None:
         return "PASS", "A real prop line is required"
     if quote.side in ("over", "under") and target_fair is None:
@@ -492,13 +498,18 @@ def evaluate_quotes_against_projections(
                 tier = "PASS"
                 reason = "Calculated stake is below the minimum wager"
                 stake = 0.0
+            form_label = (
+                "Matchup-adjusted NFL form"
+                if int(getattr(projection, "opponent_defense_samples", 0)) >= 2
+                else "NFL form"
+            )
             model_label = (
-                "NFL form + external no-vig market"
+                f"{form_label} + external no-vig market"
                 if external_books
-                else "NFL form + target price"
+                else f"{form_label} + target price"
             )
             if season_maturity < 0.999:
-                model_label = model_label.replace("NFL form", "Prior-season-weighted NFL form")
+                model_label = model_label.replace("NFL form", "prior-season-weighted NFL form")
             board.append(
                 {
                     **quote.to_dict(),
@@ -525,9 +536,22 @@ def evaluate_quotes_against_projections(
                     "mode": "projection-and-market",
                     "model_label": model_label,
                     "projection": projection.projection,
+                    "base_projection": projection.base_projection,
                     "projection_samples": samples,
                     "projection_standard_deviation": projection.standard_deviation,
                     "current_season_samples": int(getattr(projection, "current_season_samples", 0)),
+                    "position": projection.position,
+                    "opponent": projection.opponent,
+                    "venue": projection.venue,
+                    "opponent_defense_average": projection.opponent_defense_average,
+                    "league_defense_average": projection.league_defense_average,
+                    "opponent_defense_rank": projection.opponent_defense_rank,
+                    "opponent_defense_teams": projection.opponent_defense_teams,
+                    "opponent_defense_samples": projection.opponent_defense_samples,
+                    "opponent_defense_current_samples": projection.opponent_defense_current_samples,
+                    "defense_adjustment": projection.defense_adjustment,
+                    "matchup_quality": projection.matchup_quality,
+                    "injury_status": projection.injury_status,
                     "projection_weight": round(projection_weight, 5),
                     "season_maturity": round(season_maturity, 5),
                     "market_reliability": round(market_reliability, 5),

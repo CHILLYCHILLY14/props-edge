@@ -56,15 +56,111 @@ def _team_and_matchups(events: list[dict[str, Any]]) -> dict[str, list[dict[str,
         away = next((row for row in competitors if row.get("homeAway") == "away"), {})
         home_name = str((home.get("team") or {}).get("displayName") or "Home")
         away_name = str((away.get("team") or {}).get("displayName") or "Away")
-        event_info = {
+        shared = {
+            "event_id": str(event.get("id") or competition.get("id") or ""),
             "matchup": f"{away_name} @ {home_name}",
             "start_time": str(event.get("date") or competition.get("date") or ""),
         }
-        for team_name in (home_name, away_name):
+        for team_name, opponent, venue in (
+            (home_name, away_name, "Home"),
+            (away_name, home_name, "Away"),
+        ):
             team_key = _norm(team_name)
+            event_info = {**shared, "opponent": opponent, "venue": venue}
             if event_info not in answer[team_key]:
                 answer[team_key].append(event_info)
     return dict(answer)
+
+
+def _upcoming_teams(events: list[dict[str, Any]]) -> list[tuple[str, str]]:
+    teams: dict[str, str] = {}
+    for event in events:
+        competition = (event.get("competitions") or [{}])[0]
+        for competitor in competition.get("competitors") or []:
+            team = competitor.get("team") or {}
+            team_id = str(team.get("id") or "")
+            team_name = str(team.get("displayName") or "")
+            if team_id and team_name:
+                teams[team_id] = team_name
+    return sorted(teams.items(), key=lambda item: item[1])
+
+
+def _position_group(value: str, stat_group: str = "") -> str:
+    key = _norm(value)
+    groups = {
+        "QB": {"qb", "quarterback"},
+        "RB": {"rb", "fb", "runningback", "fullback"},
+        "WR": {"wr", "wide receiver", "widereceiver"},
+        "TE": {"te", "tightend"},
+        "K": {"k", "pk", "kicker", "placekicker"},
+        "DL": {"de", "dt", "nt", "dl", "defensiveend", "defensivetackle"},
+        "LB": {"lb", "ilb", "olb", "linebacker"},
+        "DB": {"cb", "s", "ss", "fs", "db", "cornerback", "safety"},
+    }
+    for label, aliases in groups.items():
+        if key in {_norm(alias) for alias in aliases}:
+            return label
+    group_key = _norm(stat_group)
+    if "passing" in group_key:
+        return "QB"
+    if "kicking" in group_key:
+        return "K"
+    if "defensive" in group_key:
+        return "DEF"
+    return "SKILL"
+
+
+def _weighted_mean(values: list[float], season_years: list[int], current_season_year: int | None, prior_weight: float) -> float:
+    weights = list(range(1, len(values) + 1))
+    if current_season_year is not None:
+        weights = [
+            weight * (1.0 if year == current_season_year else prior_weight)
+            for weight, year in zip(weights, season_years)
+        ]
+    total = sum(weights)
+    return sum(value * weight for value, weight in zip(values, weights)) / total if total else 0.0
+
+
+def _defense_label(rank: int | None, teams: int) -> str:
+    if rank is None or teams < 8:
+        return "Unknown"
+    percentile = (rank - 1) / max(1, teams - 1)
+    if percentile <= 0.25:
+        return "Tough"
+    if percentile >= 0.75:
+        return "Favorable"
+    return "Neutral"
+
+
+def _roster_info(payloads: list[tuple[str, dict[str, Any]]]) -> dict[tuple[str, str], dict[str, str]]:
+    answer: dict[tuple[str, str], dict[str, str]] = {}
+    for fallback_team, payload in payloads:
+        team = str((payload.get("team") or {}).get("displayName") or fallback_team)
+        team_key = _norm(team)
+        for group in payload.get("athletes") or []:
+            for athlete in group.get("items") or []:
+                player = str(athlete.get("displayName") or athlete.get("fullName") or "")
+                if not player:
+                    continue
+                position = _position_group(
+                    str(
+                        (athlete.get("position") or {}).get("abbreviation")
+                        or (athlete.get("position") or {}).get("displayName")
+                        or ""
+                    )
+                )
+                injury = (athlete.get("injuries") or [{}])[0]
+                injury_status = str(
+                    injury.get("status")
+                    or (injury.get("type") or {}).get("description")
+                    or (injury.get("type") or {}).get("name")
+                    or ""
+                )
+                answer[(team_key, _norm(player))] = {
+                    "position": position,
+                    "injury_status": injury_status,
+                }
+    return answer
 
 
 def _canonical_market(group: str, name: str) -> str | None:
@@ -137,22 +233,46 @@ def parse_summaries(
     sport: str,
     upcoming_matchups: dict[str, Any],
     current_season_year: int | None = None,
+    defense_weight: float = 0.40,
+    defense_max_adjustment: float = 0.12,
+    defense_prior_season_weight: float = 0.55,
+    defense_current_season_full_weight_games: int = 4,
+    current_roster: dict[tuple[str, str], dict[str, str]] | None = None,
 ) -> list[Projection]:
-    """Parse completed regular-season NFL box scores into conservative form rows."""
+    """Build player form plus a conservative opponent-allowance adjustment.
+
+    Defensive allowance is measured from the same completed regular-season ESPN
+    box scores as player form. Production is totaled by opponent, position group,
+    and market for each game, then compared with the league median. The matchup
+    adjustment is reliability-shrunk and capped so it informs the projection
+    without overwhelming the player's own history.
+    """
     if sport != "NFL":
         return []
     history: dict[tuple[str, str, str], list[float]] = defaultdict(list)
     history_seasons: dict[tuple[str, str, str], list[int]] = defaultdict(list)
-    display: dict[tuple[str, str, str], tuple[str, str]] = {}
+    display: dict[tuple[str, str, str], tuple[str, str, str]] = {}
+    defense_history: dict[tuple[str, str, str], list[float]] = defaultdict(list)
+    defense_seasons: dict[tuple[str, str, str], list[int]] = defaultdict(list)
     for summary in summaries:
         try:
             summary_season = int(summary.get("_props_edge_season_year") or 0)
         except (TypeError, ValueError):
             summary_season = 0
+        team_blocks = ((summary.get("boxscore") or {}).get("players") or [])
+        team_names = [
+            str((team_block.get("team") or {}).get("displayName") or "")
+            for team_block in team_blocks
+            if (team_block.get("team") or {}).get("displayName")
+        ]
+        opponent_by_team = {
+            _norm(team): _norm(next((other for other in team_names if _norm(other) != _norm(team)), ""))
+            for team in team_names
+        }
         observed_by_player: dict[tuple[str, str], dict[str, Any]] = defaultdict(
-            lambda: {"player": "", "team": "", "markets": {}}
+            lambda: {"player": "", "team": "", "position": "SKILL", "markets": {}}
         )
-        for team_block in ((summary.get("boxscore") or {}).get("players") or []):
+        for team_block in team_blocks:
             team = str((team_block.get("team") or {}).get("displayName") or "")
             for stat_group in team_block.get("statistics") or []:
                 group = str(
@@ -168,12 +288,22 @@ def parse_summaries(
                     or []
                 )
                 for athlete_row in stat_group.get("athletes") or []:
-                    player = str(
-                        (athlete_row.get("athlete") or {}).get("displayName") or ""
-                    )
+                    athlete = athlete_row.get("athlete") or {}
+                    player = str(athlete.get("displayName") or "")
                     if not player:
                         continue
                     game_key = (player.casefold(), _norm(team))
+                    raw_position = str(
+                        (athlete.get("position") or {}).get("abbreviation")
+                        or (athlete.get("position") or {}).get("displayName")
+                        or ""
+                    )
+                    position = _position_group(raw_position, group)
+                    roster_entry = (current_roster or {}).get((_norm(team), _norm(player)))
+                    if roster_entry and roster_entry.get("position"):
+                        position = str(roster_entry["position"])
+                    if observed_by_player[game_key]["position"] in ("SKILL", "DEF") or position not in ("SKILL", "DEF"):
+                        observed_by_player[game_key]["position"] = position
                     for name, raw in zip(names, athlete_row.get("stats") or []):
                         stat_key, group_key = _norm(str(name)), _norm(group)
                         combined = re.match(
@@ -197,7 +327,7 @@ def parse_summaries(
                             key = (player.casefold(), _norm(team), market)
                             history[key].append(value)
                             history_seasons[key].append(summary_season)
-                            display[key] = (player, team)
+                            display[key] = (player, team, observed_by_player[game_key]["position"])
         for (player_key, team_key), info in observed_by_player.items():
             markets = info["markets"]
             derived: list[tuple[str, float]] = []
@@ -220,15 +350,67 @@ def parse_summaries(
             if "Kicking points" not in markets and any(name in markets for name in ("Field goals made", "Extra points made")):
                 derived.append(("Kicking points", markets.get("Field goals made", 0.0) * 3 + markets.get("Extra points made", 0.0)))
             for market, value in derived:
+                markets[market] = value
                 combined_key = (player_key, team_key, market)
                 history[combined_key].append(value)
                 history_seasons[combined_key].append(summary_season)
-                display[combined_key] = (info["player"], info["team"])
+                display[combined_key] = (info["player"], info["team"], info["position"])
+
+        game_allowances: dict[tuple[str, str, str], float] = defaultdict(float)
+        for (_, team_key), info in observed_by_player.items():
+            opponent_key = opponent_by_team.get(team_key, "")
+            if not opponent_key:
+                continue
+            position = str(info.get("position") or "SKILL")
+            for market, value in info["markets"].items():
+                game_allowances[(opponent_key, position, market)] += float(value)
+                game_allowances[(opponent_key, "ALL", market)] += float(value)
+        for allowance_key, value in game_allowances.items():
+            defense_history[allowance_key].append(value)
+            defense_seasons[allowance_key].append(summary_season)
+
+    defense_profiles: dict[tuple[str, str, str], dict[str, Any]] = {}
+    by_position_market: dict[tuple[str, str], list[tuple[str, float]]] = defaultdict(list)
+    for defense_key, values in defense_history.items():
+        recent = values[-8:]
+        seasons = defense_seasons[defense_key][-8:]
+        if len(recent) < 2:
+            continue
+        average = _weighted_mean(
+            recent,
+            seasons,
+            current_season_year,
+            defense_prior_season_weight,
+        )
+        current_samples = (
+            len(recent)
+            if current_season_year is None
+            else sum(year == current_season_year for year in seasons)
+        )
+        defense_profiles[defense_key] = {
+            "average": average,
+            "samples": len(recent),
+            "current_samples": current_samples,
+        }
+        by_position_market[(defense_key[1], defense_key[2])].append((defense_key[0], average))
+
+    league_medians: dict[tuple[str, str], float] = {}
+    defense_ranks: dict[tuple[str, str, str], tuple[int, int]] = {}
+    for profile_key, teams in by_position_market.items():
+        if not teams:
+            continue
+        league_medians[profile_key] = statistics.median(value for _, value in teams)
+        ordered = sorted(teams, key=lambda item: (item[1], item[0]))
+        for rank, (team_key, _) in enumerate(ordered, start=1):
+            defense_ranks[(team_key, *profile_key)] = (rank, len(ordered))
 
     projections: list[Projection] = []
     for key, values in history.items():
-        player, team = display[key]
+        player, team, position = display[key]
         if upcoming_matchups and key[1] not in upcoming_matchups:
+            continue
+        roster_entry = (current_roster or {}).get((key[1], _norm(player)))
+        if current_roster is not None and roster_entry is None:
             continue
         recent = values[-8:]
         recent_seasons = history_seasons[key][-8:]
@@ -237,7 +419,7 @@ def parse_summaries(
         weights = list(range(1, len(recent) + 1))
         weighted_mean = sum(value * weight for value, weight in zip(recent, weights)) / sum(weights)
         median = statistics.median(recent)
-        projection = 0.65 * weighted_mean + 0.35 * median
+        base_projection = 0.65 * weighted_mean + 0.35 * median
         deviation = statistics.stdev(recent) if len(recent) > 1 else 0.0
         average = statistics.mean(recent)
         stability = 1 / (1 + deviation / max(1.0, abs(average)))
@@ -252,6 +434,51 @@ def parse_summaries(
         else:
             matchup_rows = [{"matchup": "Next matchup not posted", "start_time": ""}]
         for matchup in matchup_rows:
+            opponent = str(matchup.get("opponent") or "")
+            opponent_key = _norm(opponent)
+            selected_position = position
+            profile = defense_profiles.get((opponent_key, selected_position, key[2]))
+            profile_key = (selected_position, key[2])
+            if profile is None or profile["samples"] < 4 or len(by_position_market.get(profile_key, [])) < 8:
+                selected_position = "ALL"
+                profile = defense_profiles.get((opponent_key, selected_position, key[2]))
+                profile_key = (selected_position, key[2])
+
+            defense_average: float | None = None
+            league_average: float | None = None
+            defense_rank: int | None = None
+            defense_teams = 0
+            defense_samples = 0
+            defense_current_samples = 0
+            adjustment = 0.0
+            matchup_quality = "Unknown"
+            if profile is not None:
+                defense_average = float(profile["average"])
+                league_average = league_medians.get(profile_key)
+                defense_samples = int(profile["samples"])
+                defense_current_samples = int(profile["current_samples"])
+                defense_rank, defense_teams = defense_ranks.get(
+                    (opponent_key, *profile_key),
+                    (None, 0),
+                )
+                matchup_quality = _defense_label(defense_rank, defense_teams)
+                if league_average is not None and league_average > 0:
+                    raw_factor = max(0.65, min(1.35, defense_average / league_average))
+                    sample_maturity = min(1.0, defense_samples / 8)
+                    current_maturity = (
+                        1.0
+                        if current_season_year is None
+                        else defense_prior_season_weight
+                        + (1 - defense_prior_season_weight)
+                        * min(
+                            1.0,
+                            defense_current_samples
+                            / max(1, defense_current_season_full_weight_games),
+                        )
+                    )
+                    adjustment = (raw_factor - 1) * defense_weight * sample_maturity * current_maturity
+                    adjustment = max(-defense_max_adjustment, min(defense_max_adjustment, adjustment))
+            projection = max(0.0, base_projection * (1 + adjustment))
             projections.append(
                 Projection(
                     sport="NFL",
@@ -266,12 +493,34 @@ def parse_summaries(
                     recent=[round(value, 2) for value in recent],
                     trend=round(projection - average, 2),
                     start_time=str(matchup.get("start_time") or ""),
-                    source="ESPN regular-season form",
+                    source=(
+                        "ESPN regular-season form + opponent allowance"
+                        if profile is not None
+                        else "ESPN regular-season form"
+                    ),
                     current_season_samples=(
                         len(recent)
                         if current_season_year is None
                         else sum(year == current_season_year for year in recent_seasons)
                     ),
+                    position=position,
+                    opponent=opponent,
+                    venue=str(matchup.get("venue") or ""),
+                    event_id=str(matchup.get("event_id") or ""),
+                    base_projection=round(base_projection, 2),
+                    opponent_defense_average=(
+                        None if defense_average is None else round(defense_average, 2)
+                    ),
+                    league_defense_average=(
+                        None if league_average is None else round(league_average, 2)
+                    ),
+                    opponent_defense_rank=defense_rank,
+                    opponent_defense_teams=defense_teams,
+                    opponent_defense_samples=defense_samples,
+                    opponent_defense_current_samples=defense_current_samples,
+                    defense_adjustment=round(adjustment, 5),
+                    matchup_quality=matchup_quality,
+                    injury_status=str((roster_entry or {}).get("injury_status") or ""),
                 )
             )
     return sorted(
@@ -358,7 +607,7 @@ class EspnProjectionProvider:
             except Exception:
                 return None
 
-        with ThreadPoolExecutor(max_workers=6) as pool:
+        with ThreadPoolExecutor(max_workers=10) as pool:
             summaries = [summary for summary in pool.map(fetch_summary, event_inputs) if summary]
         upcoming_events = [
             event
@@ -366,9 +615,41 @@ class EspnProjectionProvider:
             if not ((event.get("status") or {}).get("type") or {}).get("completed")
             and _season_type(event) == 2
         ]
+        roster_targets = _upcoming_teams(upcoming_events)
+
+        def fetch_roster(team_input: tuple[str, str]) -> tuple[str, dict[str, Any]] | None:
+            team_id, team_name = team_input
+            try:
+                payload = self.client.get(
+                    f"/{path}/teams/{team_id}/roster",
+                    {"season": _nfl_season_year(today)},
+                    retries=1,
+                )
+                return team_name, payload
+            except Exception:
+                return None
+
+        with ThreadPoolExecutor(max_workers=8) as pool:
+            roster_payloads = [
+                payload for payload in pool.map(fetch_roster, roster_targets) if payload
+            ]
+        current_roster = _roster_info(roster_payloads)
         return parse_summaries(
             summaries,
             "NFL",
             _team_and_matchups(upcoming_events),
             current_season_year=_nfl_season_year(today),
+            defense_weight=float(self.settings["projection_model"].get("defense_weight", 0.40)),
+            defense_max_adjustment=float(
+                self.settings["projection_model"].get("defense_max_adjustment", 0.12)
+            ),
+            defense_prior_season_weight=float(
+                self.settings["projection_model"].get("defense_prior_season_weight", 0.55)
+            ),
+            defense_current_season_full_weight_games=int(
+                self.settings["projection_model"].get(
+                    "defense_current_season_full_weight_games", 4
+                )
+            ),
+            current_roster=current_roster or None,
         )
