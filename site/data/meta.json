@@ -1,6 +1,6 @@
 {
   "league": "NFL",
-  "generated_at": "2026-08-30T12:05:58.352548+00:00",
+  "generated_at": "2026-08-30T16:05:22.401901+00:00",
   "provider_priority": [
     "Odds-API.io",
     "The Odds API",
@@ -28,7 +28,7 @@
     "projected_markets": 27,
     "scheduled_projections": 7500,
     "matchup_adjusted": 7500,
-    "simulator_players": 895,
+    "simulator_players": 894,
     "roster_verified": 7500,
     "roster_verified_teams": 32,
     "suggested_exposure": 0
