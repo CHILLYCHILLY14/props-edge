@@ -1,6 +1,6 @@
 {
   "league": "NFL",
-  "generated_at": "2026-09-01T12:12:55.834679+00:00",
+  "generated_at": "2026-09-01T16:36:47.955484+00:00",
   "provider_priority": [
     "Odds-API.io",
     "The Odds API",
@@ -13,7 +13,7 @@
     "espn_keyless": true
   },
   "counts": {
-    "priced_quotes": 544,
+    "priced_quotes": 562,
     "target_priced_quotes": 0,
     "priced_events": 16,
     "target_priced_events": 0,
@@ -36,7 +36,7 @@
   "source_by_sport": {
     "NFL": {
       "source": "Odds-API.io + ESPN regular-season form",
-      "priced_quotes": 544,
+      "priced_quotes": 562,
       "target_priced_quotes": 0,
       "projections": 7500,
       "errors": []
