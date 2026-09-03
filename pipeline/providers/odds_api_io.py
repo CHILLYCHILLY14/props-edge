@@ -224,4 +224,33 @@ class OddsApiIoProvider:
                         raise
                     active_books = remaining
             detailed.extend(response if isinstance(response, list) else [response])
-        return [quote for event in detailed for quote in parse_event(event, "NFL")]
+        quotes = [quote for event in detailed for quote in parse_event(event, "NFL")]
+
+        # The batch endpoint can return consensus books while omitting the
+        # requested target book. The provider's documented player-prop route is
+        # the single-event /odds endpoint, so retry DraftKings there before the
+        # build concludes that no target prices exist.
+        target_book = str(self.settings["bookmakers"]["target"])
+        target_key = _norm(target_book)
+        if ids and not any(_norm(quote.book) == target_key for quote in quotes):
+            target_events: list[dict[str, Any]] = []
+            for event_id in ids:
+                try:
+                    response = self.client.get(
+                        "/odds",
+                        {
+                            "apiKey": self.api_key,
+                            "eventId": event_id,
+                            "bookmakers": target_book,
+                        },
+                    )
+                except ProviderError:
+                    continue
+                target_events.extend(response if isinstance(response, list) else [response])
+            quotes.extend(
+                quote
+                for event in target_events
+                for quote in parse_event(event, "NFL")
+                if _norm(quote.book) == target_key
+            )
+        return quotes
