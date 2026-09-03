@@ -1,6 +1,6 @@
 {
   "league": "NFL",
-  "generated_at": "2026-09-03T00:23:54.404344+00:00",
+  "generated_at": "2026-09-03T03:44:24.557969+00:00",
   "provider_priority": [
     "Odds-API.io",
     "The Odds API",
@@ -39,7 +39,19 @@
       "priced_quotes": 562,
       "target_priced_quotes": 0,
       "projections": 7500,
-      "errors": []
+      "errors": [
+        "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)"
+      ]
+    }
+  },
+  "source_by_provider": {
+    "odds_api_io": {
+      "priced_quotes": 562,
+      "target_priced_quotes": 0
+    },
+    "the_odds_api": {
+      "priced_quotes": 0,
+      "target_priced_quotes": 0
     }
   },
   "lookahead_days": 21,
