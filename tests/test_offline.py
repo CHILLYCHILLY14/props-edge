@@ -220,7 +220,7 @@ class OddsAndMarketTests(unittest.TestCase):
         self.assertEqual(len(provider.client.calls[0].split(",")), 3)
         self.assertEqual(len(provider.client.calls[1].split(",")), 2)
 
-    def test_primary_provider_retries_target_on_documented_event_endpoint(self) -> None:
+    def test_primary_provider_retries_missing_book_on_documented_event_endpoint(self) -> None:
         provider = OddsApiIoProvider("fixture-key", load_settings())
 
         class FakeClient:
@@ -248,7 +248,7 @@ class OddsAndMarketTests(unittest.TestCase):
 
 
 class BuildFallbackTests(unittest.TestCase):
-    def test_secondary_provider_runs_when_primary_has_no_target_book(self) -> None:
+    def test_ontario_key_provider_is_preferred_when_it_has_eligible_prices(self) -> None:
         primary = [
             row for row in parse_primary_event(fixture("odds_api_io_event.json"), "NFL")
             if row.book != "DraftKings"
@@ -274,10 +274,38 @@ class BuildFallbackTests(unittest.TestCase):
              patch.object(build_module, "_write_json"):
             meta = build_module.build()
 
-        self.assertEqual(meta["source_by_sport"]["NFL"]["source"], "The Odds API")
-        self.assertGreater(meta["counts"]["target_priced_quotes"], 0)
-        self.assertEqual(meta["source_by_provider"]["odds_api_io"]["target_priced_quotes"], 0)
-        self.assertGreater(meta["source_by_provider"]["the_odds_api"]["target_priced_quotes"], 0)
+        self.assertEqual(meta["source_by_sport"]["NFL"]["source"], "The Odds API (Ontario keys)")
+        self.assertGreater(meta["counts"]["eligible_priced_quotes"], 0)
+        self.assertGreater(meta["source_by_provider"]["odds_api_io"]["eligible_priced_quotes"], 0)
+        self.assertGreater(meta["source_by_provider"]["the_odds_api"]["eligible_priced_quotes"], 0)
+
+    def test_regulated_brand_feed_is_continuity_fallback(self) -> None:
+        primary = parse_primary_event(fixture("odds_api_io_event.json"), "NFL")
+
+        class Primary:
+            def __init__(self, *_): pass
+            def fetch(self, _): return primary
+
+        class Secondary:
+            def __init__(self, *_): pass
+            def fetch(self, _): return []
+
+        class Espn:
+            def __init__(self, *_): pass
+            def fetch(self, _): return []
+
+        with patch.dict("os.environ", {"ODDS_API_IO_KEY":"primary", "THE_ODDS_API_KEY":"secondary"}), \
+             patch.object(build_module, "OddsApiIoProvider", Primary), \
+             patch.object(build_module, "TheOddsApiProvider", Secondary), \
+             patch.object(build_module, "EspnProjectionProvider", Espn), \
+             patch.object(build_module, "_write_json"):
+            meta = build_module.build()
+
+        self.assertEqual(
+            meta["source_by_sport"]["NFL"]["source"],
+            "Odds-API.io (regulated-brand fallback)",
+        )
+        self.assertEqual(meta["counts"]["eligible_books"], 3)
 
 
 class ProjectionPricingTests(unittest.TestCase):
@@ -291,7 +319,7 @@ class ProjectionPricingTests(unittest.TestCase):
         )
         over = next(row for row in board if row["side"] == "over")
         self.assertEqual(over["mode"], "projection-and-market")
-        self.assertEqual(over["market_basis"], "external no-vig median")
+        self.assertEqual(over["market_basis"], "other Ontario books' no-vig median")
         self.assertNotEqual(over["projection_prob"], over["market_fair_prob"])
         self.assertAlmostEqual(
             over["edge_raw"],
@@ -306,16 +334,48 @@ class ProjectionPricingTests(unittest.TestCase):
         self.assertIn(over["tier"], {"LEAN", "GOOD", "BEST"})
         self.assertGreaterEqual(over["recommended_stake"], 5)
 
-    def test_incomplete_target_market_fails_closed(self) -> None:
+    def test_incomplete_offered_market_fails_closed(self) -> None:
         draftkings_over = [row for row in self.quotes if row.book == "DraftKings" and row.side == "over"]
-        external = [row for row in self.quotes if row.book != "DraftKings"]
         board = evaluate_quotes_against_projections(
-            draftkings_over + external, [sample_projection()], self.settings
+            draftkings_over, [sample_projection()], self.settings
         )
         row = board[0]
         self.assertEqual(row["tier"], "PASS")
         self.assertEqual(row["recommended_stake"], 0)
         self.assertIn("Complete two-sided", row["reason"])
+
+    def test_best_regulated_price_is_selected_for_each_side(self) -> None:
+        board = evaluate_quotes(self.quotes, self.settings)
+        over = next(row for row in board if row["side"] == "over")
+        under = next(row for row in board if row["side"] == "under")
+        self.assertEqual((over["book"], over["price_decimal"]), ("DraftKings", 2.1))
+        self.assertEqual((under["book"], under["price_decimal"]), ("FanDuel", 2.05))
+
+    def test_non_allowlisted_book_is_never_published(self) -> None:
+        offshore = [
+            target_quote(side="over", price_decimal=2.5, book="Unregulated Example"),
+            target_quote(side="under", price_decimal=2.5, book="Unregulated Example"),
+        ]
+        board = evaluate_quotes(self.quotes + offshore, self.settings)
+        self.assertNotIn("Unregulated Example", {row["book"] for row in board})
+        over = next(row for row in board if row["side"] == "over")
+        self.assertEqual(over["price_decimal"], 2.1)
+
+    def test_one_sided_price_does_not_hide_best_complete_offer(self) -> None:
+        incomplete_high = target_quote(
+            side="over", price_decimal=2.5, book="BetRivers"
+        )
+        board = evaluate_quotes(self.quotes + [incomplete_high], self.settings)
+        over = next(row for row in board if row["side"] == "over")
+        self.assertEqual((over["book"], over["price_decimal"]), ("DraftKings", 2.1))
+
+    def test_ontario_provider_label_is_canonicalized(self) -> None:
+        labelled = [
+            target_quote(side="over", price_decimal=2.2, book="BetMGM (CA - ON)"),
+            target_quote(side="under", price_decimal=1.75, book="BetMGM (CA - ON)"),
+        ]
+        board = evaluate_quotes(labelled, self.settings)
+        self.assertEqual({row["book"] for row in board}, {"BetMGM"})
 
     def test_thin_sample_is_watch_with_zero_stake(self) -> None:
         projection = sample_projection(samples=3, confidence=0.50, recent=[290, 286, 280])
