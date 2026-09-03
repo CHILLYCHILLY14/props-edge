@@ -34,7 +34,7 @@
         <div class="masthead-copy">
           <p class="eyebrow">NFL PLAYER PROP COMMAND DESK · 2026</p>
           <h1>Sharper props.<br /><span>Stricter decisions.</span></h1>
-          <p class="lede">DraftKings prices meet complete no-vig markets, conservative regular-season form, and market-specific probability checks. No posted price means no wager—never a made-up edge.</p>
+          <p class="lede">The best returned Ontario-regulated price meets complete no-vig markets, conservative regular-season form, and market-specific probability checks. No posted price means no wager—never a made-up edge.</p>
           <div class="coverage-chips" aria-label="Core NFL prop markets">
             <span>Touchdowns</span><span>Passing</span><span>Rushing</span><span>Receiving</span><span>Field goals</span>
           </div>
@@ -42,7 +42,7 @@
         <aside class="readiness-panel" aria-label="Market readiness">
           <div class="readiness-top"><span>MARKET READINESS</span><strong id="readinessState">CHECKING</strong></div>
           <div id="stageForm" class="readiness-step waiting"><i>01</i><div><strong>Player form</strong><small>Regular-season samples</small></div><b>WAIT</b></div>
-          <div id="stagePrices" class="readiness-step waiting"><i>02</i><div><strong>Book prices</strong><small>Complete target market</small></div><b>WAIT</b></div>
+          <div id="stagePrices" class="readiness-step waiting"><i>02</i><div><strong>Book prices</strong><small>Complete Ontario market</small></div><b>WAIT</b></div>
           <div id="stageQualify" class="readiness-step locked"><i>03</i><div><strong>Qualification</strong><small>Edge + value + safety gates</small></div><b>LOCKED</b></div>
           <div class="feed-stamp"><span class="pulse"></span><div><strong id="feedState">LOADING</strong><small id="lastUpdated">Waiting for data</small></div></div>
         </aside>
@@ -133,7 +133,7 @@
               <label><span>View side</span><select id="simSide"><option value="over">Over</option><option value="under">Under</option></select></label>
             </div>
             <button id="runSimulator" class="sim-run">Run 10,000 simulations</button>
-            <p class="sim-disclaimer">A simulation is not a qualified bet. A wager still requires a complete current DraftKings market and every edge, confidence, price, and exposure gate.</p>
+            <p class="sim-disclaimer">A simulation is not a qualified bet. A wager still requires a complete current market from an eligible Ontario book and every edge, confidence, price, and exposure gate.</p>
           </aside>
 
           <div id="simulatorEmpty" class="empty-state panel" hidden><strong>No matchup simulation is ready</strong><span>Regular-season player and opponent samples will appear automatically after the scheduled refresh.</span></div>
@@ -158,7 +158,7 @@
                 <div><span>Sim average</span><strong id="simAverage">—</strong></div>
                 <div><span>Middle 80%</span><strong id="simRange">—</strong></div>
                 <div><span>Fair odds</span><strong id="simFairOdds">—</strong></div>
-                <div><span>Live target price</span><strong id="simLivePrice">NOT POSTED</strong></div>
+                <div><span>Best live price</span><strong id="simLivePrice">NOT POSTED</strong></div>
               </div>
             </article>
 
@@ -217,12 +217,12 @@
         <div class="method-grid">
           <article class="panel"><span class="step">01</span><h3>Real NFL data only</h3><p>Live prop prices come from the configured odds providers. ESPN supplies completed regular-season box scores. Preseason is excluded.</p></article>
           <article class="panel"><span class="step">02</span><h3>Early-season restraint</h3><p>Up to eight recent games feed a recency-weighted, median-stabilized projection. Prior-season influence is reduced until four current-season games exist.</p></article>
-          <article class="panel"><span class="step">03</span><h3>Power-method no-vig</h3><p>Complete Over/Under or Yes/No prices are de-vigged. External books are preferred; DraftKings is the target price.</p></article>
+          <article class="panel"><span class="step">03</span><h3>Power-method no-vig</h3><p>Complete Over/Under or Yes/No prices are de-vigged. Other eligible books form the comparison; the best offered Ontario price is published.</p></article>
           <article class="panel"><span class="step">04</span><h3>Market-specific probability</h3><p>Yardage uses a continuous distribution; touchdowns, field goals, interceptions and sacks use count-stat handling with explicit push probability.</p></article>
           <article class="panel"><span class="step">05</span><h3>Fail-closed gates</h3><p>Thin samples, low confidence, incomplete prices, excessive disagreement, extreme odds, correlated alternates, and exposure excess remain passes.</p></article>
           <article class="panel"><span class="step">06</span><h3>Conservative staking</h3><p>Suggested stakes use 0.15 Kelly, then scale for confidence and data maturity. PASS rows always receive C$0.</p></article>
           <article class="panel"><span class="step">07</span><h3>Opponent defense adjustment</h3><p>Each player market is compared with position-level production allowed by the upcoming opponent and the league median. The adjustment is reliability-shrunk and capped at ±12%.</p></article>
-          <article class="panel"><span class="step">08</span><h3>10,000-run matchup lab</h3><p>The simulator blends the adjusted distribution with recent empirical results. It reports scenario probabilities and fair odds, but cannot qualify a wager without a current complete target-book market.</p></article>
+          <article class="panel"><span class="step">08</span><h3>10,000-run matchup lab</h3><p>The simulator blends the adjusted distribution with recent empirical results. It reports scenario probabilities and fair odds, but cannot qualify a wager without a current complete eligible-book market.</p></article>
         </div>
         <div class="source-grid">
           <article class="panel"><h3>Feed health</h3><div id="sourceHealth"></div></article>
