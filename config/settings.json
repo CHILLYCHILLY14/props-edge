@@ -1,8 +1,29 @@
 {
   "bookmakers": {
-    "target": "DraftKings",
+    "mode": "best_ontario_regulated",
+    "ontario_verified_as_of": "2026-09-01",
+    "ontario_registry": "https://igamingontario.ca/en/player/regulated-igaming-market",
+    "ontario_regulated": {
+      "BET99": ["BET99", "BET99 (CA - ON)", "bet99_ca_on"],
+      "Betano": ["Betano", "Betano (CA - ON)", "betano_ca_on"],
+      "BetMGM": ["BetMGM", "BetMGM (CA - ON)", "betmgm_ca_on"],
+      "BetRivers": ["BetRivers", "BetRivers (CA - ON)", "betrivers_ca_on"],
+      "DraftKings": ["DraftKings", "DraftKings (CA - ON)"],
+      "FanDuel": ["FanDuel", "FanDuel (CA - ON)"],
+      "PointsBet": ["PointsBet", "PointsBet (CA - ON)", "pointsbetca"],
+      "PROLINE": ["PROLINE", "PROLINE (CA - ON)", "proline_ca_on"],
+      "Sports Interaction": ["Sports Interaction", "Sports Interaction (CA - ON)", "sportsinteraction_ca_on"]
+    },
     "primary_consensus": ["DraftKings", "FanDuel", "BetMGM"],
-    "secondary_consensus": ["draftkings", "fanduel", "betmgm", "williamhill_us"]
+    "secondary_consensus": [
+      "bet99_ca_on",
+      "betano_ca_on",
+      "betmgm_ca_on",
+      "betrivers_ca_on",
+      "pointsbetca",
+      "proline_ca_on",
+      "sportsinteraction_ca_on"
+    ]
   },
   "sports": {
     "NFL": {
