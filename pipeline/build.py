@@ -9,6 +9,8 @@ from typing import Any
 
 from .http import ProviderError
 from .model import (
+    eligible_book_key,
+    eligible_book_name,
     evaluate_quotes,
     evaluate_quotes_against_projections,
     merge_boards,
@@ -36,14 +38,7 @@ def build() -> dict[str, Any]:
     settings = load_settings()
     primary_key = os.getenv("ODDS_API_IO_KEY", "").strip()
     secondary_key = os.getenv("THE_ODDS_API_KEY", "").strip()
-    target_book_key = "".join(
-        character
-        for character in str(settings["bookmakers"]["target"]).casefold()
-        if character.isalnum()
-    )
-    is_target = lambda quote: "".join(
-        character for character in quote.book.casefold() if character.isalnum()
-    ) == target_book_key
+    is_eligible = lambda quote: eligible_book_key(quote.book, settings) is not None
     errors: list[str] = []
     quotes = []
     primary_quotes = []
@@ -52,25 +47,23 @@ def build() -> dict[str, Any]:
     if primary_key:
         try:
             primary_quotes = OddsApiIoProvider(primary_key, settings).fetch("NFL")
-            quotes = primary_quotes
-            if primary_quotes:
-                odds_source = "Odds-API.io"
         except ProviderError as exc:
             errors.append(str(exc))
-    # A non-target consensus pull cannot populate the board. If the primary
-    # source has no DraftKings rows, give the configured backup source a chance
-    # instead of treating any unrelated price as a successful primary fetch.
-    if secondary_key and not any(is_target(quote) for quote in quotes):
+    # Prefer the jurisdiction-specific Canadian feed. The brand-level source is
+    # a continuity fallback when that feed has no eligible Ontario price rows.
+    if secondary_key:
         try:
             secondary_quotes = TheOddsApiProvider(secondary_key, settings).fetch("NFL")
-            if any(is_target(quote) for quote in secondary_quotes):
-                quotes = secondary_quotes
-                odds_source = "The Odds API"
-            elif not quotes and secondary_quotes:
-                quotes = secondary_quotes
-                odds_source = "The Odds API"
         except ProviderError as exc:
             errors.append(str(exc))
+    eligible_primary = [quote for quote in primary_quotes if is_eligible(quote)]
+    eligible_secondary = [quote for quote in secondary_quotes if is_eligible(quote)]
+    if eligible_secondary:
+        quotes = eligible_secondary
+        odds_source = "The Odds API (Ontario keys)"
+    elif eligible_primary:
+        quotes = eligible_primary
+        odds_source = "Odds-API.io (regulated-brand fallback)"
 
     projections = []
     try:
@@ -89,11 +82,12 @@ def build() -> dict[str, Any]:
         settings["projection_model"].get("maximum_projection_rows", maximum_rows)
     )
     projection_rows = [row.to_dict() for row in projections[:maximum_projection_rows]]
-    target_quotes = [
-        quote
-        for quote in quotes
-        if is_target(quote)
-    ]
+    eligible_books = sorted(
+        {
+            eligible_book_name(quote.book, settings) or quote.book
+            for quote in quotes
+        }
+    )
     now = dt.datetime.now(dt.timezone.utc).isoformat()
     actionable = [row for row in board if row["tier"] != "PASS"]
     lookahead_days = int(settings["fetch"]["lookahead_days"])
@@ -107,8 +101,12 @@ def build() -> dict[str, Any]:
     meta = {
         "league": "NFL",
         "generated_at": now,
-        "provider_priority": ["Odds-API.io", "The Odds API", "ESPN regular-season statistics and current rosters"],
-        "target_book": settings["bookmakers"]["target"],
+        "provider_priority": ["The Odds API Ontario keys", "Odds-API.io regulated-brand fallback", "ESPN regular-season statistics and current rosters"],
+        "pricing_mode": "best-ontario-regulated",
+        "price_scope": "Best available Ontario-regulated book",
+        "eligible_books": eligible_books,
+        "ontario_registry": settings["bookmakers"]["ontario_registry"],
+        "ontario_verified_as_of": settings["bookmakers"]["ontario_verified_as_of"],
         "configured": {
             "odds_api_io": bool(primary_key),
             "the_odds_api": bool(secondary_key),
@@ -116,9 +114,10 @@ def build() -> dict[str, Any]:
         },
         "counts": {
             "priced_quotes": len(quotes),
-            "target_priced_quotes": len(target_quotes),
+            "eligible_priced_quotes": len(quotes),
             "priced_events": len({quote.event_id for quote in quotes}),
-            "target_priced_events": len({quote.event_id for quote in target_quotes}),
+            "eligible_priced_events": len({quote.event_id for quote in quotes}),
+            "eligible_books": len(eligible_books),
             "priced_markets": len({quote.market for quote in quotes}),
             "board": len(board),
             "actionable": len(actionable),
@@ -143,7 +142,7 @@ def build() -> dict[str, Any]:
                     else odds_source if quotes else "ESPN regular-season form" if projections else "No source available"
                 ),
                 "priced_quotes": len(quotes),
-                "target_priced_quotes": len(target_quotes),
+                "eligible_priced_quotes": len(quotes),
                 "projections": len(projection_rows),
                 "errors": errors,
             }
@@ -151,21 +150,21 @@ def build() -> dict[str, Any]:
         "source_by_provider": {
             "odds_api_io": {
                 "priced_quotes": len(primary_quotes),
-                "target_priced_quotes": sum(is_target(quote) for quote in primary_quotes),
+                "eligible_priced_quotes": len(eligible_primary),
             },
             "the_odds_api": {
                 "priced_quotes": len(secondary_quotes),
-                "target_priced_quotes": sum(is_target(quote) for quote in secondary_quotes),
+                "eligible_priced_quotes": len(eligible_secondary),
             },
         },
         "lookahead_days": lookahead_days,
         "next_scheduled_game": scheduled_starts[0] if scheduled_starts else "",
         "model_status": (
-            "Live target-book NFL prices, regular-season player samples, and opponent matchup data are available."
-            if target_quotes and projections
+            "Live Ontario-regulated NFL prices, regular-season player samples, and opponent matchup data are available."
+            if quotes and projections
             else (
                 f"The next {lookahead_days} days of regular-season schedule and form are ready, "
-                f"but {settings['bookmakers']['target']} player-prop prices have not been returned yet."
+                "but no eligible Ontario-regulated player-prop prices have been returned yet."
                 if projections and scheduled_starts
                 else (
                     f"Regular-season form is available, but no game is scheduled inside the next {lookahead_days} days."
@@ -193,6 +192,8 @@ def build() -> dict[str, Any]:
             "The 10,000-run matchup simulator refreshes from the same ESPN form and defense data as the betting model.",
             "Touchdowns, field goals, interceptions and sacks use count-stat probability handling and stricter reliability gates.",
             "Sportsbook consensus is never treated as an independent model by itself.",
+            "Each exact prop publishes the best returned price from the configured Ontario-regulated book allowlist.",
+            "The Ontario-key feed is preferred; the regulated-brand feed is used only as a continuity fallback and every price must be verified in the Ontario sportsbook before wagering.",
             "A wager enters My Ledger only after the user reviews the live price and clicks Add.",
             "API credentials remain GitHub Actions secrets and are never written to site data.",
         ],
