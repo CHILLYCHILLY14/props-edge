@@ -106,7 +106,7 @@ class TheOddsApiProvider:
                 continue
             catalogue = self.client.get(
                 f"/sports/{sport_key}/events/{event_id}/markets",
-                {"apiKey": self.api_key, "bookmakers": books},
+                {"apiKey": self.api_key, "regions": "ca", "bookmakers": books},
             )
             market_keys: list[str] = []
             for bookmaker in catalogue.get("bookmakers") or []:
@@ -122,6 +122,7 @@ class TheOddsApiProvider:
                 f"/sports/{sport_key}/events/{event_id}/odds",
                 {
                     "apiKey": self.api_key,
+                    "regions": "ca",
                     "bookmakers": books,
                     "markets": ",".join(market_keys[:limit]),
                     "oddsFormat": "american",
