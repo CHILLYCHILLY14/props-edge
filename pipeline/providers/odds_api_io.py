@@ -190,7 +190,6 @@ class OddsApiIoProvider:
                 "status": "pending",
                 "from": now.isoformat().replace("+00:00", "Z"),
                 "to": (now + dt.timedelta(days=lookahead)).isoformat().replace("+00:00", "Z"),
-                "bookmaker": self.settings["bookmakers"]["target"],
                 "limit": self.settings["fetch"]["primary_event_limit"],
             },
         )
@@ -226,14 +225,12 @@ class OddsApiIoProvider:
             detailed.extend(response if isinstance(response, list) else [response])
         quotes = [quote for event in detailed for quote in parse_event(event, "NFL")]
 
-        # The batch endpoint can return consensus books while omitting the
-        # requested target book. The provider's documented player-prop route is
-        # the single-event /odds endpoint, so retry DraftKings there before the
-        # build concludes that no target prices exist.
-        target_book = str(self.settings["bookmakers"]["target"])
-        target_key = _norm(target_book)
-        if ids and not any(_norm(quote.book) == target_key for quote in quotes):
-            target_events: list[dict[str, Any]] = []
+        # The batch endpoint can omit one requested book. Retry only the missing
+        # regulated brands on the provider's documented single-event route.
+        returned_books = {_norm(quote.book) for quote in quotes}
+        missing_books = [book for book in active_books if _norm(book) not in returned_books]
+        for missing_book in missing_books:
+            missing_key = _norm(missing_book)
             for event_id in ids:
                 try:
                     response = self.client.get(
@@ -241,16 +238,16 @@ class OddsApiIoProvider:
                         {
                             "apiKey": self.api_key,
                             "eventId": event_id,
-                            "bookmakers": target_book,
+                            "bookmakers": missing_book,
                         },
                     )
                 except ProviderError:
                     continue
-                target_events.extend(response if isinstance(response, list) else [response])
-            quotes.extend(
-                quote
-                for event in target_events
-                for quote in parse_event(event, "NFL")
-                if _norm(quote.book) == target_key
-            )
+                events = response if isinstance(response, list) else [response]
+                quotes.extend(
+                    quote
+                    for event in events
+                    for quote in parse_event(event, "NFL")
+                    if _norm(quote.book) == missing_key
+                )
         return quotes
