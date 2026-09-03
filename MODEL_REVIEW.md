@@ -1,6 +1,6 @@
 # NFL Props Edge — calculation review
 
-Reviewed August 26, 2026.
+Reviewed September 3, 2026.
 
 ## Problems corrected
 
@@ -20,7 +20,11 @@ market were not portfolio-deduplicated.
 
 - Only NFL regular-season player history is used.
 - The schedule and market search spans 21 days; a wager still requires a
-  currently posted target-book price.
+  currently posted price from the Ontario-regulated book allowlist.
+- The Ontario-key provider is preferred, with the existing regulated-brand
+  provider retained as a continuity fallback.
+- The best returned price is selected for each exact player, market, side, and
+  line before model tiering.
 - Up to eight games per team are selected across the league.
 - Opponent strength is calculated from position-level production allowed in
   the same completed regular-season box scores as player form.
@@ -39,7 +43,7 @@ market were not portfolio-deduplicated.
   touchdown markets are built from actual game-level box scores.
 - Market-only rows are watches and cannot qualify.
 - A matched player and market projection is required.
-- Complete target-book Over/Under prices are required.
+- Complete offered-book Over/Under prices are required.
 - External complete markets are power-de-vigged and preferred.
 - Projection probability and market probability remain visible separately.
 - Model edge and offered-price expected return must both pass.
