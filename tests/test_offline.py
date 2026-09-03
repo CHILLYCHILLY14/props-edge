@@ -222,6 +222,34 @@ class OddsAndMarketTests(unittest.TestCase):
         self.assertEqual(len(provider.client.calls[1].split(",")), 2)
         self.assertEqual(len(provider.client.calls[2].split(",")), 1)
 
+    def test_primary_provider_keeps_books_allowed_by_account(self) -> None:
+        provider = OddsApiIoProvider("fixture-key", load_settings())
+
+        class FakeClient:
+            def get(self, path, params, retries=2):
+                if path == "/events":
+                    self.event_bookmaker = params.get("bookmaker")
+                    return [{"id": 1001, "league": {"name": "NFL"}}]
+                requested = params["bookmakers"].split(",")
+                if "BetMGM" in requested:
+                    raise ProviderError(
+                        "Access denied. You're allowed max 2 bookmakers. "
+                        "Allowed: DraftKings, FanDuel."
+                    )
+                event = fixture("odds_api_io_event.json")
+                event["bookmakers"] = {
+                    book: markets
+                    for book, markets in event["bookmakers"].items()
+                    if book in requested
+                }
+                return [event]
+
+        provider.client = FakeClient()
+        quotes = provider.fetch("NFL")
+        self.assertEqual(provider.client.event_bookmaker, "DraftKings")
+        self.assertEqual(len(quotes), 4)
+        self.assertEqual({quote.book for quote in quotes}, {"DraftKings", "FanDuel"})
+
     def test_primary_provider_maps_td_passes_market(self) -> None:
         event = fixture("odds_api_io_event.json")
         for markets in event["bookmakers"].values():

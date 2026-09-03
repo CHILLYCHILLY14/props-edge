@@ -183,6 +183,7 @@ class OddsApiIoProvider:
         cfg = self.settings["sports"]["NFL"]
         now = dt.datetime.now(dt.timezone.utc)
         lookahead = int(self.settings["fetch"]["lookahead_days"])
+        active_books = list(dict.fromkeys(self.settings["bookmakers"]["primary_consensus"]))
         events = self.client.get(
             "/events",
             {
@@ -191,12 +192,12 @@ class OddsApiIoProvider:
                 "status": "pending",
                 "from": now.isoformat().replace("+00:00", "Z"),
                 "to": (now + dt.timedelta(days=lookahead)).isoformat().replace("+00:00", "Z"),
+                "bookmaker": active_books[0],
                 "limit": self.settings["fetch"]["primary_event_limit"],
             },
         )
         selected = [event for event in events if _is_league(event, cfg["league_aliases"])]
         ids = [str(event["id"]) for event in selected if event.get("id")]
-        active_books = list(dict.fromkeys(self.settings["bookmakers"]["primary_consensus"]))
 
         def fetch_book_batch(event_ids: list[str], books: list[str]) -> list[dict[str, Any]]:
             """Fetch every requested book, chunking instead of silently dropping extras."""
@@ -219,6 +220,16 @@ class OddsApiIoProvider:
                         for start in range(0, len(books), size)
                         for event in fetch_book_batch(event_ids, books[start : start + size])
                     ]
+                allowed = re.search(r"Allowed:\s*([^.\r\n]+)", str(exc), re.I)
+                if allowed:
+                    allowed_keys = {
+                        _norm(book) for book in allowed.group(1).split(",") if book.strip()
+                    }
+                    remaining = [book for book in books if _norm(book) in allowed_keys]
+                    if remaining and len(remaining) < len(books):
+                        return fetch_book_batch(event_ids, remaining)
+                    if not remaining:
+                        return []
                 invalid = re.search(r'["\']([^"\']+) is not a valid bookmaker', str(exc))
                 if invalid:
                     bad_book = invalid.group(1).casefold()
