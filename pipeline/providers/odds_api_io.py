@@ -15,6 +15,7 @@ NFL_MARKETS = {
     "passing-touchdowns": "Passing touchdowns",
     "passing-tds": "Passing touchdowns",
     "pass-tds": "Passing touchdowns",
+    "td-passes": "Passing touchdowns",
     "passing-attempts": "Pass attempts",
     "pass-attempts": "Pass attempts",
     "passing-completions": "Pass completions",
@@ -196,33 +197,39 @@ class OddsApiIoProvider:
         selected = [event for event in events if _is_league(event, cfg["league_aliases"])]
         ids = [str(event["id"]) for event in selected if event.get("id")]
         active_books = list(dict.fromkeys(self.settings["bookmakers"]["primary_consensus"]))
+
+        def fetch_book_batch(event_ids: list[str], books: list[str]) -> list[dict[str, Any]]:
+            """Fetch every requested book, chunking instead of silently dropping extras."""
+            try:
+                response = self.client.get(
+                    "/odds/multi",
+                    {
+                        "apiKey": self.api_key,
+                        "eventIds": ",".join(event_ids),
+                        "bookmakers": ",".join(books),
+                    },
+                )
+                return response if isinstance(response, list) else [response]
+            except ProviderError as exc:
+                maximum = re.search(r"allowed max (\d+) bookmakers", str(exc), re.I)
+                if maximum and len(books) > int(maximum.group(1)):
+                    size = max(1, int(maximum.group(1)))
+                    return [
+                        event
+                        for start in range(0, len(books), size)
+                        for event in fetch_book_batch(event_ids, books[start : start + size])
+                    ]
+                invalid = re.search(r'["\']([^"\']+) is not a valid bookmaker', str(exc))
+                if invalid:
+                    bad_book = invalid.group(1).casefold()
+                    remaining = [book for book in books if book.casefold() != bad_book]
+                    if remaining and len(remaining) < len(books):
+                        return fetch_book_batch(event_ids, remaining)
+                raise
+
         detailed: list[dict[str, Any]] = []
         for start in range(0, len(ids), 10):
-            while True:
-                try:
-                    response = self.client.get(
-                        "/odds/multi",
-                        {
-                            "apiKey": self.api_key,
-                            "eventIds": ",".join(ids[start : start + 10]),
-                            "bookmakers": ",".join(active_books),
-                        },
-                    )
-                    break
-                except ProviderError as exc:
-                    maximum = re.search(r"allowed max (\d+) bookmakers", str(exc), re.I)
-                    if maximum and len(active_books) > int(maximum.group(1)):
-                        active_books = active_books[: int(maximum.group(1))]
-                        continue
-                    invalid = re.search(r'["\']([^"\']+) is not a valid bookmaker', str(exc))
-                    if not invalid:
-                        raise
-                    bad_book = invalid.group(1).casefold()
-                    remaining = [book for book in active_books if book.casefold() != bad_book]
-                    if not remaining or len(remaining) == len(active_books):
-                        raise
-                    active_books = remaining
-            detailed.extend(response if isinstance(response, list) else [response])
+            detailed.extend(fetch_book_batch(ids[start : start + 10], active_books))
         quotes = [quote for event in detailed for quote in parse_event(event, "NFL")]
 
         # The batch endpoint can omit one requested book. Retry only the missing
@@ -250,4 +257,16 @@ class OddsApiIoProvider:
                     for quote in parse_event(event, "NFL")
                     if _norm(quote.book) == missing_key
                 )
-        return quotes
+        unique: dict[tuple[Any, ...], PropQuote] = {}
+        for quote in quotes:
+            unique[
+                (
+                    quote.event_id,
+                    quote.player.casefold(),
+                    quote.market,
+                    quote.side,
+                    quote.line,
+                    _norm(quote.book),
+                )
+            ] = quote
+        return list(unique.values())

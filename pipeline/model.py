@@ -453,6 +453,9 @@ def _tier_and_reason(
         and confidence >= float(cfg["good_minimum_confidence"])
     ):
         tier = "GOOD"
+    if raw_projection_gap > float(cfg.get("soft_raw_market_gap", cfg["max_raw_market_gap"])):
+        tier = "LEAN"
+        return tier, "Large projection/market gap — reduced stake; verify current role and line"
     if external_books == 0 and offered_fair is None and tier == "BEST":
         tier = "GOOD"
     return tier, ""
@@ -552,6 +555,13 @@ def evaluate_quotes_against_projections(
                 samples,
                 cfg,
             )
+            if (
+                tier != "PASS"
+                and raw_projection_gap
+                > float(cfg.get("soft_raw_market_gap", cfg["max_raw_market_gap"]))
+            ):
+                multiplier = max(0.0, min(1.0, float(cfg.get("raw_gap_stake_multiplier", 0.5))))
+                stake = round(stake * multiplier * 2) / 2
             if tier == "PASS":
                 stake = 0.0
             elif stake < float(cfg["minimum_stake"]):

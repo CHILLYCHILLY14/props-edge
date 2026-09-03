@@ -84,6 +84,11 @@ range. Touchdowns, field goals, interceptions, sacks, and longest-play markets
 require at least six samples even at the Lean tier. These are model-selection
 thresholds, not promises of profit.
 
+Suggested stakes can qualify from C$1. Projection/market disagreement from 18%
+through 25% is capped at LEAN and its stake is halved; disagreement above 25%
+still fails closed. This keeps moderate early-season differences visible without
+treating extreme role or roster mismatches as betting signals.
+
 Supported projection families include passing yards/touchdowns/attempts/
 completions/interceptions, rushing yards/attempts/touchdowns, receptions/
 receiving yards/targets/touchdowns, longest plays, anytime and total touchdowns,

@@ -157,6 +157,8 @@ def _roster_info(payloads: list[tuple[str, dict[str, Any]]]) -> dict[tuple[str, 
                     or ""
                 )
                 answer[(team_key, _norm(player))] = {
+                    "player": player,
+                    "team": team,
                     "position": position,
                     "injury_status": injury_status,
                 }
@@ -404,6 +406,47 @@ def parse_summaries(
         ordered = sorted(teams, key=lambda item: (item[1], item[0]))
         for rank, (team_key, _) in enumerate(ordered, start=1):
             defense_ranks[(team_key, *profile_key)] = (rank, len(ordered))
+
+    # ESPN's completed-game box scores identify the team a player represented
+    # in that game. During the offseason that leaves traded/free-agent players
+    # keyed to their former team, so their valid history never reaches the new
+    # team's upcoming market. Remap only names that occur exactly once on an
+    # upcoming, current roster; ambiguous names continue to fail closed.
+    if current_roster:
+        roster_destinations: dict[str, list[tuple[str, dict[str, str]]]] = defaultdict(list)
+        for (team_key, player_key), roster_entry in current_roster.items():
+            if upcoming_matchups and team_key not in upcoming_matchups:
+                continue
+            roster_destinations[player_key].append((team_key, roster_entry))
+
+        remapped_history: dict[tuple[str, str, str], list[float]] = defaultdict(list)
+        remapped_seasons: dict[tuple[str, str, str], list[int]] = defaultdict(list)
+        remapped_display: dict[tuple[str, str, str], tuple[str, str, str]] = {}
+        for old_key, values in history.items():
+            old_player, old_team, old_position = display[old_key]
+            destinations = roster_destinations.get(_norm(old_player), [])
+            if len(destinations) == 1:
+                team_key, roster_entry = destinations[0]
+                player = str(roster_entry.get("player") or old_player)
+                team = str(roster_entry.get("team") or (old_team if team_key == old_key[1] else team_key))
+                position = str(roster_entry.get("position") or old_position)
+                new_key = (player.casefold(), team_key, old_key[2])
+                remapped_display[new_key] = (player, team, position)
+            else:
+                new_key = old_key
+                remapped_display[new_key] = display[old_key]
+            remapped_history[new_key].extend(values)
+            remapped_seasons[new_key].extend(history_seasons[old_key])
+
+        # Keep prior-season observations ahead of current-season observations
+        # when old- and new-team keys were merged.
+        for key, values in remapped_history.items():
+            ordered = sorted(zip(remapped_seasons[key], values), key=lambda item: item[0])
+            remapped_seasons[key] = [season for season, _ in ordered]
+            remapped_history[key] = [value for _, value in ordered]
+        history = remapped_history
+        history_seasons = remapped_seasons
+        display = remapped_display
 
     projections: list[Projection] = []
     for key, values in history.items():

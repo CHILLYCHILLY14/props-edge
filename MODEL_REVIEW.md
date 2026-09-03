@@ -47,10 +47,13 @@ market were not portfolio-deduplicated.
 - External complete markets are power-de-vigged and preferred.
 - Projection probability and market probability remain visible separately.
 - Model edge and offered-price expected return must both pass.
-- Raw projection/market disagreement above 18 percentage points fails closed.
+- Raw projection/market disagreement above 18 percentage points is LEAN-only
+  with a half-sized stake; above 25 percentage points still fails closed.
 - Sample size, confidence, price, alternate-line, player-correlation, slate,
   minimum-stake, and total-exposure rules are enforced.
 - PASS always means a C$0 suggested stake.
+- The minimum model-sized wager is C$1; the model never rounds a smaller Kelly
+  recommendation up to a larger risk amount.
 - My Ledger accepts an entry only after a browser click and a positive stake.
 - The 10,000-run Matchup Lab is scenario analysis only and cannot qualify or
   add a wager by itself.

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 import unittest
+from copy import deepcopy
 from dataclasses import replace
 from pathlib import Path
 from unittest.mock import patch
@@ -219,6 +220,14 @@ class OddsAndMarketTests(unittest.TestCase):
         self.assertEqual(len(quotes), 6)
         self.assertEqual(len(provider.client.calls[0].split(",")), 3)
         self.assertEqual(len(provider.client.calls[1].split(",")), 2)
+        self.assertEqual(len(provider.client.calls[2].split(",")), 1)
+
+    def test_primary_provider_maps_td_passes_market(self) -> None:
+        event = fixture("odds_api_io_event.json")
+        for markets in event["bookmakers"].values():
+            markets[0]["name"] = "TD Passes"
+        quotes = parse_primary_event(event, "NFL")
+        self.assertEqual({quote.market for quote in quotes}, {"Passing touchdowns"})
 
     def test_primary_provider_retries_missing_book_on_documented_event_endpoint(self) -> None:
         provider = OddsApiIoProvider("fixture-key", load_settings())
@@ -406,6 +415,49 @@ class ProjectionPricingTests(unittest.TestCase):
         )
         self.assertEqual(over["tier"], "PASS")
         self.assertIn("disagreement exceeds", over["reason"])
+
+    def test_moderate_projection_gap_is_lean_with_reduced_stake(self) -> None:
+        projection = sample_projection(projection=310, confidence=0.70)
+        reduced = next(
+            row
+            for row in evaluate_quotes_against_projections(
+                self.quotes, [projection], self.settings
+            )
+            if row["side"] == "over"
+        )
+        full_settings = deepcopy(self.settings)
+        full_settings["projection_model"]["raw_gap_stake_multiplier"] = 1.0
+        unreduced = next(
+            row
+            for row in evaluate_quotes_against_projections(
+                self.quotes, [projection], full_settings
+            )
+            if row["side"] == "over"
+        )
+        self.assertGreater(reduced["raw_projection_market_gap"], 0.18)
+        self.assertLessEqual(reduced["raw_projection_market_gap"], 0.25)
+        self.assertEqual(reduced["tier"], "LEAN")
+        self.assertIn("reduced stake", reduced["reason"])
+        self.assertGreater(reduced["recommended_stake"], 0)
+        self.assertLess(reduced["recommended_stake"], unreduced["recommended_stake"])
+
+    def test_small_model_sized_stake_is_not_erased_by_old_five_dollar_floor(self) -> None:
+        projection = sample_projection(
+            projection=280,
+            samples=4,
+            confidence=0.45,
+            recent=[276, 278, 280, 282],
+        )
+        row = next(
+            row
+            for row in evaluate_quotes_against_projections(
+                self.quotes, [projection], self.settings
+            )
+            if row["side"] == "over"
+        )
+        self.assertEqual(row["tier"], "LEAN")
+        self.assertGreaterEqual(row["recommended_stake"], 1)
+        self.assertLess(row["recommended_stake"], 5)
 
     def test_integer_line_tracks_push_probability(self) -> None:
         quotes = [
@@ -648,6 +700,45 @@ class EspnTests(unittest.TestCase):
         self.assertEqual({row.player for row in rows}, {"Active Example"})
         self.assertEqual({row.position for row in rows}, {"WR"})
         self.assertEqual({row.injury_status for row in rows}, {"Questionable"})
+
+    def test_current_roster_remaps_traded_player_history_to_new_team(self) -> None:
+        summary = {
+            "_props_edge_season_year": 2025,
+            "boxscore": {"players": [{
+                "team": {"displayName": "Old Team"},
+                "statistics": [{
+                    "type": "receiving",
+                    "keys": ["receivingYards", "receptions"],
+                    "athletes": [{
+                        "athlete": {"displayName": "Traded Example"},
+                        "stats": [72, 5],
+                    }],
+                }],
+            }]},
+        }
+        rows = parse_summaries(
+            [summary, summary],
+            "NFL",
+            {"newteam": [{
+                "matchup": "Away Team @ New Team",
+                "start_time": "2026-09-13T17:00:00Z",
+                "opponent": "Away Team",
+            }]},
+            current_season_year=2026,
+            current_roster={
+                ("newteam", "tradedexample"): {
+                    "player": "Traded Example",
+                    "team": "New Team",
+                    "position": "WR",
+                    "injury_status": "",
+                }
+            },
+            verified_roster_teams={"newteam"},
+        )
+        receiving = next(row for row in rows if row.market == "Receiving yards")
+        self.assertEqual(receiving.team, "New Team")
+        self.assertEqual(receiving.position, "WR")
+        self.assertEqual(receiving.samples, 2)
 
     def test_partial_roster_feed_keeps_unverified_team_visible(self) -> None:
         summary = {
