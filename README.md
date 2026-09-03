@@ -1,7 +1,7 @@
 # NFL Props Edge
 
 NFL Props Edge is an NFL-only player-prop model and GitHub Pages dashboard. It
-combines current target-book prices, complete no-vig two-way markets,
+combines the best returned price from an Ontario-regulated sportsbook, complete no-vig two-way markets,
 conservative ESPN regular-season player form, and opponent-defense matchup
 adjustments. It never creates a wager merely
 because another sportsbook has a different number.
@@ -34,8 +34,8 @@ correct output is a watch row or an empty qualified board.
   kicking points and supported combined markets are derived game by game.
 - Sportsbook consensus alone is never called a model or allowed to qualify.
 - A player-form projection must match the live player and market.
-- Complete two-way prices are de-vigged with the power method. External books
-  are preferred; DraftKings is the target price.
+- Complete two-way prices are de-vigged with the power method. Other eligible
+  books are preferred for comparison; the best offered price is published.
 - Integer lines explicitly include Win, Push, and Loss probability.
 - Model edge and offered-price value are calculated and gated separately.
 - Thin samples, low confidence, incomplete prices, excessive disagreement,
@@ -116,7 +116,7 @@ distribution.
 
 The simulator is an analysis tool, not a back door around qualification. Its
 result cannot enter My Ledger and is never called a wager unless a complete
-current DraftKings market passes every model, price, confidence, and exposure
+current market from an eligible Ontario book passes every model, price, confidence, and exposure
 gate.
 
 ## GitHub setup and updates
@@ -131,6 +131,13 @@ gate.
 The workflow also runs five times daily. It tests the model and the manual
 ledger before it refreshes real NFL prices, commits only generated site data,
 and deploys GitHub Pages.
+
+The Ontario-key feed is preferred. If it returns no eligible prices, the
+workflow can fall back to the existing regulated-brand feed to keep refreshes
+running. The allowlist is checked against iGaming Ontario's regulated-market
+directory and provider-specific labels are normalized to the displayed book
+name. Because brand-level fallback data may not identify jurisdiction, always
+confirm that the displayed price exists in the Ontario sportsbook before betting.
 
 Do not put keys in JavaScript, JSON, an Actions variable, a commit, an issue, or
 an environment file. The dashboard publishes calculated rows and sanitized
