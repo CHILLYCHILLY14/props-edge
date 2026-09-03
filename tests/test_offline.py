@@ -5,7 +5,9 @@ import re
 import unittest
 from dataclasses import replace
 from pathlib import Path
+from unittest.mock import patch
 
+import pipeline.build as build_module
 from pipeline.build import load_settings
 from pipeline.http import ProviderError
 from pipeline.model import (
@@ -217,6 +219,65 @@ class OddsAndMarketTests(unittest.TestCase):
         self.assertEqual(len(quotes), 6)
         self.assertEqual(len(provider.client.calls[0].split(",")), 3)
         self.assertEqual(len(provider.client.calls[1].split(",")), 2)
+
+    def test_primary_provider_retries_target_on_documented_event_endpoint(self) -> None:
+        provider = OddsApiIoProvider("fixture-key", load_settings())
+
+        class FakeClient:
+            calls: list[dict] = []
+
+            def get(self, path, params, retries=2):
+                self.calls.append({"path": path, "params": dict(params)})
+                if path == "/events":
+                    return [{"id": 1001, "league": {"name": "NFL"}}]
+                event = fixture("odds_api_io_event.json")
+                if path == "/odds/multi":
+                    event["bookmakers"].pop("DraftKings")
+                    return [event]
+                if path == "/odds":
+                    event["bookmakers"] = {"DraftKings": event["bookmakers"]["DraftKings"]}
+                    return event
+                raise AssertionError(path)
+
+        provider.client = FakeClient()
+        quotes = provider.fetch("NFL")
+        self.assertTrue(any(row.book == "DraftKings" for row in quotes))
+        fallback = [call for call in provider.client.calls if call["path"] == "/odds"]
+        self.assertEqual(len(fallback), 1)
+        self.assertEqual(fallback[0]["params"]["bookmakers"], "DraftKings")
+
+
+class BuildFallbackTests(unittest.TestCase):
+    def test_secondary_provider_runs_when_primary_has_no_target_book(self) -> None:
+        primary = [
+            row for row in parse_primary_event(fixture("odds_api_io_event.json"), "NFL")
+            if row.book != "DraftKings"
+        ]
+        secondary = parse_secondary_event(fixture("the_odds_api_event.json"), "NFL")
+
+        class Primary:
+            def __init__(self, *_): pass
+            def fetch(self, _): return primary
+
+        class Secondary:
+            def __init__(self, *_): pass
+            def fetch(self, _): return secondary
+
+        class Espn:
+            def __init__(self, *_): pass
+            def fetch(self, _): return []
+
+        with patch.dict("os.environ", {"ODDS_API_IO_KEY":"primary", "THE_ODDS_API_KEY":"secondary"}), \
+             patch.object(build_module, "OddsApiIoProvider", Primary), \
+             patch.object(build_module, "TheOddsApiProvider", Secondary), \
+             patch.object(build_module, "EspnProjectionProvider", Espn), \
+             patch.object(build_module, "_write_json"):
+            meta = build_module.build()
+
+        self.assertEqual(meta["source_by_sport"]["NFL"]["source"], "The Odds API")
+        self.assertGreater(meta["counts"]["target_priced_quotes"], 0)
+        self.assertEqual(meta["source_by_provider"]["odds_api_io"]["target_priced_quotes"], 0)
+        self.assertGreater(meta["source_by_provider"]["the_odds_api"]["target_priced_quotes"], 0)
 
 
 class ProjectionPricingTests(unittest.TestCase):
