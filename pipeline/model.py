@@ -17,6 +17,28 @@ def _book_key(value: str) -> str:
     return "".join(ch for ch in value.casefold() if ch.isalnum())
 
 
+def _book_aliases(settings: dict[str, Any]) -> dict[str, tuple[str, str]]:
+    """Map provider-specific book labels to canonical Ontario book identities."""
+    configured = settings.get("bookmakers", {}).get("ontario_regulated", {})
+    aliases: dict[str, tuple[str, str]] = {}
+    if isinstance(configured, dict):
+        for canonical, values in configured.items():
+            canonical_key = _book_key(str(canonical))
+            for value in [canonical, *(values if isinstance(values, list) else [])]:
+                aliases[_book_key(str(value))] = (canonical_key, str(canonical))
+    return aliases
+
+
+def eligible_book_key(book: str, settings: dict[str, Any]) -> str | None:
+    matched = _book_aliases(settings).get(_book_key(book))
+    return matched[0] if matched else None
+
+
+def eligible_book_name(book: str, settings: dict[str, Any]) -> str | None:
+    matched = _book_aliases(settings).get(_book_key(book))
+    return matched[1] if matched else None
+
+
 def _name_key(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "", value.casefold())
 
@@ -131,15 +153,20 @@ def _groups(quotes: list[PropQuote]) -> list[list[PropQuote]]:
 
 
 def _market_context(
-    group: list[PropQuote], quote: PropQuote, target_book: str
+    group: list[PropQuote], quote: PropQuote, settings: dict[str, Any]
 ) -> tuple[float | None, float | None, int, str]:
     by_book: dict[str, dict[str, PropQuote]] = defaultdict(dict)
     for row in group:
-        by_book[_book_key(row.book)][row.side] = row
+        book = eligible_book_key(row.book, settings)
+        if book:
+            current = by_book[book].get(row.side)
+            if current is None or row.price_decimal > current.price_decimal:
+                by_book[book][row.side] = row
     opposite = OPPOSITE.get(quote.side)
     if opposite is None:
         return None, None, 0, "incomplete market"
-    target_fair: float | None = None
+    offered_book = eligible_book_key(quote.book, settings)
+    offered_fair: float | None = None
     external: list[float] = []
     for book, sides in by_book.items():
         if quote.side not in sides or opposite not in sides:
@@ -150,30 +177,63 @@ def _market_context(
         )
         if pair is None:
             continue
-        if book == target_book:
-            target_fair = pair[0]
+        if book == offered_book:
+            offered_fair = pair[0]
         else:
             external.append(pair[0])
     if external:
-        return statistics.median(external), target_fair, len(external), "external no-vig median"
-    if target_fair is not None:
-        return target_fair, target_fair, 0, "target-book no-vig"
+        return statistics.median(external), offered_fair, len(external), "other Ontario books' no-vig median"
+    if offered_fair is not None:
+        return offered_fair, offered_fair, 0, "offered-book no-vig"
     return None, None, 0, "offered-price break-even"
+
+
+def _best_eligible_offers(
+    group: list[PropQuote], settings: dict[str, Any]
+) -> list[PropQuote]:
+    """Return the best qualifying price per side from regulated books.
+
+    A complete two-sided offer is preferred so an isolated stale/high quote
+    cannot hide a slightly lower price whose own book can be de-vigged.
+    """
+    available_sides: dict[str, set[str]] = defaultdict(set)
+    for quote in group:
+        book = eligible_book_key(quote.book, settings)
+        if book:
+            available_sides[book].add(quote.side)
+    best: dict[str, PropQuote] = {}
+    best_complete: dict[str, PropQuote] = {}
+    for quote in group:
+        book = eligible_book_key(quote.book, settings)
+        if book is None:
+            continue
+        current = best.get(quote.side)
+        if current is None or quote.price_decimal > current.price_decimal:
+            best[quote.side] = quote
+        opposite = OPPOSITE.get(quote.side)
+        if opposite and opposite in available_sides[book]:
+            current_complete = best_complete.get(quote.side)
+            if current_complete is None or quote.price_decimal > current_complete.price_decimal:
+                best_complete[quote.side] = quote
+    return [best_complete.get(side, quote) for side, quote in best.items()]
 
 
 def _market_watch_row(
     quote: PropQuote,
     market_fair: float | None,
-    target_fair: float | None,
+    offered_fair: float | None,
     external_books: int,
     market_basis: str,
+    settings: dict[str, Any],
 ) -> dict[str, Any]:
     return {
         **quote.to_dict(),
+        "book": eligible_book_name(quote.book, settings) or quote.book,
         "pick": _selection(quote),
         "breakeven": round(1 / quote.price_decimal, 5),
         "market_fair_prob": None if market_fair is None else round(market_fair, 5),
-        "target_fair_prob": None if target_fair is None else round(target_fair, 5),
+        "offered_fair_prob": None if offered_fair is None else round(offered_fair, 5),
+        "target_fair_prob": None if offered_fair is None else round(offered_fair, 5),
         "market_basis": market_basis,
         "model_prob": None,
         "model_prob_no_push": None,
@@ -201,14 +261,13 @@ def evaluate_quotes(quotes: list[PropQuote], settings: dict[str, Any]) -> list[d
     Sportsbook consensus is useful context, but it is not an independent model.
     These rows cannot qualify until an NFL player projection is matched.
     """
-    target = _book_key(settings["bookmakers"]["target"])
     board: list[dict[str, Any]] = []
     for group in _groups(quotes):
-        for quote in (row for row in group if _book_key(row.book) == target):
-            fair, target_fair, external_books, basis = _market_context(group, quote, target)
+        for quote in _best_eligible_offers(group, settings):
+            fair, offered_fair, external_books, basis = _market_context(group, quote, settings)
             board.append(
                 _market_watch_row(
-                    quote, fair, target_fair, external_books, basis
+                    quote, fair, offered_fair, external_books, basis, settings
                 )
             )
     return sorted(board, key=lambda row: (row["start_time"], row["player"], row["market"]))
@@ -342,7 +401,7 @@ def _matching_projection(
 def _tier_and_reason(
     quote: PropQuote,
     projection: Projection,
-    target_fair: float | None,
+    offered_fair: float | None,
     external_books: int,
     raw_projection_gap: float,
     edge: float,
@@ -361,8 +420,8 @@ def _tier_and_reason(
         return "PASS", f"Player roster status is {projection.injury_status}"
     if quote.side in ("over", "under") and quote.line is None:
         return "PASS", "A real prop line is required"
-    if quote.side in ("over", "under") and target_fair is None:
-        return "PASS", "Complete two-sided target-book prices are required"
+    if quote.side in ("over", "under") and offered_fair is None:
+        return "PASS", "Complete two-sided offered-book prices are required"
     required_samples = int(cfg["minimum_samples"])
     if _is_volatile_market(quote.market):
         required_samples = max(required_samples, int(cfg.get("volatile_minimum_samples", required_samples)))
@@ -394,7 +453,7 @@ def _tier_and_reason(
         and confidence >= float(cfg["good_minimum_confidence"])
     ):
         tier = "GOOD"
-    if external_books == 0 and target_fair is None and tier == "BEST":
+    if external_books == 0 and offered_fair is None and tier == "BEST":
         tier = "GOOD"
     return tier, ""
 
@@ -434,17 +493,16 @@ def evaluate_quotes_against_projections(
 ) -> list[dict[str, Any]]:
     """Combine independent NFL form with live no-vig market information."""
     cfg = settings["projection_model"]
-    target = _book_key(settings["bookmakers"]["target"])
     index = _projection_index(projections)
     board: list[dict[str, Any]] = []
     for group in _groups(quotes):
-        for quote in (row for row in group if _book_key(row.book) == target):
+        for quote in _best_eligible_offers(group, settings):
             projection = _matching_projection(quote, index)
             if projection is None:
                 continue
             probabilities = _projection_probabilities(quote, projection)
-            fair, target_fair, external_books, market_basis = _market_context(
-                group, quote, target
+            fair, offered_fair, external_books, market_basis = _market_context(
+                group, quote, settings
             )
             breakeven = 1 / quote.price_decimal
             market_conditional = fair if fair is not None else breakeven
@@ -479,7 +537,7 @@ def evaluate_quotes_against_projections(
             tier, reason = _tier_and_reason(
                 quote,
                 projection,
-                target_fair,
+                offered_fair,
                 external_books,
                 raw_projection_gap,
                 edge,
@@ -508,17 +566,19 @@ def evaluate_quotes_against_projections(
             model_label = (
                 f"{form_label} + external no-vig market"
                 if external_books
-                else f"{form_label} + target price"
+                else f"{form_label} + offered-book price"
             )
             if season_maturity < 0.999:
                 model_label = model_label.replace("NFL form", "prior-season-weighted NFL form")
             board.append(
                 {
                     **quote.to_dict(),
+                    "book": eligible_book_name(quote.book, settings) or quote.book,
                     "pick": _selection(quote),
                     "breakeven": round(breakeven, 5),
                     "market_fair_prob": round(market_conditional, 5),
-                    "target_fair_prob": None if target_fair is None else round(target_fair, 5),
+                    "offered_fair_prob": None if offered_fair is None else round(offered_fair, 5),
+                    "target_fair_prob": None if offered_fair is None else round(offered_fair, 5),
                     "market_basis": market_basis,
                     "projection_prob": round(projection_conditional, 5),
                     "model_prob": round(model_win, 5),
