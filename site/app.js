@@ -159,8 +159,8 @@ function renderStatus() {
   const source = (state.meta.source_by_sport || {}).NFL || {};
   const lookahead = Number(state.meta.lookahead_days) || 21;
   const formReady = Number(source.projections) > 0;
-  const targetPriceRows = Number(source.target_priced_quotes ?? counts.target_priced_quotes ?? state.board.length) || 0;
-  const pricesReady = targetPriceRows > 0;
+  const eligiblePriceRows = Number(source.eligible_priced_quotes ?? source.target_priced_quotes ?? counts.eligible_priced_quotes ?? counts.target_priced_quotes ?? state.board.length) || 0;
+  const pricesReady = eligiblePriceRows > 0;
   const qualified = Number(counts.actionable) > 0;
   const setStage = (selector, status, label) => {
     const stage = $(selector);
@@ -189,11 +189,11 @@ function renderStatus() {
     $("#feedState").textContent = "STALE";
   } else if (pricesReady) {
     banner.className = "status-banner ok";
-    banner.textContent = `${counts.actionable || 0} qualified NFL props from ${targetPriceRows} live ${state.meta.target_book || "target-book"} price rows. ${state.meta.model_status || ""}`;
+    banner.textContent = `${counts.actionable || 0} qualified NFL props from ${eligiblePriceRows} live Ontario-regulated price rows. ${state.meta.model_status || ""}`;
     $("#feedState").textContent = "LIVE";
   } else if (Number(source.projections) > 0) {
     banner.className = "status-banner warn";
-    banner.textContent = `Regular-season form is ready and the model checks ${lookahead} days ahead, but no current ${state.meta.target_book || "target-book"} player-prop prices were returned. Books often post these closer to kickoff; no wager can qualify without a complete live price.`;
+    banner.textContent = `Regular-season form is ready and the model checks ${lookahead} days ahead, but no current Ontario-regulated player-prop prices were returned. Books often post these closer to kickoff; no wager can qualify without a complete live price.`;
     $("#feedState").textContent = "NO PRICES";
   } else {
     banner.className = "status-banner warn";
@@ -265,7 +265,7 @@ function renderFullBoard() {
   const rows = filteredBoard();
   const body = $("#boardBody");
   if (!rows.length) {
-    body.innerHTML = '<tr><td colspan="12" class="table-empty">No NFL target-book prop rows are available for this filter.</td></tr>';
+    body.innerHTML = '<tr><td colspan="12" class="table-empty">No NFL Ontario-regulated prop rows are available for this filter.</td></tr>';
     return;
   }
   body.innerHTML = rows.map((row) => `
@@ -508,7 +508,8 @@ function renderModel() {
     <div class="source-row"><span>Combined source</span><strong>${escapeHtml(source.source || "Unavailable")}</strong></div>
     <div class="source-row"><span>Schedule window</span><strong>${Number(state.meta.lookahead_days) || 21} days</strong></div>
     <div class="source-row"><span>Live price rows</span><strong>${Number(source.priced_quotes) || 0}</strong></div>
-    <div class="source-row"><span>${escapeHtml(state.meta.target_book || "Target-book")} rows</span><strong>${Number(source.target_priced_quotes ?? state.meta.counts?.target_priced_quotes) || 0}</strong></div>
+    <div class="source-row"><span>Eligible Ontario rows</span><strong>${Number(source.eligible_priced_quotes ?? source.target_priced_quotes ?? state.meta.counts?.eligible_priced_quotes ?? state.meta.counts?.target_priced_quotes) || 0}</strong></div>
+    <div class="source-row"><span>Books returned</span><strong>${Number(state.meta.counts?.eligible_books) || 0}</strong></div>
     <div class="source-row"><span>Priced markets</span><strong>${Number(state.meta.counts?.priced_markets) || 0}</strong></div>
     <div class="source-row"><span>Form projections</span><strong>${Number(source.projections) || 0}</strong></div>
     <div class="source-row"><span>Matchup-adjusted rows</span><strong>${Number(state.meta.counts?.matchup_adjusted) || 0}</strong></div>
