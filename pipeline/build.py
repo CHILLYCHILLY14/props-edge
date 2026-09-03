@@ -36,20 +36,38 @@ def build() -> dict[str, Any]:
     settings = load_settings()
     primary_key = os.getenv("ODDS_API_IO_KEY", "").strip()
     secondary_key = os.getenv("THE_ODDS_API_KEY", "").strip()
+    target_book_key = "".join(
+        character
+        for character in str(settings["bookmakers"]["target"]).casefold()
+        if character.isalnum()
+    )
+    is_target = lambda quote: "".join(
+        character for character in quote.book.casefold() if character.isalnum()
+    ) == target_book_key
     errors: list[str] = []
     quotes = []
+    primary_quotes = []
+    secondary_quotes = []
     odds_source = "No live props source available"
     if primary_key:
         try:
-            quotes = OddsApiIoProvider(primary_key, settings).fetch("NFL")
-            if quotes:
+            primary_quotes = OddsApiIoProvider(primary_key, settings).fetch("NFL")
+            quotes = primary_quotes
+            if primary_quotes:
                 odds_source = "Odds-API.io"
         except ProviderError as exc:
             errors.append(str(exc))
-    if not quotes and secondary_key:
+    # A non-target consensus pull cannot populate the board. If the primary
+    # source has no DraftKings rows, give the configured backup source a chance
+    # instead of treating any unrelated price as a successful primary fetch.
+    if secondary_key and not any(is_target(quote) for quote in quotes):
         try:
-            quotes = TheOddsApiProvider(secondary_key, settings).fetch("NFL")
-            if quotes:
+            secondary_quotes = TheOddsApiProvider(secondary_key, settings).fetch("NFL")
+            if any(is_target(quote) for quote in secondary_quotes):
+                quotes = secondary_quotes
+                odds_source = "The Odds API"
+            elif not quotes and secondary_quotes:
+                quotes = secondary_quotes
                 odds_source = "The Odds API"
         except ProviderError as exc:
             errors.append(str(exc))
@@ -71,16 +89,10 @@ def build() -> dict[str, Any]:
         settings["projection_model"].get("maximum_projection_rows", maximum_rows)
     )
     projection_rows = [row.to_dict() for row in projections[:maximum_projection_rows]]
-    target_book_key = "".join(
-        character
-        for character in str(settings["bookmakers"]["target"]).casefold()
-        if character.isalnum()
-    )
     target_quotes = [
         quote
         for quote in quotes
-        if "".join(character for character in quote.book.casefold() if character.isalnum())
-        == target_book_key
+        if is_target(quote)
     ]
     now = dt.datetime.now(dt.timezone.utc).isoformat()
     actionable = [row for row in board if row["tier"] != "PASS"]
@@ -135,6 +147,16 @@ def build() -> dict[str, Any]:
                 "projections": len(projection_rows),
                 "errors": errors,
             }
+        },
+        "source_by_provider": {
+            "odds_api_io": {
+                "priced_quotes": len(primary_quotes),
+                "target_priced_quotes": sum(is_target(quote) for quote in primary_quotes),
+            },
+            "the_odds_api": {
+                "priced_quotes": len(secondary_quotes),
+                "target_priced_quotes": sum(is_target(quote) for quote in secondary_quotes),
+            },
         },
         "lookahead_days": lookahead_days,
         "next_scheduled_game": scheduled_starts[0] if scheduled_starts else "",
