@@ -588,9 +588,11 @@ def evaluate_quotes_against_projections(
             blocked = quote_block_reason(quote, cfg, now)
             if blocked:
                 tier, reason = "PASS", blocked
+            action_edge = min(edge, price_ev)
+            conservative_win = max(0.0, min(model_win, (1-push_probability+action_edge) / quote.price_decimal))
             full_kelly, stake = _recommended_stake(
-                model_win,
-                model_loss,
+                conservative_win,
+                max(0.0, 1-push_probability-conservative_win),
                 quote.price_decimal,
                 confidence * season_maturity * market_reliability,
                 samples,
@@ -606,7 +608,7 @@ def evaluate_quotes_against_projections(
             if tier == "PASS":
                 stake = 0.0
             elif stake < float(cfg["minimum_stake"]):
-                tier = "PASS"
+                # A small bankroll allocation does not change prediction quality.
                 reason = "Calculated stake is below the minimum wager"
                 stake = 0.0
             form_label = (
@@ -638,10 +640,13 @@ def evaluate_quotes_against_projections(
                     "edge": round(edge, 5),
                     "edge_raw": round(raw_edge, 5),
                     "edge_real": round(price_ev, 5),
+                    "action_edge": round(action_edge, 5),
+                    "tier_version": "2026-09-06-ev2",
                     "edge_price": round(raw_price_ev, 5),
                     "ev": round(raw_price_ev, 5),
                     "full_kelly": full_kelly,
                     "recommended_stake": stake,
+                    "held": tier != "PASS" and stake < float(cfg["minimum_stake"]),
                     "consensus_books": external_books,
                     "confidence": round(confidence, 2),
                     "tier": tier,
@@ -649,6 +654,8 @@ def evaluate_quotes_against_projections(
                     "mode": "projection-and-market",
                     "model_label": model_label,
                     "projection": projection.projection,
+                    "result_event_id": projection.event_id,
+                    "result_team": projection.team,
                     "base_projection": projection.base_projection,
                     "projection_samples": samples,
                     "projection_standard_deviation": projection.standard_deviation,
@@ -708,7 +715,7 @@ def select_portfolio(
     cfg = settings["projection_model"]
     rows = [dict(row) for row in board]
     candidates = sorted(
-        (row for row in rows if row["tier"] != "PASS"),
+        (row for row in rows if row["tier"] != "PASS" and not row.get("held")),
         key=lambda row: (
             TIER_ORDER[row["tier"]],
             -(row.get("edge_real") or -1),
@@ -744,7 +751,7 @@ def select_portfolio(
                 exposure += stake
         if reject_reason:
             row["model_tier"] = row["tier"]
-            row["tier"] = "PASS"
+            row["held"] = True
             row["reason"] = reject_reason
             row["recommended_stake"] = 0.0
     return sorted(

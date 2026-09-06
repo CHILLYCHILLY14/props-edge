@@ -241,8 +241,8 @@ function betCard(row) {
         <div><span>Price</span><strong>${american(row.price_american)}</strong></div>
         <div><span>Model</span><strong>${pct(row.model_prob_no_push ?? row.model_prob)}</strong></div>
         <div><span>No-vig</span><strong>${pct(row.market_fair_prob)}</strong></div>
-        <div><span>Edge</span><strong>${pct(row.edge)}</strong></div>
-        <div><span>Price value</span><strong>${pct(row.edge_real ?? row.ev)}</strong></div>
+        <div><span>No-vig value</span><strong>${pct(row.edge)}</strong></div>
+        <div><span>Conservative return</span><strong>${pct(row.action_edge ?? row.edge_real ?? row.ev)}</strong></div>
         <div><span>Samples</span><strong>${Number(row.projection_samples) || 0}</strong></div>
       </div>
       <div class="confidence-row"><span>Confidence ${pct(confidence)}</span><span>Push ${pct(row.push_prob)}</span></div>
@@ -251,7 +251,7 @@ function betCard(row) {
         <label>Stake <span>C$</span><input id="stake-${escapeHtml(key)}" type="number" min="1" step="0.5" value="${stake.toFixed(2)}" /></label>
         <button class="add-ledger" data-key="${escapeHtml(key)}" ${saved ? "disabled" : ""}>${saved ? "In My Ledger" : "Add to My Ledger"}</button>
       </div>
-      <p class="manual-note">Review the current line first. This button is the only way a wager is added.</p>
+      <p class="manual-note">${row.held ? `Additional ${escapeHtml(row.tier)} option: ${escapeHtml(row.reason)}. It is excluded from suggested exposure. ` : ""}Review the current line first. This button is the only way a wager is added.</p>
     </article>`;
 }
 
@@ -263,10 +263,11 @@ function renderCardGroup(selector, rows, message) {
 
 function renderCards() {
   state.betIndex = {};
-  const actionable = filteredBoard().filter((row) => row.tier !== "PASS");
+  const actionable = filteredBoard().filter((row) => row.tier !== "PASS" && !row.held);
   renderCardGroup("#bestBoard", actionable.filter((row) => row.tier === "BEST"), "Nothing clears every Best Bet gate for this filter.");
   renderCardGroup("#goodBoard", actionable.filter((row) => row.tier === "GOOD"), "No Good Plays clear the current data and price gates.");
   renderCardGroup("#leanBoard", actionable.filter((row) => row.tier === "LEAN"), "No Leans clear both model-edge and price-value gates.");
+  renderCardGroup("#otherBoard", filteredBoard().filter(row=>row.tier!=="PASS" && row.held), "No additional qualified options for this filter.");
 }
 
 function renderFullBoard() {

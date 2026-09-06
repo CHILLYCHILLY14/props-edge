@@ -139,7 +139,7 @@ def build() -> dict[str, Any]:
         }
     )
     now = dt.datetime.now(dt.timezone.utc).isoformat()
-    actionable = [row for row in board if row["tier"] != "PASS"]
+    actionable = [row for row in board if row["tier"] != "PASS" and not row.get("held")]
     lookahead_days = int(settings["fetch"]["lookahead_days"])
     scheduled_starts = sorted(
         {str(row.get("start_time") or "") for row in projection_rows if row.get("start_time")}
@@ -181,6 +181,7 @@ def build() -> dict[str, Any]:
             "priced_markets": len({quote.market for quote in quotes}),
             "board": len(board),
             "actionable": len(actionable),
+            "qualified_options": sum(row["tier"] != "PASS" for row in board),
             "best": sum(row["tier"] == "BEST" for row in board),
             "good": sum(row["tier"] == "GOOD" for row in board),
             "leans": sum(row["tier"] == "LEAN" for row in board),
@@ -261,6 +262,8 @@ def build() -> dict[str, Any]:
             "API credentials remain GitHub Actions secrets and are never written to site data.",
         ],
     }
+    from . import accuracy
+    accuracy.update(ROOT, board, projections, errors)
     _write_json("board.json", board)
     _write_json("projections.json", projection_rows)
     _write_json("meta.json", meta)

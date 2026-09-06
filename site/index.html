@@ -23,6 +23,7 @@
           <button data-view="board">Full Board</button>
           <button data-view="projections">Projections</button>
           <button data-view="simulator">Matchup Lab</button>
+          <button data-view="accuracy">Accuracy</button>
           <button data-view="ledger">My Ledger</button>
           <button data-view="model">Model &amp; Sources</button>
         </nav>
@@ -92,6 +93,7 @@
           <p>Passed every safety gate, but carries a smaller modeled advantage.</p>
         </div>
         <div id="leanBoard" class="card-grid"></div>
+        <details><summary>Other qualified options</summary><p>These pass the model checks but fall outside the suggested portfolio because of exposure or correlation limits. Review them as alternatives.</p><div id="otherBoard" class="card-grid"></div></details>
       </section>
 
       <section id="view-board" class="view">
@@ -186,6 +188,7 @@
         </div>
       </section>
 
+      <section id="view-accuracy" class="view"><div data-model-accuracy></div></section>
       <section id="view-ledger" class="view">
         <div class="section-title ledger-title">
           <div><p class="eyebrow">MANUAL CONFIRMATION ONLY</p><h2>My Ledger</h2><p>Nothing enters here automatically. Add a card only after checking and placing the current price.</p></div>
@@ -240,5 +243,6 @@
     <script src="simulator.js" defer></script>
     <script src="eligibility.js"></script>
 <script src="app.js" defer></script>
-  </body>
+  <script src="model-accuracy.js"></script>
+</body>
 </html>

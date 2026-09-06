@@ -322,7 +322,7 @@ def parse_summaries(
                         else:
                             market = _canonical_market(group, str(name))
                             value = as_float(raw)
-                            values = () if market is None or value is None or value < 0 else ((market, value),)
+                            values = () if market is None or value is None or (value < 0 and "yards" not in market.lower()) else ((market, value),)
                         for market, value in values:
                             observed_by_player[game_key]["player"] = player
                             observed_by_player[game_key]["team"] = team

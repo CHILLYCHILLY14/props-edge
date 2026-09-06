@@ -380,7 +380,7 @@ class ProjectionPricingTests(unittest.TestCase):
             places=4,
         )
         self.assertIn(over["tier"], {"LEAN", "GOOD", "BEST"})
-        self.assertGreaterEqual(over["recommended_stake"], 5)
+        self.assertGreaterEqual(over["recommended_stake"], self.settings["projection_model"]["minimum_stake"])
 
     def test_incomplete_offered_market_fails_closed(self) -> None:
         draftkings_over = [row for row in self.quotes if row.book == "DraftKings" and row.side == "over"]
@@ -495,8 +495,9 @@ class ProjectionPricingTests(unittest.TestCase):
             if row["side"] == "over"
         )
         self.assertEqual(row["tier"], "LEAN")
-        self.assertGreaterEqual(row["recommended_stake"], 1)
-        self.assertLess(row["recommended_stake"], 5)
+        self.assertTrue(row["held"])
+        self.assertEqual(row["recommended_stake"], 0)
+        self.assertIn("minimum wager", row["reason"])
 
     def test_integer_line_tracks_push_probability(self) -> None:
         quotes = [
@@ -609,11 +610,11 @@ class PortfolioTests(unittest.TestCase):
             {**base, "market": "Targets", "line": 7.5},
         ]
         selected = select_portfolio(board, settings)
-        active = [row for row in selected if row["tier"] != "PASS"]
+        active = [row for row in selected if row["tier"] != "PASS" and not row.get("held")]
         self.assertEqual(len(active), 2)
         self.assertEqual(sum(row["market"] == "Receiving yards" for row in active), 1)
         self.assertTrue(all(row["recommended_stake"] > 0 for row in active))
-        self.assertTrue(all(row["recommended_stake"] == 0 for row in selected if row["tier"] == "PASS"))
+        self.assertTrue(all(row["recommended_stake"] == 0 for row in selected if row.get("held")))
 
 
 class EspnTests(unittest.TestCase):

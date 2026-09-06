@@ -63,7 +63,7 @@ jobs:
         run: |
           git config user.name "nfl-props-edge bot"
           git config user.email "actions@github.com"
-          git add site/data
+          git add site/data state/model_accuracy.json
           git diff --staged --quiet || git commit -m "Refresh props $(date -u +'%Y-%m-%d %H:%M UTC')"
           git pull --rebase --autostash origin main || true
           git push
