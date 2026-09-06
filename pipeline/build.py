@@ -34,6 +34,62 @@ def _write_json(name: str, value: Any) -> None:
     destination.write_text(json.dumps(value, indent=2, sort_keys=False) + "\n")
 
 
+def _roster_coverage(projections: list[Any]) -> tuple[int, int]:
+    """Return verified/scheduled team counts from projection rows.
+
+    A transient ESPN roster failure should not silently remove one team's ability
+    to qualify for the whole refresh. We still fail closed for that team, but a
+    single clean retry is cheap compared with publishing an avoidable 31/32 slate.
+    """
+    scheduled = {
+        str(row.team)
+        for row in projections
+        if getattr(row, "start_time", "") and getattr(row, "team", "")
+    }
+    verified = {
+        str(row.team)
+        for row in projections
+        if getattr(row, "start_time", "")
+        and getattr(row, "team", "")
+        and bool(getattr(row, "roster_verified", False))
+    }
+    return len(verified), len(scheduled)
+
+
+def _fetch_projections(settings: dict[str, Any], errors: list[str]) -> list[Any]:
+    try:
+        projections = EspnProjectionProvider(settings).fetch("NFL")
+    except ProviderError as exc:
+        errors.append(str(exc))
+        return []
+    except Exception as exc:
+        errors.append(f"ESPN regular-season statistics failed: {exc}")
+        return []
+
+    verified, scheduled = _roster_coverage(projections)
+    if projections and scheduled and verified < scheduled:
+        # Retry the entire projection pull once. The provider fetches rosters
+        # before the heavier summary sweep, so this mainly repairs a transient
+        # one-team roster timeout without weakening roster verification.
+        try:
+            retry = EspnProjectionProvider(settings).fetch("NFL")
+            retry_verified, retry_scheduled = _roster_coverage(retry)
+            if retry_verified > verified or (
+                retry_verified == verified and retry_scheduled > scheduled
+            ):
+                projections = retry
+                verified, scheduled = retry_verified, retry_scheduled
+        except Exception as exc:
+            errors.append(f"ESPN roster verification retry failed: {exc}")
+
+    if scheduled and verified < scheduled:
+        errors.append(
+            f"ESPN roster verification incomplete: {verified}/{scheduled} scheduled teams verified; "
+            "unverified players remain WATCH-only."
+        )
+    return projections
+
+
 def build() -> dict[str, Any]:
     settings = load_settings()
     primary_key = os.getenv("ODDS_API_IO_KEY", "").strip()
@@ -65,13 +121,7 @@ def build() -> dict[str, Any]:
         quotes = eligible_primary
         odds_source = "Odds-API.io (regulated-brand fallback)"
 
-    projections = []
-    try:
-        projections = EspnProjectionProvider(settings).fetch("NFL")
-    except ProviderError as exc:
-        errors.append(str(exc))
-    except Exception as exc:
-        errors.append(f"ESPN regular-season statistics failed: {exc}")
+    projections = _fetch_projections(settings, errors)
 
     market_watch = evaluate_quotes(quotes, settings)
     evaluated = evaluate_quotes_against_projections(quotes, projections, settings)
@@ -94,6 +144,16 @@ def build() -> dict[str, Any]:
     scheduled_starts = sorted(
         {str(row.get("start_time") or "") for row in projection_rows if row.get("start_time")}
     )
+    scheduled_roster_teams = {
+        str(row.get("team") or "")
+        for row in projection_rows
+        if row.get("start_time") and row.get("team")
+    }
+    verified_roster_teams = {
+        str(row.get("team") or "")
+        for row in projection_rows
+        if row.get("start_time") and row.get("team") and row.get("roster_verified")
+    }
     suggested_exposure = round(
         sum(float(row.get("recommended_stake") or 0) for row in actionable),
         2,
@@ -131,7 +191,8 @@ def build() -> dict[str, Any]:
             "matchup_adjusted": sum(int(row.get("opponent_defense_samples") or 0) >= 2 for row in projection_rows),
             "simulator_players": len({row["player"] for row in projection_rows}),
             "roster_verified": sum(bool(row.get("roster_verified")) for row in projection_rows),
-            "roster_verified_teams": len({row["team"] for row in projection_rows if row.get("roster_verified")}),
+            "roster_verified_teams": len(verified_roster_teams),
+            "scheduled_roster_teams": len(scheduled_roster_teams),
             "suggested_exposure": suggested_exposure,
         },
         "source_by_sport": {
@@ -187,6 +248,7 @@ def build() -> dict[str, Any]:
             "Only NFL player props are collected and published.",
             "Preseason box scores are excluded from every projection and betting decision.",
             "Current ESPN rosters remove players who are no longer on the upcoming team and supply position and injury context.",
+            "A transient incomplete roster pull is retried once; any team still unverified remains WATCH-only rather than being allowed to qualify.",
             "Prior-season form is automatically reduced until four current-season games are available.",
             "Opponent adjustments compare position-level production allowed with the league median, then shrink and cap the result at 12%.",
             "The 10,000-run matchup simulator refreshes from the same ESPN form and defense data as the betting model.",
@@ -213,6 +275,11 @@ def main() -> None:
         f"{counts['projections']} regular-season projections, "
         f"{counts['priced_quotes']} live price rows"
     )
+    if counts.get("scheduled_roster_teams"):
+        print(
+            f"Roster verification: {counts['roster_verified_teams']}/"
+            f"{counts['scheduled_roster_teams']} scheduled teams"
+        )
     print("My Ledger is manual browser storage; 0 automatic wager entries")
 
 
