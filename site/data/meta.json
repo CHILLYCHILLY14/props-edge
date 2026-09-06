@@ -1,6 +1,6 @@
 {
   "league": "NFL",
-  "generated_at": "2026-09-06T12:11:58.905865+00:00",
+  "generated_at": "2026-09-06T15:29:14.276976+00:00",
   "provider_priority": [
     "The Odds API Ontario keys",
     "Odds-API.io regulated-brand fallback",
@@ -19,18 +19,18 @@
     "espn_keyless": true
   },
   "counts": {
-    "priced_quotes": 736,
-    "eligible_priced_quotes": 736,
+    "priced_quotes": 744,
+    "eligible_priced_quotes": 744,
     "priced_events": 16,
     "eligible_priced_events": 16,
     "eligible_books": 1,
     "priced_markets": 5,
-    "board": 736,
+    "board": 744,
     "actionable": 8,
     "best": 0,
     "good": 8,
     "leans": 0,
-    "watch": 728,
+    "watch": 736,
     "projections": 7500,
     "projected_markets": 27,
     "scheduled_projections": 7500,
@@ -44,8 +44,8 @@
   "source_by_sport": {
     "NFL": {
       "source": "Odds-API.io (regulated-brand fallback) + ESPN regular-season form",
-      "priced_quotes": 736,
-      "eligible_priced_quotes": 736,
+      "priced_quotes": 744,
+      "eligible_priced_quotes": 744,
       "projections": 7500,
       "errors": [
         "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)",
@@ -55,8 +55,8 @@
   },
   "source_by_provider": {
     "odds_api_io": {
-      "priced_quotes": 736,
-      "eligible_priced_quotes": 736
+      "priced_quotes": 744,
+      "eligible_priced_quotes": 744
     },
     "the_odds_api": {
       "priced_quotes": 0,
@@ -67,6 +67,7 @@
   "next_scheduled_game": "2026-09-10T00:20Z",
   "model_status": "Live Ontario-regulated NFL prices, regular-season player samples, and opponent matchup data are available.",
   "ledger_mode": "manual-browser",
+  "max_odds_age_hours": 12,
   "market_coverage": [
     "Passing yards, touchdowns, attempts, completions, interceptions and longest completion",
     "Rushing yards, attempts, touchdowns and longest rush",
