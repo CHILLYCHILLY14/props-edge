@@ -4,6 +4,7 @@ import math
 import re
 import statistics
 from collections import defaultdict
+from datetime import datetime, timezone
 from typing import Any
 
 from .schema import Projection, PropQuote
@@ -386,6 +387,33 @@ def _projection_index(projections: list[Projection]) -> dict[tuple[str, str], li
     return result
 
 
+def _utc_now() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+def _timestamp(value: str | None) -> datetime | None:
+    try:
+        parsed = datetime.fromisoformat(str(value or "").replace("Z", "+00:00"))
+        return parsed if parsed.tzinfo is not None else None
+    except (TypeError, ValueError):
+        return None
+
+
+def quote_block_reason(quote: PropQuote, cfg: dict, now: datetime | None = None) -> str | None:
+    now = now or _utc_now()
+    start, updated = _timestamp(quote.start_time), _timestamp(quote.updated_at)
+    if start is None or updated is None:
+        return "Verified kickoff and odds timestamp required"
+    if start <= now:
+        return "Game has already started"
+    age = (now - updated).total_seconds() / 3600
+    if age < -5 / 60:
+        return "Odds timestamp is in the future"
+    if age >= float(cfg.get("max_odds_age_hours", 12)):
+        return "Odds are stale; waiting for a live price refresh"
+    return None
+
+
 def _matching_projection(
     quote: PropQuote,
     index: dict[tuple[str, str], list[Projection]],
@@ -393,9 +421,17 @@ def _matching_projection(
     candidates = index.get((_name_key(quote.player), _market_key(quote.market)), [])
     if not candidates:
         return None
-    quote_date = str(quote.start_time)[:10]
-    exact = [row for row in candidates if str(row.start_time)[:10] == quote_date]
-    return (exact or candidates)[0]
+    start = _timestamp(quote.start_time)
+    matchup = _name_key(quote.matchup)
+    if start is None or not matchup:
+        return None
+    # ESPN and odds providers use different event IDs. Verify both teams and
+    # the scheduled instant; never borrow a player's projection from another week.
+    exact = [row for row in candidates
+             if row.sport == quote.sport and _name_key(row.matchup) == matchup
+             and (scheduled := _timestamp(row.start_time)) is not None
+             and abs((scheduled - start).total_seconds()) <= 3600]
+    return exact[0] if len(exact) == 1 else None
 
 
 def _tier_and_reason(
@@ -498,14 +534,16 @@ def evaluate_quotes_against_projections(
     cfg = settings["projection_model"]
     index = _projection_index(projections)
     board: list[dict[str, Any]] = []
+    now = _utc_now()
     for group in _groups(quotes):
-        for quote in _best_eligible_offers(group, settings):
+        live_group = [q for q in group if quote_block_reason(q, cfg, now) is None]
+        for quote in _best_eligible_offers(live_group or group, settings):
             projection = _matching_projection(quote, index)
             if projection is None:
                 continue
             probabilities = _projection_probabilities(quote, projection)
             fair, offered_fair, external_books, market_basis = _market_context(
-                group, quote, settings
+                live_group, quote, settings
             )
             breakeven = 1 / quote.price_decimal
             market_conditional = fair if fair is not None else breakeven
@@ -547,6 +585,9 @@ def evaluate_quotes_against_projections(
                 price_ev,
                 cfg,
             )
+            blocked = quote_block_reason(quote, cfg, now)
+            if blocked:
+                tier, reason = "PASS", blocked
             full_kelly, stake = _recommended_stake(
                 model_win,
                 model_loss,

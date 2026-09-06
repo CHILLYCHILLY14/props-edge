@@ -7,6 +7,8 @@ from copy import deepcopy
 from dataclasses import replace
 from pathlib import Path
 from unittest.mock import patch
+from datetime import datetime, timezone
+import pipeline.model as pricing_model
 
 import pipeline.build as build_module
 from pipeline.build import load_settings
@@ -34,6 +36,14 @@ from pipeline.schema import Projection, PropQuote
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "fixtures"
+
+
+NOW = datetime(2026, 9, 12, 19, tzinfo=timezone.utc)
+CLOCK = patch.object(pricing_model, "_utc_now", return_value=NOW)
+def setUpModule():
+    CLOCK.start()
+def tearDownModule():
+    CLOCK.stop()
 
 
 def fixture(name: str):
@@ -93,6 +103,7 @@ def target_quote(
         price_american=american,
         book=book,
         provider="fixture",
+        updated_at=NOW.isoformat(),
     )
 
 

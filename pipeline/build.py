@@ -235,6 +235,7 @@ def build() -> dict[str, Any]:
             )
         ),
         "ledger_mode": "manual-browser",
+        "max_odds_age_hours": settings["projection_model"].get("max_odds_age_hours", 12),
         "market_coverage": [
             "Passing yards, touchdowns, attempts, completions, interceptions and longest completion",
             "Rushing yards, attempts, touchdowns and longest rush",

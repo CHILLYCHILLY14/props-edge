@@ -9,7 +9,12 @@
         "name": "Player Passing Yards",
         "updatedAt": "2026-09-12T18:00:00Z",
         "odds": [
-          {"label": "Jordan Example", "hdp": 275.5, "over": "2.10", "under": "1.70"}
+          {
+            "label": "Jordan Example",
+            "hdp": 275.5,
+            "over": "2.10",
+            "under": "1.70"
+          }
         ]
       }
     ],
@@ -17,18 +22,29 @@
       {
         "name": "Player Passing Yards",
         "odds": [
-          {"label": "Jordan Example", "hdp": 275.5, "over": "1.80", "under": "2.05"}
-        ]
+          {
+            "label": "Jordan Example",
+            "hdp": 275.5,
+            "over": "1.80",
+            "under": "2.05"
+          }
+        ],
+        "updatedAt": "2026-09-12T18:00:00Z"
       }
     ],
     "BetMGM": [
       {
         "name": "Player Passing Yards",
         "odds": [
-          {"label": "Jordan Example", "hdp": 275.5, "over": "1.82", "under": "2.00"}
-        ]
+          {
+            "label": "Jordan Example",
+            "hdp": 275.5,
+            "over": "1.82",
+            "under": "2.00"
+          }
+        ],
+        "updatedAt": "2026-09-12T18:00:00Z"
       }
     ]
   }
 }
-

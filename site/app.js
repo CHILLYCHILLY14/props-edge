@@ -140,7 +140,15 @@ function filteredProjections() {
   return state.projections.filter(visible);
 }
 
+function expireQuotes() {
+  state.board = state.board.map(row => {
+    const reason = window.QuoteEligibility.blockReason(row, state.meta?.max_odds_age_hours ?? 12);
+    return reason ? {...row, tier:"PASS", recommended_stake:0, reason} : row;
+  });
+}
+
 function render() {
+  expireQuotes();
   renderStatus();
   renderMetrics();
   renderCards();
@@ -155,7 +163,7 @@ function renderStatus() {
   const banner = $("#statusBanner");
   const generated = new Date(state.meta.generated_at);
   const ageHours = (Date.now() - generated.getTime()) / 3600000;
-  const counts = state.meta.counts || {};
+  const counts = {...(state.meta.counts || {}), actionable:state.board.filter(row=>row.tier!=="PASS").length};
   const source = (state.meta.source_by_sport || {}).NFL || {};
   const lookahead = Number(state.meta.lookahead_days) || 21;
   const formReady = Number(source.projections) > 0;
@@ -608,6 +616,8 @@ document.addEventListener("click", (event) => {
     const row = state.betIndex[addButton.dataset.key];
     const stake = Number($(`#stake-${CSS.escape(addButton.dataset.key)}`)?.value);
     if (!row) return;
+    const blocked = window.QuoteEligibility.blockReason(row, state.meta?.max_odds_age_hours ?? 12);
+    if (blocked) { window.alert(blocked); render(); return; }
     const result = L.add(state.ledger, row, stake);
     if (!result.added) {
       if (result.reason === "stake") window.alert("Enter the actual stake before adding this wager.");
@@ -650,3 +660,8 @@ function showError(error) {
 loadSettings();
 state.ledger = L.load(localStorage);
 loadData().catch(showError);
+function refreshExpiredQuotes() {
+  if (state.meta && state.board.some(row=>row.tier!=="PASS" && window.QuoteEligibility.blockReason(row,state.meta.max_odds_age_hours??12))) render();
+}
+setInterval(refreshExpiredQuotes, 60000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshExpiredQuotes(); });

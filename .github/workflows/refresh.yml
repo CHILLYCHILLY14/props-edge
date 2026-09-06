@@ -12,6 +12,7 @@ on:
       - "site/index.html"
       - "site/app.js"
       - "site/ledger.js"
+      - "site/eligibility.js"
       - "site/styles.css"
   schedule:
     - cron: "0 12,16,20 * * *"
@@ -43,6 +44,7 @@ jobs:
       - name: Test manual My Ledger
         run: |
           node tests/test_ledger.mjs
+          node tests/test_eligibility.mjs
           node tests/test_simulator.mjs
 
       - name: Check browser scripts
