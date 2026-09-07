@@ -1,6 +1,6 @@
 {
   "league": "NFL",
-  "generated_at": "2026-09-07T00:24:17.349084+00:00",
+  "generated_at": "2026-09-07T05:16:16.716297+00:00",
   "provider_priority": [
     "The Odds API Ontario keys",
     "Odds-API.io regulated-brand fallback",
@@ -8,7 +8,9 @@
   ],
   "pricing_mode": "best-ontario-regulated",
   "price_scope": "Best available Ontario-regulated book",
-  "eligible_books": [],
+  "eligible_books": [
+    "FanDuel"
+  ],
   "ontario_registry": "https://igamingontario.ca/en/player/regulated-igaming-market",
   "ontario_verified_as_of": "2026-09-01",
   "configured": {
@@ -17,19 +19,19 @@
     "espn_keyless": true
   },
   "counts": {
-    "priced_quotes": 0,
-    "eligible_priced_quotes": 0,
-    "priced_events": 0,
-    "eligible_priced_events": 0,
-    "eligible_books": 0,
-    "priced_markets": 0,
-    "board": 0,
-    "actionable": 0,
-    "qualified_options": 0,
+    "priced_quotes": 834,
+    "eligible_priced_quotes": 834,
+    "priced_events": 16,
+    "eligible_priced_events": 16,
+    "eligible_books": 1,
+    "priced_markets": 5,
+    "board": 834,
+    "actionable": 8,
+    "qualified_options": 103,
     "best": 0,
-    "good": 0,
-    "leans": 0,
-    "watch": 0,
+    "good": 28,
+    "leans": 75,
+    "watch": 731,
     "projections": 7500,
     "projected_markets": 27,
     "scheduled_projections": 7500,
@@ -38,16 +40,15 @@
     "roster_verified": 7327,
     "roster_verified_teams": 31,
     "scheduled_roster_teams": 32,
-    "suggested_exposure": 0
+    "suggested_exposure": 13.0
   },
   "source_by_sport": {
     "NFL": {
-      "source": "ESPN regular-season form",
-      "priced_quotes": 0,
-      "eligible_priced_quotes": 0,
+      "source": "Odds-API.io (regulated-brand fallback) + ESPN regular-season form",
+      "priced_quotes": 834,
+      "eligible_priced_quotes": 834,
       "projections": 7500,
       "errors": [
-        "Odds-API.io request failed (HTTP 429: {\"error\":\"You have exceeded your rate limit of 100 requests per hour. It resets in 11 minutes and 41 seconds.\"})",
         "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)",
         "ESPN roster verification incomplete: 31/32 scheduled teams verified; unverified players remain WATCH-only."
       ]
@@ -55,8 +56,8 @@
   },
   "source_by_provider": {
     "odds_api_io": {
-      "priced_quotes": 0,
-      "eligible_priced_quotes": 0
+      "priced_quotes": 834,
+      "eligible_priced_quotes": 834
     },
     "the_odds_api": {
       "priced_quotes": 0,
@@ -65,7 +66,7 @@
   },
   "lookahead_days": 21,
   "next_scheduled_game": "2026-09-10T00:20Z",
-  "model_status": "The next 21 days of regular-season schedule and form are ready, but no eligible Ontario-regulated player-prop prices have been returned yet.",
+  "model_status": "Live Ontario-regulated NFL prices, regular-season player samples, and opponent matchup data are available.",
   "ledger_mode": "manual-browser",
   "max_odds_age_hours": 12,
   "market_coverage": [
