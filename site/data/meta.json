@@ -1,6 +1,6 @@
 {
   "league": "NFL",
-  "generated_at": "2026-09-07T20:11:27.639074+00:00",
+  "generated_at": "2026-09-08T00:25:29.442076+00:00",
   "provider_priority": [
     "The Odds API Ontario keys",
     "Odds-API.io regulated-brand fallback",
@@ -27,20 +27,20 @@
     "priced_markets": 5,
     "board": 904,
     "actionable": 8,
-    "qualified_options": 116,
+    "qualified_options": 114,
     "best": 0,
-    "good": 33,
+    "good": 31,
     "leans": 83,
-    "watch": 788,
+    "watch": 790,
     "projections": 7500,
     "projected_markets": 27,
     "scheduled_projections": 7500,
     "matchup_adjusted": 7500,
-    "simulator_players": 1160,
-    "roster_verified": 7327,
-    "roster_verified_teams": 31,
+    "simulator_players": 1152,
+    "roster_verified": 7111,
+    "roster_verified_teams": 30,
     "scheduled_roster_teams": 32,
-    "suggested_exposure": 12.0
+    "suggested_exposure": 12.5
   },
   "source_by_sport": {
     "NFL": {
@@ -50,7 +50,7 @@
       "projections": 7500,
       "errors": [
         "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)",
-        "ESPN roster verification incomplete: 31/32 scheduled teams verified; unverified players remain WATCH-only."
+        "ESPN roster verification incomplete: 30/32 scheduled teams verified; unverified players remain WATCH-only."
       ]
     }
   },
