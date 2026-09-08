@@ -1,6 +1,6 @@
 {
   "league": "NFL",
-  "generated_at": "2026-09-08T05:15:44.658442+00:00",
+  "generated_at": "2026-09-08T12:13:55.651796+00:00",
   "provider_priority": [
     "The Odds API Ontario keys",
     "Odds-API.io regulated-brand fallback",
@@ -9,6 +9,7 @@
   "pricing_mode": "best-ontario-regulated",
   "price_scope": "Best available Ontario-regulated book",
   "eligible_books": [
+    "DraftKings",
     "FanDuel"
   ],
   "ontario_registry": "https://igamingontario.ca/en/player/regulated-igaming-market",
@@ -19,19 +20,19 @@
     "espn_keyless": true
   },
   "counts": {
-    "priced_quotes": 904,
-    "eligible_priced_quotes": 904,
+    "priced_quotes": 2763,
+    "eligible_priced_quotes": 2763,
     "priced_events": 16,
     "eligible_priced_events": 16,
-    "eligible_books": 1,
-    "priced_markets": 5,
-    "board": 904,
+    "eligible_books": 2,
+    "priced_markets": 20,
+    "board": 1600,
     "actionable": 8,
-    "qualified_options": 98,
+    "qualified_options": 241,
     "best": 0,
-    "good": 27,
-    "leans": 71,
-    "watch": 806,
+    "good": 85,
+    "leans": 156,
+    "watch": 1359,
     "projections": 7500,
     "projected_markets": 27,
     "scheduled_projections": 7500,
@@ -40,13 +41,13 @@
     "roster_verified": 7111,
     "roster_verified_teams": 30,
     "scheduled_roster_teams": 32,
-    "suggested_exposure": 12.5
+    "suggested_exposure": 15.5
   },
   "source_by_sport": {
     "NFL": {
       "source": "Odds-API.io (regulated-brand fallback) + ESPN regular-season form",
-      "priced_quotes": 904,
-      "eligible_priced_quotes": 904,
+      "priced_quotes": 2763,
+      "eligible_priced_quotes": 2763,
       "projections": 7500,
       "errors": [
         "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)",
@@ -56,8 +57,8 @@
   },
   "source_by_provider": {
     "odds_api_io": {
-      "priced_quotes": 904,
-      "eligible_priced_quotes": 904
+      "priced_quotes": 2763,
+      "eligible_priced_quotes": 2763
     },
     "the_odds_api": {
       "priced_quotes": 0,
