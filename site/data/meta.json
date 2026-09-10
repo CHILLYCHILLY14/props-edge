@@ -1,6 +1,6 @@
 {
   "league": "NFL",
-  "generated_at": "2026-09-10T00:19:58.265002+00:00",
+  "generated_at": "2026-09-10T05:14:12.455573+00:00",
   "provider_priority": [
     "The Odds API Ontario keys",
     "Odds-API.io regulated-brand fallback",
@@ -20,19 +20,19 @@
     "espn_keyless": true
   },
   "counts": {
-    "priced_quotes": 5698,
-    "eligible_priced_quotes": 5698,
-    "priced_events": 16,
-    "eligible_priced_events": 16,
+    "priced_quotes": 5208,
+    "eligible_priced_quotes": 5208,
+    "priced_events": 15,
+    "eligible_priced_events": 15,
     "eligible_books": 2,
     "priced_markets": 23,
     "board": 1600,
     "actionable": 8,
-    "qualified_options": 245,
+    "qualified_options": 243,
     "best": 0,
-    "good": 94,
+    "good": 92,
     "leans": 151,
-    "watch": 1355,
+    "watch": 1357,
     "projections": 7500,
     "projected_markets": 27,
     "scheduled_projections": 7500,
@@ -41,13 +41,13 @@
     "roster_verified": 7500,
     "roster_verified_teams": 31,
     "scheduled_roster_teams": 31,
-    "suggested_exposure": 13.5
+    "suggested_exposure": 13.0
   },
   "source_by_sport": {
     "NFL": {
       "source": "Odds-API.io (regulated-brand fallback) + ESPN regular-season form",
-      "priced_quotes": 5698,
-      "eligible_priced_quotes": 5698,
+      "priced_quotes": 5208,
+      "eligible_priced_quotes": 5208,
       "projections": 7500,
       "errors": [
         "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)"
@@ -56,8 +56,8 @@
   },
   "source_by_provider": {
     "odds_api_io": {
-      "priced_quotes": 5698,
-      "eligible_priced_quotes": 5698
+      "priced_quotes": 5208,
+      "eligible_priced_quotes": 5208
     },
     "the_odds_api": {
       "priced_quotes": 0,
