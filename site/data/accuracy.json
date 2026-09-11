@@ -1,7 +1,7 @@
 {
  "schema": 3,
  "projection_only": true,
- "generated_at": "2026-09-11T03:52:48.869631+00:00",
+ "generated_at": "2026-09-11T03:54:38.840931+00:00",
  "label": "NFL player projection accuracy",
  "scope": {
   "season": 2026,
