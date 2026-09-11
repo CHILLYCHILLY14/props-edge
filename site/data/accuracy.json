@@ -1,13 +1,13 @@
 {
  "schema": 3,
  "projection_only": true,
- "generated_at": "2026-09-11T17:31:29.948775+00:00",
+ "generated_at": "2026-09-11T20:10:31.635284+00:00",
  "label": "NFL player projection accuracy",
  "scope": {
   "season": 2026,
   "season_type": 2,
   "season_type_label": "regular season",
-  "included_records": 20045,
+  "included_records": 20051,
   "excluded_records": 0
  },
  "method": "One frozen pregame player projection per scheduled player and market, graded only from final box-score statistics. No wager, sportsbook price, stake unit, or ledger history is stored here. Missing statistics remain pending.",
@@ -145,19 +145,19 @@
    "bias": 4.81455
   },
   "Sacks": {
-   "logged": 2590,
+   "logged": 2592,
    "graded": 62,
    "mae": 0.12113,
    "bias": 0.01113
   },
   "Solo tackles": {
-   "logged": 2590,
+   "logged": 2592,
    "graded": 62,
    "mae": 1.4029,
    "bias": -0.21097
   },
   "Tackles + assists": {
-   "logged": 2590,
+   "logged": 2592,
    "graded": 62,
    "mae": 1.93371,
    "bias": -0.30758
@@ -17178,7 +17178,7 @@
   }
  ],
  "history": {
-  "total": 20045,
+  "total": 20051,
   "displayed": 1000,
   "truncated": true
  }
