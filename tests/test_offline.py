@@ -299,6 +299,24 @@ class OddsAndMarketTests(unittest.TestCase):
 
 
 class BuildFallbackTests(unittest.TestCase):
+    def test_parlay_calendar_keeps_dates_beyond_player_table_limit(self) -> None:
+        settings = load_settings()
+        settings["projection_model"]["maximum_projection_rows"] = 1
+        projections = [
+            replace(sample_projection(), event_id="early", start_time="2026-09-13T17:00:00Z"),
+            replace(sample_projection(), event_id="later", start_time="2026-10-01T23:15:00Z"),
+        ]
+        with patch.dict("os.environ", {"ODDS_API_IO_KEY": "", "THE_ODDS_API_KEY": ""}), \
+             patch.object(build_module, "load_settings", return_value=settings), \
+             patch.object(build_module, "_fetch_projections", return_value=projections), \
+             patch("pipeline.accuracy.update"), \
+             patch.object(build_module, "_write_json") as write:
+            build_module.build()
+        payloads = {call.args[0]: call.args[1] for call in write.call_args_list}
+        self.assertEqual(len(payloads["projections.json"]), 1)
+        self.assertEqual([day["date"] for day in payloads["parlays.json"]["dates"]],
+                         ["2026-09-13", "2026-10-01"])
+
     def test_ontario_key_provider_is_preferred_when_it_has_eligible_prices(self) -> None:
         primary = [
             row for row in parse_primary_event(fixture("odds_api_io_event.json"), "NFL")

@@ -152,7 +152,13 @@ def build() -> dict[str, Any]:
             book_quotes, projections, settings
         )
         parlay_rows.extend(merge_boards(book_watch, book_evaluated))
-    parlay_feed = parlays.build(parlay_rows, projection_rows, settings, generated_at=now)
+    # The displayed player table is capped, but the game-day calendar must span
+    # the entire fetched schedule, including dates beyond that table's limit.
+    parlay_schedule = [
+        {"event_id": row.event_id, "start_time": row.start_time, "matchup": row.matchup}
+        for row in projections
+    ]
+    parlay_feed = parlays.build(parlay_rows, parlay_schedule, settings, generated_at=now)
     ready_parlays = sum(card.get("status") == "ready"
                         for day in parlay_feed["dates"] for card in day["cards"])
     actionable = [row for row in board if row["tier"] != "PASS" and not row.get("held")]
