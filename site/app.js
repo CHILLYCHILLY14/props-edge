@@ -240,6 +240,36 @@ function renderMetrics() {
   $("#metricRoi").textContent = `${pct(ledger.roi)} ROI`;
 }
 
+function pickReasons(row) {
+  const notes = [];
+  const finite = value => value !== null && value !== undefined && value !== "" && Number.isFinite(Number(value));
+  if (finite(row.projection) && finite(row.line)) notes.push(`Projection ${Number(row.projection).toFixed(1)} against a ${Number(row.line)} line.`);
+  if (finite(row.opponent_defense_rank) && finite(row.opponent_defense_teams)) {
+    notes.push(`Opponent allowance ranks ${row.opponent_defense_rank} of ${row.opponent_defense_teams} for this position and statistic; 1 means least allowed.`);
+  }
+  const samples = row.projection_samples ?? row.samples;
+  if (finite(samples) && Number(samples) > 0 && finite(row.current_season_samples)) {
+    notes.push(`${Number(row.current_season_samples)} of ${Number(samples)} player samples are from this season${Number(row.current_season_samples) === 0 ? "; current-season form is not established yet" : ""}.`);
+  }
+  return notes;
+}
+
+function reasoningHtml(row) {
+  const notes = pickReasons(row);
+  return notes.length ? `<div class="pick-reasons"><strong>Why this pick</strong><ul>${notes.map(note => `<li>${escapeHtml(note)}</li>`).join("")}</ul></div>` : "";
+}
+
+function dailyShortlist(day) {
+  const seen = new Set();
+  const rows = filteredBoard().filter(row => dateKey(row.start_time) === day && row.tier !== "PASS" && !row.held
+    && !window.QuoteEligibility.blockReason(row, state.meta?.max_odds_age_hours ?? 12))
+    .sort((a,b) => Number(b.action_edge ?? b.edge_real ?? 0) - Number(a.action_edge ?? a.edge_real ?? 0))
+    .filter(row => { const key = `${row.result_event_id || row.event_id}|${String(row.player).toLowerCase()}`; if (seen.has(key)) return false; seen.add(key); return true; }).slice(0,3);
+  return `<div class="daily-shortlist"><div class="mixed-parlay-label"><span>DAILY SHORTLIST · SINGLES</span><small>Up to three distinct players, ranked by conservative expected return</small></div>
+    <div class="daily-single-grid">${rows.length ? rows.map((row,i) => `<article class="daily-single"><div class="card-kicker"><span>0${i+1} · ${escapeHtml(row.tier)}</span><b>${american(row.price_american)}</b></div><h4>${escapeHtml(row.pick)}</h4><p>${escapeHtml(row.matchup)} · ${escapeHtml(row.book)}</p>${reasoningHtml(row)}</article>`).join("") : '<p class="daily-single-empty">No fresh singles pass the current portfolio checks for this date and filter.</p>'}</div>
+    <p class="daily-single-note">These are individual selections from Best Bets, not an additional parlay or extra suggested exposure. Use Best Bets to review stakes and add one manually.</p></div>`;
+}
+
 function betCard(row) {
   const key = L.keyFor(row);
   state.betIndex[key] = row;
@@ -252,6 +282,7 @@ function betCard(row) {
       <h3>${escapeHtml(row.pick)}</h3>
       <p class="game-line">${escapeHtml(formatStart(row.start_time))} · ${escapeHtml(row.matchup)}</p>
       <p class="model-label">${escapeHtml(row.model_label || "NFL form + market")}</p>
+      ${reasoningHtml(row)}
       <div class="card-numbers">
         <div><span>Price</span><strong>${american(row.price_american)}</strong></div>
         <div><span>Model</span><strong>${pct(row.model_prob_no_push ?? row.model_prob)}</strong></div>
@@ -313,6 +344,7 @@ function parlayTicket(card, stale) {
         <span>${escapeHtml(leg.selection || leg.pick || `${leg.side || ""} ${leg.line ?? ""} ${leg.market || ""}`)}</span>
         <small>${escapeHtml(leg.matchup || "Matchup pending")} · ${escapeHtml(formatStart(leg.start_time))}</small>
         <em>${escapeHtml(leg.market_group || marketGroup(leg.market))} · ${pct(leg.model_probability)} model · ${Number(leg.samples) || 0} samples</em>
+        ${reasoningHtml(leg)}
       </div>
     </li>`).join("");
   return `
@@ -350,6 +382,7 @@ function renderParlays() {
         <div><span>GAME DAY</span><h3>${escapeHtml(dateLabel(day.date))}</h3></div>
         <p>${(day.games || []).length} game${(day.games || []).length === 1 ? "" : "s"} · ${Number(day.eligible_legs) || 0} supported same-book legs</p>
       </div>
+      ${dailyShortlist(day.date)}
       <div class="touchdown-feature">
         <div class="touchdown-feature-label"><span>DEDICATED CARD</span><strong>Anytime touchdown scorers only</strong></div>
         ${(day.cards || []).filter((card) => card.key === "touchdown_ticket").map((card) => parlayTicket(card, stale)).join("")}

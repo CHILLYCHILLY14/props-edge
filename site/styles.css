@@ -512,3 +512,15 @@ footer .shell { padding: 28px 0 42px; text-align: center; }
   .defense-compare div:last-child { border-bottom: 0; }
   .recent-result-strip { grid-template-columns: repeat(4, 1fr); }
 }
+
+.daily-shortlist { margin: 18px 0 26px; }
+.daily-single-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
+.daily-single { padding: 20px; border: 1px solid var(--line); border-top: 3px solid var(--cyan); border-radius: 14px; background: var(--panel); min-width: 0; }
+.daily-single h4 { font-size: 1.12rem; line-height: 1.4; margin: 14px 0 8px; }
+.daily-single p, .daily-single-note, .daily-single-empty { font-size: .875rem; line-height: 1.5; color: var(--muted); }
+.pick-reasons { margin: 14px 0; font-size: .875rem; line-height: 1.55; }
+.pick-reasons > strong { color: var(--cyan); font-size: .875rem; }
+.pick-reasons ul { margin: 6px 0 0; padding-left: 18px; color: var(--muted); }
+.pick-reasons li { margin: 5px 0; }
+.parlay-leg-copy .pick-reasons { margin-bottom: 0; }
+@media (max-width: 850px) { .daily-single-grid { grid-template-columns: 1fr; } }
