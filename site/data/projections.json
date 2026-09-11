@@ -52279,7 +52279,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.077,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -52318,7 +52318,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.077,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -52357,7 +52357,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.077,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -52396,7 +52396,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.077,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -58502,7 +58502,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.00454,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -60679,7 +60679,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.01687,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -61024,7 +61024,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.06309,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -61063,7 +61063,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.05731,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -76313,7 +76313,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.04133,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -80198,7 +80198,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.00167,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -86862,7 +86862,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.0182,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -109735,7 +109735,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.00449,
     "matchup_quality": "Neutral",
-    "injury_status": "",
+    "injury_status": "Doubtful",
     "roster_verified": true
   },
   {
@@ -109769,7 +109769,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.00449,
     "matchup_quality": "Neutral",
-    "injury_status": "",
+    "injury_status": "Doubtful",
     "roster_verified": true
   },
   {
@@ -109803,7 +109803,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.06738,
     "matchup_quality": "Neutral",
-    "injury_status": "",
+    "injury_status": "Doubtful",
     "roster_verified": true
   },
   {
@@ -109837,7 +109837,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.00449,
     "matchup_quality": "Neutral",
-    "injury_status": "",
+    "injury_status": "Doubtful",
     "roster_verified": true
   },
   {
@@ -116052,7 +116052,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.05976,
     "matchup_quality": "Tough",
-    "injury_status": "",
+    "injury_status": "Doubtful",
     "roster_verified": true
   },
   {
@@ -117265,7 +117265,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.077,
     "matchup_quality": "Tough",
-    "injury_status": "",
+    "injury_status": "Doubtful",
     "roster_verified": true
   },
   {
@@ -117299,7 +117299,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.06737,
     "matchup_quality": "Tough",
-    "injury_status": "",
+    "injury_status": "Doubtful",
     "roster_verified": true
   },
   {
@@ -275737,7 +275737,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.077,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -275776,7 +275776,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.077,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -275815,7 +275815,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.077,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -275854,7 +275854,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.077,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -283858,7 +283858,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.02726,
     "matchup_quality": "Tough",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
