@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-09-11T04:00:14.147730+00:00",
+  "generated_at": "2026-09-11T05:13:42.987660+00:00",
   "timezone": "America/Toronto",
   "method": "One dedicated anytime-touchdown ticket plus three mixed-market payout targets, each using three or four statistically supported NFL prop outcomes at one eligible sportsbook. Every leg has a fresh posted price, a matched NFL projection, at least the configured sample and confidence floors, and no hard safety flag. Mixed tickets use at least two market groups; the touchdown ticket uses only anytime scorers. Every ticket limits repeated player and market exposure, and gives same-game pairs an additional probability haircut.",
   "notes": [
@@ -90,7 +90,7 @@
             {
               "event_id": "71515760",
               "start_time": "2026-09-13T17:00:00Z",
-              "updated_at": "2026-09-11T03:55:05.984Z",
+              "updated_at": "2026-09-11T05:05:43.345Z",
               "matchup": "Buffalo Bills @ Houston Texans",
               "player": "D.J. Moore",
               "market": "Anytime TD",
@@ -111,7 +111,7 @@
             {
               "event_id": "71515770",
               "start_time": "2026-09-13T20:25:00Z",
-              "updated_at": "2026-09-11T03:55:05.984Z",
+              "updated_at": "2026-09-11T05:00:44.51Z",
               "matchup": "Arizona Cardinals @ Los Angeles Chargers",
               "player": "Michael Wilson",
               "market": "Anytime TD",
@@ -132,7 +132,7 @@
             {
               "event_id": "71515764",
               "start_time": "2026-09-13T17:00:00Z",
-              "updated_at": "2026-09-11T03:54:36.054Z",
+              "updated_at": "2026-09-11T05:10:54.358Z",
               "matchup": "Cleveland Browns @ Jacksonville Jaguars",
               "player": "Jakobi Meyers",
               "market": "Anytime TD",
@@ -172,7 +172,7 @@
             {
               "event_id": "71445306",
               "start_time": "2026-09-14T00:20:00Z",
-              "updated_at": "2026-09-11T03:50:32.971Z",
+              "updated_at": "2026-09-11T05:10:21.573Z",
               "matchup": "Dallas Cowboys @ New York Giants",
               "player": "Ryan Flournoy",
               "market": "Receptions",
@@ -193,7 +193,7 @@
             {
               "event_id": "71515760",
               "start_time": "2026-09-13T17:00:00Z",
-              "updated_at": "2026-09-11T03:50:32.971Z",
+              "updated_at": "2026-09-11T05:10:21.573Z",
               "matchup": "Buffalo Bills @ Houston Texans",
               "player": "Josh Allen",
               "market": "Anytime TD",
@@ -214,7 +214,7 @@
             {
               "event_id": "71515764",
               "start_time": "2026-09-13T17:00:00Z",
-              "updated_at": "2026-09-11T03:50:32.971Z",
+              "updated_at": "2026-09-11T05:10:21.573Z",
               "matchup": "Cleveland Browns @ Jacksonville Jaguars",
               "player": "Parker Washington",
               "market": "Receptions",
@@ -254,7 +254,7 @@
             {
               "event_id": "71515754",
               "start_time": "2026-09-13T17:00:00Z",
-              "updated_at": "2026-09-11T03:55:05.984Z",
+              "updated_at": "2026-09-11T05:05:43.345Z",
               "matchup": "Chicago Bears @ Carolina Panthers",
               "player": "Tetairoa McMillan",
               "market": "Anytime TD",
@@ -275,7 +275,7 @@
             {
               "event_id": "71515760",
               "start_time": "2026-09-13T17:00:00Z",
-              "updated_at": "2026-09-11T03:55:05.984Z",
+              "updated_at": "2026-09-11T05:05:43.345Z",
               "matchup": "Buffalo Bills @ Houston Texans",
               "player": "Nico Collins",
               "market": "Anytime TD",
@@ -296,7 +296,7 @@
             {
               "event_id": "71515754",
               "start_time": "2026-09-13T17:00:00Z",
-              "updated_at": "2026-09-11T03:55:05.984Z",
+              "updated_at": "2026-09-11T05:05:43.345Z",
               "matchup": "Chicago Bears @ Carolina Panthers",
               "player": "Kyle Monangai",
               "market": "Receptions",
@@ -317,7 +317,7 @@
             {
               "event_id": "71515766",
               "start_time": "2026-09-13T17:00:00Z",
-              "updated_at": "2026-09-11T03:47:01.302Z",
+              "updated_at": "2026-09-11T05:00:44.51Z",
               "matchup": "Atlanta Falcons @ Pittsburgh Steelers",
               "player": "Chris Boswell",
               "market": "Field goals made",
@@ -388,7 +388,7 @@
             {
               "event_id": "71474268",
               "start_time": "2026-09-15T00:15:00Z",
-              "updated_at": "2026-09-11T03:41:25.753Z",
+              "updated_at": "2026-09-11T05:00:44.51Z",
               "matchup": "Denver Broncos @ Kansas City Chiefs",
               "player": "Jaylen Waddle",
               "market": "Receptions",
@@ -409,7 +409,7 @@
             {
               "event_id": "71474268",
               "start_time": "2026-09-15T00:15:00Z",
-              "updated_at": "2026-09-11T03:41:25.753Z",
+              "updated_at": "2026-09-11T05:00:44.51Z",
               "matchup": "Denver Broncos @ Kansas City Chiefs",
               "player": "Xavier Worthy",
               "market": "Receptions",
@@ -430,7 +430,7 @@
             {
               "event_id": "71474268",
               "start_time": "2026-09-15T00:15:00Z",
-              "updated_at": "2026-09-11T03:41:25.753Z",
+              "updated_at": "2026-09-11T05:00:44.51Z",
               "matchup": "Denver Broncos @ Kansas City Chiefs",
               "player": "Courtland Sutton",
               "market": "Anytime TD",
