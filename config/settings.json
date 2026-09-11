@@ -80,6 +80,20 @@
     "max_plays_per_slate": 8,
     "max_props_per_player": 2
   },
+  "daily_parlays": {
+    "timezone": "America/Toronto",
+    "minimum_samples": 6,
+    "minimum_confidence": 0.52,
+    "minimum_model_probability": 0.22,
+    "minimum_value_ratio": 0.9,
+    "maximum_projection_gap": 0.25,
+    "maximum_candidate_legs": 28,
+    "maximum_legs_per_game": 4,
+    "minimum_market_groups": 2,
+    "maximum_legs_per_market_group": 2,
+    "minimum_parlay_value_ratio": 0.75,
+    "same_game_pair_haircut": 0.9
+  },
   "fetch": {
     "lookahead_days": 21,
     "primary_event_limit": 500,

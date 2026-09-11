@@ -16,7 +16,8 @@ from .model import (
     merge_boards,
     select_portfolio,
 )
-from .providers.espn import EspnProjectionProvider
+from . import parlays
+from .providers.espn import EspnProjectionProvider, _nfl_season_year
 from .providers.odds_api_io import OddsApiIoProvider
 from .providers.the_odds_api import TheOddsApiProvider
 
@@ -139,6 +140,21 @@ def build() -> dict[str, Any]:
         }
     )
     now = dt.datetime.now(dt.timezone.utc).isoformat()
+    # Re-evaluate per book so a parlay never multiplies best prices that came
+    # from different sportsbooks. The main board still publishes the best
+    # available straight-bet price; this separate pool preserves same-book legs.
+    parlay_rows = []
+    for book_key in sorted({eligible_book_key(quote.book, settings) for quote in quotes} - {None}):
+        book_quotes = [quote for quote in quotes
+                       if eligible_book_key(quote.book, settings) == book_key]
+        book_watch = evaluate_quotes(book_quotes, settings)
+        book_evaluated = evaluate_quotes_against_projections(
+            book_quotes, projections, settings
+        )
+        parlay_rows.extend(merge_boards(book_watch, book_evaluated))
+    parlay_feed = parlays.build(parlay_rows, projection_rows, settings, generated_at=now)
+    ready_parlays = sum(card.get("status") == "ready"
+                        for day in parlay_feed["dates"] for card in day["cards"])
     actionable = [row for row in board if row["tier"] != "PASS" and not row.get("held")]
     lookahead_days = int(settings["fetch"]["lookahead_days"])
     scheduled_starts = sorted(
@@ -160,6 +176,7 @@ def build() -> dict[str, Any]:
     )
     meta = {
         "league": "NFL",
+        "season": _nfl_season_year(dt.datetime.now(dt.timezone.utc).date()),
         "generated_at": now,
         "provider_priority": ["The Odds API Ontario keys", "Odds-API.io regulated-brand fallback", "ESPN regular-season statistics and current rosters"],
         "pricing_mode": "best-ontario-regulated",
@@ -195,6 +212,8 @@ def build() -> dict[str, Any]:
             "roster_verified_teams": len(verified_roster_teams),
             "scheduled_roster_teams": len(scheduled_roster_teams),
             "suggested_exposure": suggested_exposure,
+            "parlay_game_days": len(parlay_feed["dates"]),
+            "parlays_ready": ready_parlays,
         },
         "source_by_sport": {
             "NFL": {
@@ -254,6 +273,7 @@ def build() -> dict[str, Any]:
             "Prior-season form is automatically reduced until four current-season games are available.",
             "Opponent adjustments compare position-level production allowed with the league median, then shrink and cap the result at 12%.",
             "The 10,000-run matchup simulator refreshes from the same ESPN form and defense data as the betting model.",
+            "Daily Parlays mix 3–4 fresh same-book prop legs, retain the sample and confidence safeguards, require market variety, and apply an extra same-game correlation haircut.",
             "Touchdowns, field goals, interceptions and sacks use count-stat probability handling and stricter reliability gates.",
             "Sportsbook consensus is never treated as an independent model by itself.",
             "Each exact prop publishes the best returned price from the configured Ontario-regulated book allowlist.",
@@ -266,6 +286,7 @@ def build() -> dict[str, Any]:
     accuracy.update(ROOT, board, projections, errors)
     _write_json("board.json", board)
     _write_json("projections.json", projection_rows)
+    _write_json("parlays.json", parlay_feed)
     _write_json("meta.json", meta)
     return meta
 

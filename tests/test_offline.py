@@ -127,8 +127,11 @@ class NflOnlyTests(unittest.TestCase):
         app = (ROOT / "site" / "app.js").read_text()
         html = (ROOT / "site" / "index.html").read_text()
         referenced = set(re.findall(r'\$\("#([A-Za-z][A-Za-z0-9_-]*)"\)', app))
-        declared = set(re.findall(r'id="([A-Za-z][A-Za-z0-9_-]*)"', html))
+        declared = set(re.findall(r'id="([A-Za-z][A-Za-z0-9_-]*)"', html + app))
         self.assertFalse(referenced - declared, f"Missing HTML ids: {sorted(referenced - declared)}")
+        self.assertIn('data-view="parlays"', html)
+        self.assertIn('id="parlayBoard"', html)
+        self.assertIn("data/parlays.json", app)
 
     def test_schedule_window_reaches_the_opening_slate(self) -> None:
         self.assertGreaterEqual(load_settings()["fetch"]["lookahead_days"], 21)
@@ -544,6 +547,27 @@ class ProjectionPricingTests(unittest.TestCase):
         self.assertAlmostEqual(win + loss, 1)
         self.assertGreater(win, 0.18)
         self.assertLess(win, 0.55)
+
+    def test_anytime_td_abbreviation_matches_projection_and_uses_td_probability(self) -> None:
+        quote = target_quote(
+            side="over",
+            line=0.5,
+            price_decimal=3.2,
+            market="Anytime TD",
+        )
+        projection = sample_projection(
+            market="Anytime touchdown",
+            projection=0.5,
+            confidence=0.65,
+            deviation=0.5,
+            recent=[1, 0, 1, 0, 0, 1, 0, 1],
+        )
+        rows = evaluate_quotes_against_projections([quote], [projection], self.settings)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(pricing_model._market_key("Anytime TD"), "anytimetouchdown")
+        self.assertEqual(rows[0]["mode"], "projection-and-market")
+        self.assertGreater(rows[0]["model_prob_no_push"], 0.18)
+        self.assertIn("Complete two-sided", rows[0]["reason"])
 
     def test_prior_season_form_receives_less_weight(self) -> None:
         current = sample_projection()

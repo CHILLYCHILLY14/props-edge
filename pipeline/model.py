@@ -60,7 +60,11 @@ def _market_key(value: str) -> str:
         for token in re.findall(r"[a-z0-9]+", value.casefold())
         if token not in ignored
     ]
-    return "".join(tokens).replace("receptionyards", "receivingyards")
+    return (
+        "".join(tokens)
+        .replace("receptionyards", "receivingyards")
+        .replace("anytimetouchdowns", "anytimetouchdown")
+    )
 
 
 def _selection(quote: PropQuote) -> str:
@@ -280,7 +284,7 @@ def _sd_floor(market: str, projection: float) -> float:
         return max(5.0, abs(projection) * 0.12)
     if any(token in key for token in ("attempts", "completions", "receptions", "targets")):
         return 1.25
-    if any(token in key for token in ("touchdowns", "interceptions", "fieldgoals", "sacks")):
+    if any(token in key for token in ("touchdown", "interceptions", "fieldgoals", "sacks")):
         return 0.65
     return 0.75
 
@@ -289,7 +293,7 @@ def _is_volatile_market(market: str) -> bool:
     key = _market_key(market)
     return any(
         token in key
-        for token in ("touchdowns", "interceptions", "fieldgoals", "extrapoints", "sacks", "longest")
+        for token in ("touchdown", "interceptions", "fieldgoals", "extrapoints", "sacks", "longest")
     )
 
 
@@ -317,7 +321,12 @@ def _projection_probabilities(
     samples = max(1, len(recent))
     confidence = max(0.0, min(0.75, float(projection.confidence)))
     market_key = _market_key(quote.market)
-    if quote.side in ("yes", "no"):
+    anytime_direction = (
+        market_key == "anytimetouchdown"
+        and quote.side in ("yes", "no", "over", "under")
+        and (quote.line is None or float(quote.line) <= 0.5)
+    )
+    if quote.side in ("yes", "no") or anytime_direction:
         if market_key != "anytimetouchdown":
             return None
         hits = sum(value >= 1 for value in recent)
@@ -326,7 +335,7 @@ def _projection_probabilities(
         raw_yes = 0.45 * empirical_yes + 0.55 * poisson_yes
         reliability = min(0.8, confidence * (0.6 + 0.4 * min(1.0, samples / 8)))
         yes_probability = max(0.04, min(0.75, 0.18 + (raw_yes - 0.18) * reliability))
-        win = yes_probability if quote.side == "yes" else 1 - yes_probability
+        win = yes_probability if quote.side in ("yes", "over") else 1 - yes_probability
         return win, 0.0, 1 - win
 
     if quote.side not in ("over", "under") or quote.line is None:
@@ -340,7 +349,7 @@ def _projection_probabilities(
     integer_line = abs(line - round(line)) < 1e-9
     low_count = any(
         token in market_key
-        for token in ("touchdowns", "interceptions", "fieldgoals", "extrapoints", "sacks")
+        for token in ("touchdown", "interceptions", "fieldgoals", "extrapoints", "sacks")
     )
     if low_count:
         distribution_over, distribution_under, distribution_push = _poisson_over_under(mean, line)

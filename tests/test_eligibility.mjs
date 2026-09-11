@@ -10,3 +10,11 @@ assert.match(E.blockReason(row,12,Date.parse(row.start_time)),/started/);
 assert.match(E.blockReason(row,12,Date.parse('2026-09-13T06:00:00Z')),/stale/);
 assert.equal(E.blockReason({tipoff:row.start_time,odds_fetched_at:row.updated_at},12,now),null);
 console.log('quote freshness and start-time gates passed');
+
+const card = {legs: [row, {...row}, {...row}]};
+assert.equal(E.parlayBlockReason(card,12,now),null);
+assert.match(E.parlayBlockReason(card,12,Date.parse(row.start_time)),/started/);
+assert.match(E.parlayBlockReason({legs:[row,row,{...row,updated_at:null}]},12,now),/timestamp/);
+assert.match(E.parlayBlockReason({legs:[row,row,{...row,updated_at:'2026-09-10T00:00:00Z'}]},12,now),/stale/);
+assert.match(E.parlayBlockReason({legs:[row,row]},12,now),/Three or four/);
+console.log('parlay cards expire per leg and reject missing timestamps');

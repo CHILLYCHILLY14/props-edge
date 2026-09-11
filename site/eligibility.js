@@ -18,5 +18,13 @@
     if (now - updated >= Number(maxAgeHours) * 3600000) return 'Odds are stale; waiting for a live price refresh';
     return null;
   }
-  return {blockReason};
+  function parlayBlockReason(card, maxAgeHours = 12, now = Date.now()) {
+    if (!Array.isArray(card.legs) || card.legs.length < 3 || card.legs.length > 4) return 'Three or four verified legs required';
+    for (const leg of card.legs) {
+      const reason = blockReason(leg, maxAgeHours, now);
+      if (reason) return reason;
+    }
+    return null;
+  }
+  return {blockReason, parlayBlockReason};
 });

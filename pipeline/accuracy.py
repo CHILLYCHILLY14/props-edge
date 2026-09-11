@@ -6,7 +6,28 @@ import re
 from . import model_accuracy as A
 from .http import JsonClient, ProviderError
 from .model import _market_key, _name_key
-from .providers.espn import _canonical_market, _norm, ESPN_URL
+from .providers.espn import _canonical_market, _nfl_season_year, _norm, ESPN_URL
+
+
+PROJECTION_HISTORY_FIELDS = {
+    "actual",
+    "captured_at",
+    "event_id",
+    "graded_at",
+    "id",
+    "kind",
+    "league",
+    "market",
+    "matchup",
+    "player",
+    "projection",
+    "result",
+    "season",
+    "season_type",
+    "start",
+    "stat_key",
+    "version",
+}
 
 
 def stat_key(player, team, market):
@@ -70,31 +91,71 @@ def final_stats(summary):
     return {"completed": True, "stats": stats}
 
 
-def update(root, board, projections, errors, client=None):
+def current_projection_log(log, season, season_type=2):
+    """Keep only the current-season player-forecast audit.
+
+    Sportsbook calls, prices, stake units, and ledger-like fields do not belong
+    in the durable/public accuracy history. Rebuilding each retained row from an
+    allowlist also keeps that boundary intact if an older file contains extras.
+    """
+    records = {}
+    for source in log.get("records", {}).values():
+        if source.get("kind") != "prop":
+            continue
+        if str(source.get("season")) != str(season):
+            continue
+        if str(source.get("season_type")) != str(season_type):
+            continue
+        row = {key: value for key, value in source.items()
+               if key in PROJECTION_HISTORY_FIELDS}
+        row.update(kind="prop", league="NFL", season=season,
+                   season_type=season_type)
+        row["id"] = A.key(row)
+        records[row["id"]] = row
+    return {"schema": 1, "projection_only": True, "records": records}
+
+
+def migrate_history(root):
+    """Upgrade an existing cached history without fetching or changing forecasts."""
     path = root / "state" / "model_accuracy.json"
     log = A.load(path)
+    now = datetime.now(timezone.utc)
+    season = _nfl_season_year(now.date())
+    # Props Edge deliberately excludes preseason. Older frozen rows predate the
+    # scope fields, so add only schedule metadata; never rewrite their forecast,
+    # line, price, or result.
+    for saved in log.get("records", {}).values():
+        start = A.instant(saved.get("start"))
+        if saved.get("season") is None and start is not None:
+            saved["season"] = _nfl_season_year(start.date())
+        if saved.get("season_type") is None:
+            saved["season_type"] = 2
+    log = current_projection_log(log, season)
+    A.save(path, log)
+    A.save(root / "site/data/accuracy.json",
+           A.report(log, "NFL player projection accuracy", season=season,
+                    season_type=2, projection_only=True, record_limit=1000))
+    return log, season
+
+
+def update(root, board, projections, errors, client=None):
+    path = root / "state" / "model_accuracy.json"
+    log, season = migrate_history(root)
+    now = datetime.now(timezone.utc)
     rows = []
     for p in projections:
         if not p.event_id or not p.start_time:
             continue
         rows.append({"kind": "prop", "league": "NFL", "event_id": p.event_id,
                      "start": p.start_time, "matchup": p.matchup, "player": p.player,
+                     "season": season, "season_type": 2,
                      "market": p.market, "projection": p.projection,
                      "stat_key": stat_key(p.player, p.team, p.market)})
-    for b in board:
-        if not b.get("result_event_id") or b.get("model_prob_no_push") is None:
-            continue
-        rows.append({"kind": "call", "league": "NFL", "event_id": b["result_event_id"],
-                     "start": b["start_time"], "matchup": b["matchup"], "player": b["player"],
-                     "market": b["market"], "side": b["side"], "line": b.get("line"),
-                     "price": b["price_american"], "probability": b["model_prob_no_push"],
-                     "tier": b.get("model_tier", b["tier"]), "edge": b.get("edge_real"),
-                     "pick": b["pick"], "book": b["book"],
-                     "stat_key": stat_key(b["player"], b["result_team"], b["market"])})
     A.record(log, rows)
-    now = datetime.now(timezone.utc)
     ids = sorted({r["event_id"] for r in log["records"].values()
-                  if r["result"] == "Pending" and A.instant(r["start"]) <= now})
+                  if r["result"] == "Pending"
+                  and A.instant(r["start"]) is not None
+                  and A.instant(r["start"]) <= now})
     client = client or JsonClient("ESPN results", ESPN_URL, timeout=18)
     def fetch(event):
         try:
@@ -108,4 +169,12 @@ def update(root, board, projections, errors, client=None):
         errors.append(f"Accuracy: {failed} final box-score requests unavailable; saved predictions retained")
     A.settle(log, {event: value for event,value in result_rows if value})
     A.save(path, log)
-    A.save(root / "site/data/accuracy.json", A.report(log, "NFL prop prediction accuracy"))
+    A.save(root / "site/data/accuracy.json",
+           A.report(log, "NFL player projection accuracy", season=season,
+                    season_type=2, projection_only=True, record_limit=1000))
+
+
+if __name__ == "__main__":
+    from pathlib import Path
+    saved, season = migrate_history(Path(__file__).resolve().parents[1])
+    print(f"Prepared {len(saved['records'])} frozen {season} player projections")

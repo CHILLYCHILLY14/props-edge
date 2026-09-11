@@ -24,6 +24,9 @@ correct output is a watch row or an empty qualified board.
   prior season, and capped at plus or minus 12%.
 - A selectable 10,000-run Matchup Lab reports scenario hit rates, fair odds,
   outcome ranges, defensive rank, recent results, and model risk flags.
+- A sportsbook-style Daily Parlays tab publishes one dedicated 3–4 leg anytime-
+  touchdown ticket plus mixed-market cards near +1000, +5000, and +10000 for
+  each NFL game day when real same-book combinations pass the safeguards.
 - Prior-season form is deliberately reduced until a player has four games in
   the current regular season.
 - Current ESPN rosters filter out players who are no longer on the upcoming
@@ -44,6 +47,9 @@ correct output is a watch row or an empty qualified board.
 - PASS rows always receive a C$0 suggested stake.
 - My Ledger is manual browser storage. A model card enters it only after the
   user clicks **Add to My Ledger**.
+- Accuracy keeps only current-regular-season player projections and final box-
+  score statistics. Sportsbook prices, picks, stake units, and ledger entries
+  are excluded from that durable history.
 
 ## Calculation flow
 
@@ -109,6 +115,24 @@ My Ledger is deliberately separate from the scheduled model:
 The ledger is stored only in that browser and device. Use **Backup JSON** for a
 restorable copy or **Export CSV** for a spreadsheet record. The scheduled
 workflow cannot read or modify it.
+
+## Daily Parlays
+
+Daily Parlays are high-variance planning cards, not Best Bets and not Kelly-
+sized wagers. Each ready card uses three or four posted legs from one eligible
+book, never repeats a player, and applies a probability haircut for every same-
+game pair. Mixed cards require at least two market groups. The separate
+Touchdown Ticket accepts only an anytime scorer line (not 2+ or 3+ touchdown
+alternates).
+
+Every leg still needs a matched player projection, six or more regular-season
+samples, at least 52% projection confidence, verified roster status, fresh odds,
+and no extreme projection/price disagreement. A one-sided anytime-touchdown
+market may appear in the parlay feed because it has an independent projection
+and a real posted break-even price, but it remains ineligible for the stricter
+straight-bet board without a complete two-sided no-vig market. If no safe 3–4
+leg combination reaches a payout band, the site shows **Waiting** instead of
+adding a fifth leg or inventing odds.
 
 ## Matchup Lab
 

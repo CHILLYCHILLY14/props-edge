@@ -12,7 +12,9 @@ on:
       - "site/index.html"
       - "site/app.js"
       - "site/ledger.js"
+      - "site/staking.js"
       - "site/eligibility.js"
+      - "site/model-accuracy.js"
       - "site/styles.css"
   schedule:
     - cron: "0 12,16,20 * * *"
@@ -38,6 +40,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Migrate cached prediction history
+        run: python -m pipeline.accuracy
+
       - name: Run NFL model tests
         run: python -m unittest discover -s tests -v
 
@@ -46,11 +51,14 @@ jobs:
           node tests/test_ledger.mjs
           node tests/test_eligibility.mjs
           node tests/test_simulator.mjs
+          node tests/test_staking.mjs
 
       - name: Check browser scripts
         run: |
           node --check site/ledger.js
           node --check site/simulator.js
+          node --check site/staking.js
+          node --check site/model-accuracy.js
           node --check site/app.js
 
       - name: Refresh NFL props and projections

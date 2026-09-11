@@ -102,7 +102,9 @@ def settle(log, results, now=None):
             continue
         g = results.get(str(r["event_id"])) or {}
         if g.get("canceled"):
-            r.update(result="Void", graded_at=stamp, units=0)
+            r.update(result="Void", graded_at=stamp)
+            if r.get("kind") == "call":
+                r["units"] = 0
             continue
         if not g.get("completed"):
             continue
@@ -183,8 +185,14 @@ def buckets(rows, field):
     return {k: call_stats(v) for k, v in sorted(groups.items())}
 
 
-def report(log, label="Model accuracy"):
-    rows = list(log.get("records", {}).values())
+def report(log, label="Model accuracy", season=None, season_type=None,
+           projection_only=False, record_limit=None):
+    all_rows = list(log.get("records", {}).values())
+    if projection_only:
+        all_rows = [r for r in all_rows if r.get("kind") == "prop"]
+    rows = [r for r in all_rows
+            if (season is None or str(r.get("season")) == str(season))
+            and (season_type is None or str(r.get("season_type")) == str(season_type))]
     calls = [r for r in rows if r["kind"] == "call"]
     picks = [r for r in calls if r.get("selected")]
     games = [r for r in rows if r["kind"] == "game"]
@@ -211,8 +219,42 @@ def report(log, label="Model accuracy"):
     def rate(rs, fn):
         return {"n": len(rs), "correct": sum(bool(fn(r)) for r in rs),
                 "accuracy": mean([bool(fn(r)) for r in rs])}
-    return {"schema": 1, "generated_at": datetime.now(timezone.utc).isoformat(), "label": label,
-            "method": "First pre-event snapshot, frozen line and price. All model picks, including PASS/AVOID and unstaked picks. One preferred side per event/market in pick statistics; the complete priced-side audit is separate. One hypothetical unit per pick; no actual wagers are created. Missing results remain pending.",
+    season_type_label = {1: "preseason", 2: "regular season", 3: "postseason"}.get(
+        int(season_type) if season_type is not None else None)
+    output = {"schema": 3 if projection_only else 2,
+            "projection_only": bool(projection_only),
+            "generated_at": datetime.now(timezone.utc).isoformat(), "label": label,
+            "scope": {"season": season, "season_type": season_type,
+                      "season_type_label": season_type_label,
+                      "included_records": len(rows),
+                      "excluded_records": len(all_rows) - len(rows)},
+            "method": ("One frozen pregame player projection per scheduled player and market, graded only from final box-score statistics. No wager, sportsbook price, stake unit, or ledger history is stored here. Missing statistics remain pending."
+                       if projection_only else
+                       "First pre-event snapshot, frozen line and price. All model picks, including PASS/AVOID and unstaked picks. One preferred side per event/market in pick statistics; the complete priced-side audit is separate. One hypothetical unit per pick; no actual wagers are created. Missing results remain pending."),
+            "props": {k: {"logged": len(v), "graded": sum(r["result"] == "Graded" for r in v),
+                          "mae": mean([abs(r["projection"]-r["actual"]) for r in v if r["result"] == "Graded"]),
+                          "bias": mean([r["projection"]-r["actual"] for r in v if r["result"] == "Graded"])} for k,v in sorted(prop_groups.items())},
+            "records": sorted(rows, key=lambda r: (r.get("start") or "", r["id"]), reverse=True)}
+    if projection_only:
+        allowed = {
+            "actual", "captured_at", "event_id", "graded_at", "id", "kind",
+            "league", "market", "matchup", "player", "projection", "result",
+            "season", "season_type", "start", "stat_key", "version",
+        }
+        public_records = [
+            {key: value for key, value in row.items() if key in allowed}
+            for row in output["records"]
+        ]
+        if record_limit is not None:
+            public_records = public_records[:max(0, int(record_limit))]
+        output["records"] = public_records
+        output["history"] = {
+            "total": len(rows),
+            "displayed": len(public_records),
+            "truncated": len(public_records) < len(rows),
+        }
+        return output
+    output.update({
             "overall": call_stats(picks), "all_calls": call_stats(calls),
             "by_tier": buckets(picks, "tier"), "by_market": buckets(picks, "market"),
             "by_version": buckets(picks, "version"), "calibration": calibration,
@@ -231,7 +273,5 @@ def report(log, label="Model accuracy"):
                       "total_mae": mean([abs(r["total"]-r["actual_total"]) for r in finals if number(r.get("total")) is not None]),
                       "brier": mean([(r["probability"]-(r["actual_margin"] > 0))**2 for r in finals
                                      if number(r.get("probability")) is not None and r["actual_margin"] != 0])},
-            "props": {k: {"logged": len(v), "graded": sum(r["result"] == "Graded" for r in v),
-                          "mae": mean([abs(r["projection"]-r["actual"]) for r in v if r["result"] == "Graded"]),
-                          "bias": mean([r["projection"]-r["actual"] for r in v if r["result"] == "Graded"])} for k,v in sorted(prop_groups.items())},
-            "records": sorted(rows, key=lambda r: (r.get("start") or "", r["id"]), reverse=True)}
+    })
+    return output

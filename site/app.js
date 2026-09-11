@@ -2,6 +2,8 @@ const state = {
   meta: null,
   board: [],
   projections: [],
+  parlays: { dates: [], notes: [] },
+  staking: null,
   ledger: [],
   betIndex: {},
   view: "best",
@@ -15,6 +17,7 @@ const state = {
 
 const L = window.NFLPropsLedger;
 const S = window.NFLPropsSimulator;
+const STAKING = window.PropsEdgeStaking;
 const SETTINGS_KEY = "nfl-props-edge-settings-v2";
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -55,7 +58,7 @@ function formatStart(value) {
 
 function marketGroup(market) {
   const value = String(market || "").toLowerCase();
-  if (value.includes("touchdown")) return "TOUCHDOWNS";
+  if (value.includes("touchdown") || /\btd\b/.test(value)) return "TOUCHDOWNS";
   if (value.includes("target")) return "TARGETS";
   if (value.includes("pass") || value.includes("interception")) return "PASSING";
   if (value.includes("rush") || value.includes("carr")) return "RUSHING";
@@ -70,28 +73,32 @@ function tierClass(tier) {
 }
 
 function loadSettings() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    state.bankroll = Math.max(1, Number(saved.bankroll) || 500);
-  } catch {
-    state.bankroll = 500;
-  }
+  state.staking = STAKING ? STAKING.load(SETTINGS_KEY) : { bankroll: 500 };
+  state.bankroll = Math.max(1, Number(state.staking.bankroll) || 500);
   $("#bankrollInput").value = state.bankroll;
 }
 
 function saveSettings() {
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify({ bankroll: state.bankroll }));
+  state.staking = STAKING
+    ? STAKING.normalise({ ...(state.staking || {}), bankroll: state.bankroll })
+    : { bankroll: state.bankroll };
+  if (STAKING) return STAKING.save(SETTINGS_KEY, state.staking);
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(state.staking)); return true; }
+  catch { return false; }
 }
 
 async function loadData() {
   const stamp = Date.now();
-  const [meta, board, projections] = await Promise.all([
+  const [meta, board, projections, parlays] = await Promise.all([
     fetch(`data/meta.json?v=${stamp}`).then((response) => {
       if (!response.ok) throw new Error("meta feed unavailable");
       return response.json();
     }),
     fetch(`data/board.json?v=${stamp}`).then((response) => response.json()),
     fetch(`data/projections.json?v=${stamp}`).then((response) => response.json()),
+    fetch(`data/parlays.json?v=${stamp}`)
+      .then((response) => response.ok ? response.json() : ({ dates: [], notes: [] }))
+      .catch(() => ({ dates: [], notes: [] })),
   ]);
   state.meta = meta;
   state.schemaReady = meta.league === "NFL" && meta.ledger_mode === "manual-browser";
@@ -106,6 +113,9 @@ async function loadData() {
   state.projections = state.schemaReady
     ? (Array.isArray(projections) ? projections : []).filter((row) => row.sport === "NFL")
     : [];
+  state.parlays = state.schemaReady && parlays && Array.isArray(parlays.dates)
+    ? parlays
+    : { dates: [], notes: [] };
   populateDates();
   populateSimulator();
   render();
@@ -114,7 +124,10 @@ async function loadData() {
 
 function populateDates() {
   const dates = [...new Set(
-    [...state.board, ...state.projections].map((row) => dateKey(row.start_time)).filter(Boolean),
+    [
+      ...[...state.board, ...state.projections].map((row) => dateKey(row.start_time)),
+      ...state.parlays.dates.map((day) => day.date),
+    ].filter(Boolean),
   )].sort();
   const select = $("#dateSelect");
   select.innerHTML = '<option value="ALL">All upcoming dates</option>' + dates
@@ -152,9 +165,11 @@ function render() {
   renderStatus();
   renderMetrics();
   renderCards();
+  renderParlays();
   renderFullBoard();
   renderProjections();
   renderLedger();
+  renderSettings();
   renderModel();
 }
 
@@ -230,7 +245,7 @@ function betCard(row) {
   state.betIndex[key] = row;
   const saved = state.ledger.some((item) => item.id === key);
   const confidence = Number(row.confidence) || 0;
-  const stake = Number(row.recommended_stake) || 0;
+  const stake = row.held ? 0 : Number(state.stakeIndex?.[key] ?? row.recommended_stake) || 0;
   return `
     <article class="bet-card ${tierClass(row.tier)}">
       <div class="card-kicker"><span>${escapeHtml(marketGroup(row.market))}</span><span class="tier ${tierClass(row.tier)}">${escapeHtml(row.tier)}</span></div>
@@ -264,10 +279,84 @@ function renderCardGroup(selector, rows, message) {
 function renderCards() {
   state.betIndex = {};
   const actionable = filteredBoard().filter((row) => row.tier !== "PASS" && !row.held);
+  const available = L.summary(state.ledger, state.bankroll).available;
+  const planned = STAKING
+    ? STAKING.plan(actionable, state.staking, available, 0.85)
+    : actionable.map((row) => Number(row.recommended_stake) || 0);
+  state.stakeIndex = Object.fromEntries(actionable.map((row, index) => [L.keyFor(row), planned[index]]));
   renderCardGroup("#bestBoard", actionable.filter((row) => row.tier === "BEST"), "Nothing clears every Best Bet gate for this filter.");
   renderCardGroup("#goodBoard", actionable.filter((row) => row.tier === "GOOD"), "No Good Plays clear the current data and price gates.");
   renderCardGroup("#leanBoard", actionable.filter((row) => row.tier === "LEAN"), "No Leans clear both model-edge and price-value gates.");
   renderCardGroup("#otherBoard", filteredBoard().filter(row=>row.tier!=="PASS" && row.held), "No additional qualified options for this filter.");
+}
+
+function parlayTicket(card, stale) {
+  const blocked = card.status === "ready" && window.QuoteEligibility.parlayBlockReason(card, state.meta?.max_odds_age_hours ?? 12);
+  if (card.status !== "ready" || stale || blocked) {
+    const reason = blocked || (stale
+      ? "The posted leg prices are stale. Waiting for the next live odds refresh."
+      : card.reason || "No supported 3–4 leg combination reaches this payout band yet.");
+    return `
+      <article class="parlay-ticket waiting ${escapeHtml(card.key || "")}">
+        <div class="parlay-head">
+          <div><span>${escapeHtml(card.name || "Daily card")}</span><strong>${card.key === "touchdown_ticket" ? "TD-only" : `${american(card.target_american)} target`}</strong></div>
+          <b>WAITING</b>
+        </div>
+        <div class="parlay-wait"><span>NO FORCED TICKET</span><p>${escapeHtml(reason)}</p></div>
+      </article>`;
+  }
+  const legs = (card.legs || []).map((leg) => `
+    <li class="parlay-leg">
+      <span class="parlay-node" aria-hidden="true">${escapeHtml(String(leg.market_group || marketGroup(leg.market)).slice(0, 1))}</span>
+      <div class="parlay-leg-copy">
+        <div><strong>${escapeHtml(leg.player)}</strong><b>${american(leg.price_american)}</b></div>
+        <span>${escapeHtml(leg.selection || leg.pick || `${leg.side || ""} ${leg.line ?? ""} ${leg.market || ""}`)}</span>
+        <small>${escapeHtml(leg.matchup || "Matchup pending")} · ${escapeHtml(formatStart(leg.start_time))}</small>
+        <em>${escapeHtml(leg.market_group || marketGroup(leg.market))} · ${pct(leg.model_probability)} model · ${Number(leg.samples) || 0} samples</em>
+      </div>
+    </li>`).join("");
+  return `
+    <article class="parlay-ticket ${escapeHtml(card.key || "")}">
+      <div class="parlay-head">
+        <div><span>${card.leg_count} leg parlay</span><strong>${american(card.estimated_american)}</strong></div>
+        <b>${escapeHtml(card.name)}</b>
+      </div>
+      <div class="parlay-book"><span>${escapeHtml(card.book)}</span><small>${card.key === "touchdown_ticket" ? "Anytime scorers · best supported" : `${american(card.target_american)} target`} · estimated payout</small></div>
+      <ol class="parlay-legs">${legs}</ol>
+      <div class="parlay-foot">
+        <div><span>Estimated all-win chance</span><strong>${pct(card.model_probability)}</strong></div>
+        <div><span>Implied by estimated payout</span><strong>${pct(card.book_implied_probability)}</strong></div>
+        <small>${Number(card.correlation_factor) < 1 ? "Same-game estimate uses an uncalibrated correlation assumption. Confirm the book’s combined price." : "Estimate assumes independent games."} Pushes change the payout.</small>
+      </div>
+    </article>`;
+}
+
+function renderParlays() {
+  const board = $("#parlayBoard");
+  if (!board) return;
+  const generated = new Date(state.parlays.generated_at || state.meta?.generated_at);
+  const stale = Number.isNaN(generated.getTime())
+    || (Date.now() - generated.getTime()) / 3600000 > Number(state.meta?.max_odds_age_hours || 12);
+  const dates = (state.parlays.dates || []).filter((day) => (
+    state.date === "ALL" || day.date === state.date
+  ));
+  if (!dates.length) {
+    board.innerHTML = '<div class="empty-state panel"><strong>No NFL parlay slate for this date</strong><span>The schedule remains visible here as soon as an NFL game day enters the live lookahead window.</span></div>';
+    return;
+  }
+  board.innerHTML = dates.map((day) => `
+    <section class="parlay-day">
+      <div class="parlay-day-head">
+        <div><span>GAME DAY</span><h3>${escapeHtml(dateLabel(day.date))}</h3></div>
+        <p>${(day.games || []).length} game${(day.games || []).length === 1 ? "" : "s"} · ${Number(day.eligible_legs) || 0} supported same-book legs</p>
+      </div>
+      <div class="touchdown-feature">
+        <div class="touchdown-feature-label"><span>DEDICATED CARD</span><strong>Anytime touchdown scorers only</strong></div>
+        ${(day.cards || []).filter((card) => card.key === "touchdown_ticket").map((card) => parlayTicket(card, stale)).join("")}
+      </div>
+      <div class="mixed-parlay-label"><span>MIXED-MARKET CARDS</span><small>Passing · rushing · receiving · touchdowns · kicking · defense</small></div>
+      <div class="parlay-grid">${(day.cards || []).filter((card) => card.key !== "touchdown_ticket").map((card) => parlayTicket(card, stale)).join("")}</div>
+    </section>`).join("");
 }
 
 function renderFullBoard() {
@@ -531,6 +620,50 @@ function renderModel() {
   $("#marketCoverage").innerHTML = (state.meta.market_coverage || []).map((market) => `<li>${escapeHtml(market)}</li>`).join("");
 }
 
+function renderSettings() {
+  const host = $("#stakingSettings");
+  if (!host || !STAKING) return;
+  const settings = STAKING.normalise(state.staking);
+  host.innerHTML = `
+    <div class="staking-intro"><strong>${escapeHtml(STAKING.description(settings))}</strong><span>Saved only in this browser. Open ledger exposure is subtracted before new stake suggestions are planned.</span></div>
+    <div class="staking-grid">
+      <label><span>Starting bankroll<small>Used for local ledger and stake sizing.</small></span><div><b>C$</b><input id="setBankroll" type="number" min="1" step="25" value="${settings.bankroll}"></div></label>
+      <label><span>Staking system<small>Choose one sizing method.</small></span><select id="setSystem"><option value="kelly" ${settings.system === "kelly" ? "selected" : ""}>Fractional Kelly</option><option value="flat" ${settings.system === "flat" ? "selected" : ""}>Flat stake</option><option value="percent" ${settings.system === "percent" ? "selected" : ""}>Bankroll percentage</option></select></label>
+      <label><span>Kelly fraction<small>15% is the conservative model default.</small></span><div><input id="setKelly" type="number" min="0" max="100" step="5" value="${(settings.kelly_fraction * 100).toFixed(0)}"><b>%</b></div></label>
+      <label><span>Flat stake<small>Used only with flat staking.</small></span><div><b>C$</b><input id="setFlat" type="number" min="0" step="1" value="${settings.flat_stake}"></div></label>
+      <label><span>Bankroll stake<small>Used only with percentage staking.</small></span><div><input id="setPercent" type="number" min="0" max="100" step="0.5" value="${(settings.bankroll_pct * 100).toFixed(1)}"><b>%</b></div></label>
+      <label><span>Maximum per play<small>Hard cap after every sizing method.</small></span><div><input id="setMaxPlay" type="number" min="0" max="100" step="1" value="${(settings.max_stake_pct * 100).toFixed(0)}"><b>%</b></div></label>
+      <label><span>Maximum slate exposure<small>Scales all visible qualified props together.</small></span><div><input id="setMaxSlate" type="number" min="0" max="100" step="5" value="${(settings.max_slate_exposure_pct * 100).toFixed(0)}"><b>%</b></div></label>
+      <label><span>Minimum stake<small>Smaller calculations display C$0.</small></span><div><b>C$</b><input id="setMinimum" type="number" min="0" step="0.5" value="${settings.min_stake}"></div></label>
+      <label><span>Round stakes to<small>Sportsbook-friendly increment.</small></span><div><b>C$</b><input id="setRound" type="number" min="0.01" step="0.25" value="${settings.round_to}"></div></label>
+    </div>
+    <div class="staking-actions"><button id="saveStaking" class="button primary">Save on this device</button><button id="resetStaking" class="button">Restore model defaults</button><span id="stakingStatus"></span></div>
+    <p class="staking-limit"><b>Important:</b> custom sizing changes suggested dollars only. It cannot turn a WATCH row into a bet, bypass a stale-price or roster block, or add a parlay to My Ledger.</p>`;
+  const read = (selector) => Number($(selector).value);
+  $("#saveStaking").onclick = () => {
+    state.staking = STAKING.normalise({
+      bankroll: read("#setBankroll"), system: $("#setSystem").value,
+      kelly_fraction: read("#setKelly") / 100, flat_stake: read("#setFlat"),
+      bankroll_pct: read("#setPercent") / 100, max_stake_pct: read("#setMaxPlay") / 100,
+      max_slate_exposure_pct: read("#setMaxSlate") / 100,
+      min_stake: read("#setMinimum"), round_to: read("#setRound"),
+    });
+    state.bankroll = state.staking.bankroll;
+    const saved = STAKING.save(SETTINGS_KEY, state.staking);
+    $("#bankrollInput").value = state.bankroll;
+    render();
+    $("#stakingStatus").textContent = saved ? "Saved locally." : "Browser storage is blocked.";
+  };
+  $("#resetStaking").onclick = () => {
+    STAKING.clear(SETTINGS_KEY);
+    state.staking = STAKING.normalise(null);
+    state.bankroll = state.staking.bankroll;
+    $("#bankrollInput").value = state.bankroll;
+    render();
+    $("#stakingStatus").textContent = "Defaults restored.";
+  };
+}
+
 function switchView(view) {
   state.view = view;
   $$(".nav-tabs button").forEach((button) => button.classList.toggle("active", button.dataset.view === view));
@@ -585,6 +718,7 @@ $("#runSimulator").addEventListener("click", () => {
 });
 $("#bankrollInput").addEventListener("change", (event) => {
   state.bankroll = Math.max(1, Number(event.target.value) || 500);
+  state.staking = STAKING ? STAKING.normalise({ ...(state.staking || {}), bankroll: state.bankroll }) : state.staking;
   saveSettings();
   render();
 });
@@ -663,6 +797,7 @@ state.ledger = L.load(localStorage);
 loadData().catch(showError);
 function refreshExpiredQuotes() {
   if (state.meta && state.board.some(row=>row.tier!=="PASS" && window.QuoteEligibility.blockReason(row,state.meta.max_odds_age_hours??12))) render();
+  else if (state.meta) renderParlays();
 }
 setInterval(refreshExpiredQuotes, 60000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshExpiredQuotes(); });
