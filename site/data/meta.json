@@ -1,6 +1,6 @@
 {
   "league": "NFL",
-  "generated_at": "2026-09-10T20:09:51.675072+00:00",
+  "generated_at": "2026-09-11T00:21:29.879269+00:00",
   "provider_priority": [
     "The Odds API Ontario keys",
     "Odds-API.io regulated-brand fallback",
@@ -20,34 +20,34 @@
     "espn_keyless": true
   },
   "counts": {
-    "priced_quotes": 5522,
-    "eligible_priced_quotes": 5522,
+    "priced_quotes": 5818,
+    "eligible_priced_quotes": 5818,
     "priced_events": 15,
     "eligible_priced_events": 15,
     "eligible_books": 2,
     "priced_markets": 23,
     "board": 1600,
     "actionable": 8,
-    "qualified_options": 259,
+    "qualified_options": 248,
     "best": 0,
-    "good": 84,
-    "leans": 175,
-    "watch": 1341,
+    "good": 77,
+    "leans": 171,
+    "watch": 1352,
     "projections": 7500,
     "projected_markets": 27,
     "scheduled_projections": 7500,
     "matchup_adjusted": 7500,
-    "simulator_players": 1098,
+    "simulator_players": 1028,
     "roster_verified": 7500,
-    "roster_verified_teams": 31,
-    "scheduled_roster_teams": 31,
-    "suggested_exposure": 15.5
+    "roster_verified_teams": 29,
+    "scheduled_roster_teams": 29,
+    "suggested_exposure": 14.0
   },
   "source_by_sport": {
     "NFL": {
       "source": "Odds-API.io (regulated-brand fallback) + ESPN regular-season form",
-      "priced_quotes": 5522,
-      "eligible_priced_quotes": 5522,
+      "priced_quotes": 5818,
+      "eligible_priced_quotes": 5818,
       "projections": 7500,
       "errors": [
         "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)"
@@ -56,8 +56,8 @@
   },
   "source_by_provider": {
     "odds_api_io": {
-      "priced_quotes": 5522,
-      "eligible_priced_quotes": 5522
+      "priced_quotes": 5818,
+      "eligible_priced_quotes": 5818
     },
     "the_odds_api": {
       "priced_quotes": 0,
@@ -65,7 +65,7 @@
     }
   },
   "lookahead_days": 21,
-  "next_scheduled_game": "2026-09-11T00:35Z",
+  "next_scheduled_game": "2026-09-13T17:00Z",
   "model_status": "Live Ontario-regulated NFL prices, regular-season player samples, and opponent matchup data are available.",
   "ledger_mode": "manual-browser",
   "max_odds_age_hours": 12,
