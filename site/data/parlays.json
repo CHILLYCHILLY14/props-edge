@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-09-11T03:54:32.030651+00:00",
+  "generated_at": "2026-09-11T04:00:14.147730+00:00",
   "timezone": "America/Toronto",
   "method": "One dedicated anytime-touchdown ticket plus three mixed-market payout targets, each using three or four statistically supported NFL prop outcomes at one eligible sportsbook. Every leg has a fresh posted price, a matched NFL projection, at least the configured sample and confidence floors, and no hard safety flag. Mixed tickets use at least two market groups; the touchdown ticket uses only anytime scorers. Every ticket limits repeated player and market exposure, and gives same-game pairs an additional probability haircut.",
   "notes": [
@@ -67,8 +67,8 @@
           "matchup": "Dallas Cowboys @ New York Giants"
         }
       ],
-      "prop_prices_considered": 4989,
-      "eligible_legs": 809,
+      "prop_prices_considered": 5013,
+      "eligible_legs": 816,
       "cards": [
         {
           "status": "ready",
@@ -90,7 +90,7 @@
             {
               "event_id": "71515760",
               "start_time": "2026-09-13T17:00:00Z",
-              "updated_at": "2026-09-11T03:46:11.219Z",
+              "updated_at": "2026-09-11T03:55:05.984Z",
               "matchup": "Buffalo Bills @ Houston Texans",
               "player": "D.J. Moore",
               "market": "Anytime TD",
@@ -111,7 +111,7 @@
             {
               "event_id": "71515770",
               "start_time": "2026-09-13T20:25:00Z",
-              "updated_at": "2026-09-11T03:40:46.877Z",
+              "updated_at": "2026-09-11T03:55:05.984Z",
               "matchup": "Arizona Cardinals @ Los Angeles Chargers",
               "player": "Michael Wilson",
               "market": "Anytime TD",
@@ -132,7 +132,7 @@
             {
               "event_id": "71515764",
               "start_time": "2026-09-13T17:00:00Z",
-              "updated_at": "2026-09-11T03:47:01.302Z",
+              "updated_at": "2026-09-11T03:54:36.054Z",
               "matchup": "Cleveland Browns @ Jacksonville Jaguars",
               "player": "Jakobi Meyers",
               "market": "Anytime TD",
@@ -254,7 +254,7 @@
             {
               "event_id": "71515754",
               "start_time": "2026-09-13T17:00:00Z",
-              "updated_at": "2026-09-11T03:46:11.219Z",
+              "updated_at": "2026-09-11T03:55:05.984Z",
               "matchup": "Chicago Bears @ Carolina Panthers",
               "player": "Tetairoa McMillan",
               "market": "Anytime TD",
@@ -275,7 +275,7 @@
             {
               "event_id": "71515760",
               "start_time": "2026-09-13T17:00:00Z",
-              "updated_at": "2026-09-11T03:46:11.219Z",
+              "updated_at": "2026-09-11T03:55:05.984Z",
               "matchup": "Buffalo Bills @ Houston Texans",
               "player": "Nico Collins",
               "market": "Anytime TD",
@@ -296,7 +296,7 @@
             {
               "event_id": "71515754",
               "start_time": "2026-09-13T17:00:00Z",
-              "updated_at": "2026-09-11T03:46:11.219Z",
+              "updated_at": "2026-09-11T03:55:05.984Z",
               "matchup": "Chicago Bears @ Carolina Panthers",
               "player": "Kyle Monangai",
               "market": "Receptions",
@@ -551,8 +551,329 @@
           "matchup": "Philadelphia Eagles @ Tennessee Titans"
         },
         {
+          "event_id": "401872940",
+          "matchup": "Jacksonville Jaguars @ Denver Broncos"
+        },
+        {
+          "event_id": "401872941",
+          "matchup": "Las Vegas Raiders @ Los Angeles Chargers"
+        },
+        {
+          "event_id": "401872942",
+          "matchup": "Miami Dolphins @ San Francisco 49ers"
+        },
+        {
+          "event_id": "401872943",
+          "matchup": "Seattle Seahawks @ Arizona Cardinals"
+        },
+        {
+          "event_id": "401872944",
+          "matchup": "Washington Commanders @ Dallas Cowboys"
+        },
+        {
+          "event_id": "401872945",
+          "matchup": "Indianapolis Colts @ Kansas City Chiefs"
+        },
+        {
           "event_id": "401872946",
           "matchup": "Pittsburgh Steelers @ New England Patriots"
+        }
+      ],
+      "prop_prices_considered": 0,
+      "eligible_legs": 0,
+      "cards": [
+        {
+          "status": "waiting",
+          "key": "touchdown_ticket",
+          "name": "Touchdown Ticket",
+          "target_american": 5000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, supported anytime-touchdown prices at one eligible book."
+        },
+        {
+          "status": "waiting",
+          "key": "smart_shot",
+          "name": "Smart Shot",
+          "target_american": 1000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+        },
+        {
+          "status": "waiting",
+          "key": "home_run",
+          "name": "Home Run",
+          "target_american": 5000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+        },
+        {
+          "status": "waiting",
+          "key": "moonshot",
+          "name": "Moonshot",
+          "target_american": 10000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+        }
+      ]
+    },
+    {
+      "date": "2026-09-21",
+      "games": [
+        {
+          "event_id": "401872947",
+          "matchup": "New York Giants @ Los Angeles Rams"
+        }
+      ],
+      "prop_prices_considered": 0,
+      "eligible_legs": 0,
+      "cards": [
+        {
+          "status": "waiting",
+          "key": "touchdown_ticket",
+          "name": "Touchdown Ticket",
+          "target_american": 5000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, supported anytime-touchdown prices at one eligible book."
+        },
+        {
+          "status": "waiting",
+          "key": "smart_shot",
+          "name": "Smart Shot",
+          "target_american": 1000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+        },
+        {
+          "status": "waiting",
+          "key": "home_run",
+          "name": "Home Run",
+          "target_american": 5000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+        },
+        {
+          "status": "waiting",
+          "key": "moonshot",
+          "name": "Moonshot",
+          "target_american": 10000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+        }
+      ]
+    },
+    {
+      "date": "2026-09-24",
+      "games": [
+        {
+          "event_id": "401872948",
+          "matchup": "Atlanta Falcons @ Green Bay Packers"
+        }
+      ],
+      "prop_prices_considered": 0,
+      "eligible_legs": 0,
+      "cards": [
+        {
+          "status": "waiting",
+          "key": "touchdown_ticket",
+          "name": "Touchdown Ticket",
+          "target_american": 5000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, supported anytime-touchdown prices at one eligible book."
+        },
+        {
+          "status": "waiting",
+          "key": "smart_shot",
+          "name": "Smart Shot",
+          "target_american": 1000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+        },
+        {
+          "status": "waiting",
+          "key": "home_run",
+          "name": "Home Run",
+          "target_american": 5000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+        },
+        {
+          "status": "waiting",
+          "key": "moonshot",
+          "name": "Moonshot",
+          "target_american": 10000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+        }
+      ]
+    },
+    {
+      "date": "2026-09-27",
+      "games": [
+        {
+          "event_id": "401872949",
+          "matchup": "Carolina Panthers @ Cleveland Browns"
+        },
+        {
+          "event_id": "401872950",
+          "matchup": "Cincinnati Bengals @ Pittsburgh Steelers"
+        },
+        {
+          "event_id": "401872951",
+          "matchup": "Houston Texans @ Indianapolis Colts"
+        },
+        {
+          "event_id": "401872952",
+          "matchup": "Kansas City Chiefs @ Miami Dolphins"
+        },
+        {
+          "event_id": "401872953",
+          "matchup": "Los Angeles Chargers @ Buffalo Bills"
+        },
+        {
+          "event_id": "401872954",
+          "matchup": "New York Jets @ Detroit Lions"
+        },
+        {
+          "event_id": "401872955",
+          "matchup": "Seattle Seahawks @ Washington Commanders"
+        },
+        {
+          "event_id": "401872956",
+          "matchup": "Tennessee Titans @ New York Giants"
+        },
+        {
+          "event_id": "401872957",
+          "matchup": "New England Patriots @ Jacksonville Jaguars"
+        },
+        {
+          "event_id": "401872958",
+          "matchup": "Arizona Cardinals @ San Francisco 49ers"
+        },
+        {
+          "event_id": "401872959",
+          "matchup": "Minnesota Vikings @ Tampa Bay Buccaneers"
+        },
+        {
+          "event_id": "401872960",
+          "matchup": "Baltimore Ravens @ Dallas Cowboys"
+        },
+        {
+          "event_id": "401872961",
+          "matchup": "Las Vegas Raiders @ New Orleans Saints"
+        },
+        {
+          "event_id": "401872962",
+          "matchup": "Los Angeles Rams @ Denver Broncos"
+        }
+      ],
+      "prop_prices_considered": 0,
+      "eligible_legs": 0,
+      "cards": [
+        {
+          "status": "waiting",
+          "key": "touchdown_ticket",
+          "name": "Touchdown Ticket",
+          "target_american": 5000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, supported anytime-touchdown prices at one eligible book."
+        },
+        {
+          "status": "waiting",
+          "key": "smart_shot",
+          "name": "Smart Shot",
+          "target_american": 1000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+        },
+        {
+          "status": "waiting",
+          "key": "home_run",
+          "name": "Home Run",
+          "target_american": 5000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+        },
+        {
+          "status": "waiting",
+          "key": "moonshot",
+          "name": "Moonshot",
+          "target_american": 10000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+        }
+      ]
+    },
+    {
+      "date": "2026-09-28",
+      "games": [
+        {
+          "event_id": "401872963",
+          "matchup": "Philadelphia Eagles @ Chicago Bears"
+        }
+      ],
+      "prop_prices_considered": 0,
+      "eligible_legs": 0,
+      "cards": [
+        {
+          "status": "waiting",
+          "key": "touchdown_ticket",
+          "name": "Touchdown Ticket",
+          "target_american": 5000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, supported anytime-touchdown prices at one eligible book."
+        },
+        {
+          "status": "waiting",
+          "key": "smart_shot",
+          "name": "Smart Shot",
+          "target_american": 1000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+        },
+        {
+          "status": "waiting",
+          "key": "home_run",
+          "name": "Home Run",
+          "target_american": 5000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+        },
+        {
+          "status": "waiting",
+          "key": "moonshot",
+          "name": "Moonshot",
+          "target_american": 10000,
+          "leg_count": 0,
+          "legs": [],
+          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-01",
+      "games": [
+        {
+          "event_id": "401872964",
+          "matchup": "Pittsburgh Steelers @ Cleveland Browns"
         }
       ],
       "prop_prices_considered": 0,
