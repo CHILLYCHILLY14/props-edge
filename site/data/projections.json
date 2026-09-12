@@ -1036,7 +1036,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.01191,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -1076,7 +1076,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.01063,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -1116,7 +1116,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.06695,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -1156,7 +1156,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.02,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -1196,7 +1196,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.01191,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -1236,7 +1236,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.06137,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -1276,7 +1276,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.02704,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -1316,7 +1316,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.01191,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -18396,7 +18396,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.05581,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -18436,7 +18436,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.06738,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -18476,7 +18476,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.03995,
     "matchup_quality": "Tough",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -18516,7 +18516,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.00782,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -18556,7 +18556,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.05581,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -18596,7 +18596,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.03865,
     "matchup_quality": "Tough",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -18636,7 +18636,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.01795,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -18676,7 +18676,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.05581,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -60795,7 +60795,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.07011,
     "matchup_quality": "Neutral",
-    "injury_status": "",
+    "injury_status": "Questionable",
     "roster_verified": true
   },
   {
@@ -61139,7 +61139,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.00082,
     "matchup_quality": "Neutral",
-    "injury_status": "",
+    "injury_status": "Questionable",
     "roster_verified": true
   },
   {
@@ -62507,7 +62507,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.05977,
     "matchup_quality": "Favorable",
-    "injury_status": "",
+    "injury_status": "Questionable",
     "roster_verified": true
   },
   {
@@ -71027,7 +71027,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.077,
     "matchup_quality": "Tough",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -80679,7 +80679,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.00862,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -87121,7 +87121,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.04898,
     "matchup_quality": "Tough",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -93044,7 +93044,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.0,
     "matchup_quality": "Tough",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -95984,7 +95984,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.04889,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -103412,7 +103412,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.0275,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -103447,7 +103447,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.01375,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -114241,7 +114241,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.01089,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -115218,7 +115218,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.03815,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -130547,7 +130547,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.077,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -130587,7 +130587,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.077,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -130627,7 +130627,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.077,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -130667,7 +130667,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.05883,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -130707,7 +130707,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.077,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -130747,7 +130747,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.077,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -130787,7 +130787,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.077,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -132627,7 +132627,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.077,
     "matchup_quality": "Tough",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -132667,7 +132667,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.00415,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -132707,7 +132707,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.05746,
     "matchup_quality": "Tough",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -141831,7 +141831,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.077,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -144315,7 +144315,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.077,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -148803,7 +148803,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.0431,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -149115,7 +149115,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.00581,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -151516,7 +151516,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.077,
     "matchup_quality": "Tough",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -151554,7 +151554,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.05746,
     "matchup_quality": "Tough",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -152846,7 +152846,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.01648,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -155096,7 +155096,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.077,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -156144,7 +156144,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.05136,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -157360,7 +157360,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.00415,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -159790,7 +159790,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.05171,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -160752,7 +160752,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.06845,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -163081,7 +163081,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.077,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -164625,7 +164625,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.01081,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -165057,7 +165057,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.00039,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -166283,7 +166283,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.077,
     "matchup_quality": "Tough",
-    "injury_status": "Questionable",
+    "injury_status": "",
     "roster_verified": true
   },
   {
@@ -167420,7 +167420,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.077,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -167455,7 +167455,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.077,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -168015,7 +168015,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.02823,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -171182,7 +171182,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.0037,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -171954,7 +171954,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.05136,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -171989,7 +171989,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.01648,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -172164,7 +172164,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.00797,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -172304,7 +172304,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": -0.07495,
     "matchup_quality": "Neutral",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -172339,7 +172339,7 @@
     "opponent_defense_current_samples": 0,
     "defense_adjustment": 0.05582,
     "matchup_quality": "Favorable",
-    "injury_status": "Questionable",
+    "injury_status": "Out",
     "roster_verified": true
   },
   {
@@ -181592,7 +181592,7 @@
       8.0,
       55.0
     ],
-    "trend": 0.21,
+    "trend": 0.22,
     "start_time": "2026-09-14T00:20Z",
     "source": "ESPN regular-season form + opponent allowance",
     "current_season_samples": 0,
@@ -181601,13 +181601,13 @@
     "venue": "Home",
     "event_id": "401872930",
     "base_projection": 17.99,
-    "opponent_defense_average": 127.47,
+    "opponent_defense_average": 127.64,
     "league_defense_average": 104.96,
     "opponent_defense_rank": 28,
     "opponent_defense_teams": 32,
     "opponent_defense_samples": 8,
     "opponent_defense_current_samples": 0,
-    "defense_adjustment": 0.04719,
+    "defense_adjustment": 0.04754,
     "matchup_quality": "Favorable",
     "injury_status": "Injured Reserve",
     "roster_verified": true
@@ -181641,13 +181641,13 @@
     "venue": "Home",
     "event_id": "401872930",
     "base_projection": 1.29,
-    "opponent_defense_average": 8.92,
+    "opponent_defense_average": 8.97,
     "league_defense_average": 8.15,
     "opponent_defense_rank": 26,
     "opponent_defense_teams": 32,
     "opponent_defense_samples": 8,
     "opponent_defense_current_samples": 0,
-    "defense_adjustment": 0.02061,
+    "defense_adjustment": 0.02211,
     "matchup_quality": "Favorable",
     "injury_status": "Injured Reserve",
     "roster_verified": true
@@ -181698,7 +181698,7 @@
     "team": "New York Giants",
     "matchup": "Dallas Cowboys @ New York Giants",
     "market": "Rush + receiving yards",
-    "projection": 18.78,
+    "projection": 18.79,
     "samples": 8,
     "confidence": 0.7,
     "standard_deviation": 19.97,
@@ -181712,7 +181712,7 @@
       8.0,
       55.0
     ],
-    "trend": 0.15,
+    "trend": 0.16,
     "start_time": "2026-09-14T00:20Z",
     "source": "ESPN regular-season form + opponent allowance",
     "current_season_samples": 0,
@@ -181721,13 +181721,13 @@
     "venue": "Home",
     "event_id": "401872930",
     "base_projection": 17.99,
-    "opponent_defense_average": 129.5,
+    "opponent_defense_average": 129.67,
     "league_defense_average": 107.92,
     "opponent_defense_rank": 27,
     "opponent_defense_teams": 32,
     "opponent_defense_samples": 8,
     "opponent_defense_current_samples": 0,
-    "defense_adjustment": 0.044,
+    "defense_adjustment": 0.04434,
     "matchup_quality": "Favorable",
     "injury_status": "Injured Reserve",
     "roster_verified": true
@@ -181761,13 +181761,13 @@
     "venue": "Home",
     "event_id": "401872930",
     "base_projection": 2.7,
-    "opponent_defense_average": 12.78,
+    "opponent_defense_average": 12.83,
     "league_defense_average": 12.68,
     "opponent_defense_rank": 18,
     "opponent_defense_teams": 32,
     "opponent_defense_samples": 8,
     "opponent_defense_current_samples": 0,
-    "defense_adjustment": 0.00165,
+    "defense_adjustment": 0.00262,
     "matchup_quality": "Neutral",
     "injury_status": "Injured Reserve",
     "roster_verified": true
@@ -182938,7 +182938,7 @@
     "team": "New York Giants",
     "matchup": "Dallas Cowboys @ New York Giants",
     "market": "Receiving yards",
-    "projection": 29.81,
+    "projection": 29.82,
     "samples": 8,
     "confidence": 0.7,
     "standard_deviation": 19.7,
@@ -182952,7 +182952,7 @@
       35.0,
       20.0
     ],
-    "trend": -1.81,
+    "trend": -1.8,
     "start_time": "2026-09-14T00:20Z",
     "source": "ESPN regular-season form + opponent allowance",
     "current_season_samples": 0,
@@ -182961,13 +182961,13 @@
     "venue": "Home",
     "event_id": "401872930",
     "base_projection": 28.47,
-    "opponent_defense_average": 127.47,
+    "opponent_defense_average": 127.64,
     "league_defense_average": 104.96,
     "opponent_defense_rank": 28,
     "opponent_defense_teams": 32,
     "opponent_defense_samples": 8,
     "opponent_defense_current_samples": 0,
-    "defense_adjustment": 0.04719,
+    "defense_adjustment": 0.04754,
     "matchup_quality": "Favorable",
     "injury_status": "",
     "roster_verified": true
@@ -183001,13 +183001,13 @@
     "venue": "Home",
     "event_id": "401872930",
     "base_projection": 2.39,
-    "opponent_defense_average": 8.92,
+    "opponent_defense_average": 8.97,
     "league_defense_average": 8.15,
     "opponent_defense_rank": 26,
     "opponent_defense_teams": 32,
     "opponent_defense_samples": 8,
     "opponent_defense_current_samples": 0,
-    "defense_adjustment": 0.02061,
+    "defense_adjustment": 0.02211,
     "matchup_quality": "Favorable",
     "injury_status": "",
     "roster_verified": true
@@ -183058,7 +183058,7 @@
     "team": "New York Giants",
     "matchup": "Dallas Cowboys @ New York Giants",
     "market": "Rush + receiving yards",
-    "projection": 29.72,
+    "projection": 29.73,
     "samples": 8,
     "confidence": 0.7,
     "standard_deviation": 19.7,
@@ -183072,7 +183072,7 @@
       35.0,
       20.0
     ],
-    "trend": -1.9,
+    "trend": -1.89,
     "start_time": "2026-09-14T00:20Z",
     "source": "ESPN regular-season form + opponent allowance",
     "current_season_samples": 0,
@@ -183081,13 +183081,13 @@
     "venue": "Home",
     "event_id": "401872930",
     "base_projection": 28.47,
-    "opponent_defense_average": 129.5,
+    "opponent_defense_average": 129.67,
     "league_defense_average": 107.92,
     "opponent_defense_rank": 27,
     "opponent_defense_teams": 32,
     "opponent_defense_samples": 8,
     "opponent_defense_current_samples": 0,
-    "defense_adjustment": 0.044,
+    "defense_adjustment": 0.04434,
     "matchup_quality": "Favorable",
     "injury_status": "",
     "roster_verified": true
@@ -183121,13 +183121,13 @@
     "venue": "Home",
     "event_id": "401872930",
     "base_projection": 4.52,
-    "opponent_defense_average": 12.78,
+    "opponent_defense_average": 12.83,
     "league_defense_average": 12.68,
     "opponent_defense_rank": 18,
     "opponent_defense_teams": 32,
     "opponent_defense_samples": 8,
     "opponent_defense_current_samples": 0,
-    "defense_adjustment": 0.00165,
+    "defense_adjustment": 0.00262,
     "matchup_quality": "Neutral",
     "injury_status": "",
     "roster_verified": true
@@ -195941,13 +195941,13 @@
     "venue": "Home",
     "event_id": "401872930",
     "base_projection": 4.06,
-    "opponent_defense_average": 12.78,
+    "opponent_defense_average": 12.83,
     "league_defense_average": 12.68,
     "opponent_defense_rank": 18,
     "opponent_defense_teams": 32,
     "opponent_defense_samples": 8,
     "opponent_defense_current_samples": 0,
-    "defense_adjustment": 0.00165,
+    "defense_adjustment": 0.00262,
     "matchup_quality": "Neutral",
     "injury_status": "Injured Reserve",
     "roster_verified": true
@@ -196097,7 +196097,7 @@
     "team": "New York Giants",
     "matchup": "Dallas Cowboys @ New York Giants",
     "market": "Receiving yards",
-    "projection": 45.99,
+    "projection": 46.0,
     "samples": 3,
     "confidence": 0.43,
     "standard_deviation": 54.24,
@@ -196106,7 +196106,7 @@
       19.0,
       102.0
     ],
-    "trend": 5.66,
+    "trend": 5.67,
     "start_time": "2026-09-14T00:20Z",
     "source": "ESPN regular-season form + opponent allowance",
     "current_season_samples": 0,
@@ -196115,13 +196115,13 @@
     "venue": "Home",
     "event_id": "401872930",
     "base_projection": 43.92,
-    "opponent_defense_average": 127.47,
+    "opponent_defense_average": 127.64,
     "league_defense_average": 104.96,
     "opponent_defense_rank": 28,
     "opponent_defense_teams": 32,
     "opponent_defense_samples": 8,
     "opponent_defense_current_samples": 0,
-    "defense_adjustment": 0.04719,
+    "defense_adjustment": 0.04754,
     "matchup_quality": "Favorable",
     "injury_status": "Injured Reserve",
     "roster_verified": true
@@ -196132,7 +196132,7 @@
     "team": "New York Giants",
     "matchup": "Dallas Cowboys @ New York Giants",
     "market": "Receptions",
-    "projection": 3.23,
+    "projection": 3.24,
     "samples": 3,
     "confidence": 0.43,
     "standard_deviation": 4.36,
@@ -196141,7 +196141,7 @@
       1.0,
       8.0
     ],
-    "trend": 0.23,
+    "trend": 0.24,
     "start_time": "2026-09-14T00:20Z",
     "source": "ESPN regular-season form + opponent allowance",
     "current_season_samples": 0,
@@ -196150,13 +196150,13 @@
     "venue": "Home",
     "event_id": "401872930",
     "base_projection": 3.17,
-    "opponent_defense_average": 8.92,
+    "opponent_defense_average": 8.97,
     "league_defense_average": 8.15,
     "opponent_defense_rank": 26,
     "opponent_defense_teams": 32,
     "opponent_defense_samples": 8,
     "opponent_defense_current_samples": 0,
-    "defense_adjustment": 0.02061,
+    "defense_adjustment": 0.02211,
     "matchup_quality": "Favorable",
     "injury_status": "Injured Reserve",
     "roster_verified": true
@@ -196167,7 +196167,7 @@
     "team": "New York Giants",
     "matchup": "Dallas Cowboys @ New York Giants",
     "market": "Rush + receiving yards",
-    "projection": 45.85,
+    "projection": 45.86,
     "samples": 3,
     "confidence": 0.43,
     "standard_deviation": 54.24,
@@ -196176,7 +196176,7 @@
       19.0,
       102.0
     ],
-    "trend": 5.52,
+    "trend": 5.53,
     "start_time": "2026-09-14T00:20Z",
     "source": "ESPN regular-season form + opponent allowance",
     "current_season_samples": 0,
@@ -196185,13 +196185,13 @@
     "venue": "Home",
     "event_id": "401872930",
     "base_projection": 43.92,
-    "opponent_defense_average": 129.5,
+    "opponent_defense_average": 129.67,
     "league_defense_average": 107.92,
     "opponent_defense_rank": 27,
     "opponent_defense_teams": 32,
     "opponent_defense_samples": 8,
     "opponent_defense_current_samples": 0,
-    "defense_adjustment": 0.044,
+    "defense_adjustment": 0.04434,
     "matchup_quality": "Favorable",
     "injury_status": "Injured Reserve",
     "roster_verified": true
@@ -196766,13 +196766,13 @@
     "venue": "Home",
     "event_id": "401872930",
     "base_projection": 2.17,
-    "opponent_defense_average": 12.78,
+    "opponent_defense_average": 12.83,
     "league_defense_average": 12.68,
     "opponent_defense_rank": 18,
     "opponent_defense_teams": 32,
     "opponent_defense_samples": 8,
     "opponent_defense_current_samples": 0,
-    "defense_adjustment": 0.00165,
+    "defense_adjustment": 0.00262,
     "matchup_quality": "Neutral",
     "injury_status": "",
     "roster_verified": true
@@ -197293,7 +197293,7 @@
     "team": "New York Giants",
     "matchup": "Dallas Cowboys @ New York Giants",
     "market": "Receiving yards",
-    "projection": 7.38,
+    "projection": 7.39,
     "samples": 2,
     "confidence": 0.37,
     "standard_deviation": 12.73,
@@ -197301,7 +197301,7 @@
       18.0,
       0.0
     ],
-    "trend": -1.62,
+    "trend": -1.61,
     "start_time": "2026-09-14T00:20Z",
     "source": "ESPN regular-season form + opponent allowance",
     "current_season_samples": 0,
@@ -197310,13 +197310,13 @@
     "venue": "Home",
     "event_id": "401872930",
     "base_projection": 7.05,
-    "opponent_defense_average": 127.47,
+    "opponent_defense_average": 127.64,
     "league_defense_average": 104.96,
     "opponent_defense_rank": 28,
     "opponent_defense_teams": 32,
     "opponent_defense_samples": 8,
     "opponent_defense_current_samples": 0,
-    "defense_adjustment": 0.04719,
+    "defense_adjustment": 0.04754,
     "matchup_quality": "Favorable",
     "injury_status": "",
     "roster_verified": true
@@ -197344,13 +197344,13 @@
     "venue": "Home",
     "event_id": "401872930",
     "base_projection": 0.78,
-    "opponent_defense_average": 8.92,
+    "opponent_defense_average": 8.97,
     "league_defense_average": 8.15,
     "opponent_defense_rank": 26,
     "opponent_defense_teams": 32,
     "opponent_defense_samples": 8,
     "opponent_defense_current_samples": 0,
-    "defense_adjustment": 0.02061,
+    "defense_adjustment": 0.02211,
     "matchup_quality": "Favorable",
     "injury_status": "",
     "roster_verified": true
@@ -197378,13 +197378,13 @@
     "venue": "Home",
     "event_id": "401872930",
     "base_projection": 7.05,
-    "opponent_defense_average": 129.5,
+    "opponent_defense_average": 129.67,
     "league_defense_average": 107.92,
     "opponent_defense_rank": 27,
     "opponent_defense_teams": 32,
     "opponent_defense_samples": 8,
     "opponent_defense_current_samples": 0,
-    "defense_adjustment": 0.044,
+    "defense_adjustment": 0.04434,
     "matchup_quality": "Favorable",
     "injury_status": "",
     "roster_verified": true
