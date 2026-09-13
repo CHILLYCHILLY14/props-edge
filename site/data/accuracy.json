@@ -1,178 +1,178 @@
 {
  "schema": 3,
  "projection_only": true,
- "generated_at": "2026-09-13T16:10:33.311934+00:00",
+ "generated_at": "2026-09-13T20:10:31.080041+00:00",
  "label": "NFL player projection accuracy",
  "scope": {
   "season": 2026,
   "season_type": 2,
   "season_type_label": "regular season",
-  "included_records": 25663,
+  "included_records": 25717,
   "excluded_records": 0
  },
  "method": "One frozen pregame player projection per scheduled player and market, graded only from final box-score statistics. No wager, sportsbook price, stake unit, or ledger history is stored here. Missing statistics remain pending.",
  "props": {
   "Anytime touchdown": {
    "logged": 1555,
-   "graded": 34,
-   "mae": 0.365,
-   "bias": 0.16265
+   "graded": 84,
+   "mae": 0.32036,
+   "bias": 0.0844
   },
   "Extra point attempts": {
    "logged": 109,
-   "graded": 4,
-   "mae": 1.8725,
-   "bias": 1.8725
+   "graded": 9,
+   "mae": 1.19667,
+   "bias": 0.92333
   },
   "Extra points made": {
    "logged": 109,
-   "graded": 4,
-   "mae": 1.755,
-   "bias": 1.755
+   "graded": 9,
+   "mae": 1.21111,
+   "bias": 0.8
   },
   "Field goal attempts": {
    "logged": 109,
-   "graded": 4,
-   "mae": 1.315,
-   "bias": 0.655
+   "graded": 9,
+   "mae": 1.05667,
+   "bias": 0.10111
   },
   "Field goals made": {
    "logged": 109,
-   "graded": 4,
-   "mae": 0.8475,
-   "bias": 0.5225
+   "graded": 9,
+   "mae": 0.83556,
+   "bias": -0.02667
   },
   "Kicking points": {
    "logged": 109,
-   "graded": 4,
-   "mae": 4.1475,
-   "bias": 3.5425
+   "graded": 9,
+   "mae": 3.63556,
+   "bias": 1.07111
   },
   "Pass + rush + receiving touchdowns": {
    "logged": 213,
-   "graded": 4,
-   "mae": 1.1075,
-   "bias": 1.1075
+   "graded": 9,
+   "mae": 1.06889,
+   "bias": 0.82222
   },
   "Pass + rush + receiving yards": {
    "logged": 213,
-   "graded": 4,
-   "mae": 99.87,
-   "bias": 99.87
+   "graded": 9,
+   "mae": 57.01,
+   "bias": 45.75
   },
   "Pass + rush yards": {
    "logged": 213,
-   "graded": 4,
-   "mae": 100.1325,
-   "bias": 100.1325
+   "graded": 9,
+   "mae": 57.08667,
+   "bias": 45.93333
   },
   "Pass attempts": {
    "logged": 213,
-   "graded": 4,
-   "mae": 11.855,
-   "bias": 8.02
+   "graded": 9,
+   "mae": 7.08,
+   "bias": 4.69556
   },
   "Pass completions": {
    "logged": 213,
-   "graded": 4,
-   "mae": 8.2275,
-   "bias": 5.4075
+   "graded": 9,
+   "mae": 4.62111,
+   "bias": 2.06111
   },
   "Pass interceptions": {
    "logged": 213,
-   "graded": 4,
-   "mae": 0.91,
-   "bias": -0.595
+   "graded": 9,
+   "mae": 0.7,
+   "bias": -0.05111
   },
   "Passing touchdowns": {
    "logged": 213,
-   "graded": 4,
-   "mae": 1.1075,
-   "bias": 0.9625
+   "graded": 9,
+   "mae": 1.18556,
+   "bias": 0.77889
   },
   "Passing yards": {
    "logged": 213,
-   "graded": 4,
-   "mae": 109.7025,
-   "bias": 109.7025
+   "graded": 9,
+   "mae": 61.47333,
+   "bias": 52.01778
   },
   "Receiving touchdowns": {
    "logged": 1279,
-   "graded": 25,
-   "mae": 0.3584,
-   "bias": 0.12
+   "graded": 64,
+   "mae": 0.27797,
+   "bias": 0.06734
   },
   "Receiving yards": {
    "logged": 1279,
-   "graded": 25,
-   "mae": 21.2776,
-   "bias": 10.8136
+   "graded": 64,
+   "mae": 18.40359,
+   "bias": 7.47734
   },
   "Receptions": {
    "logged": 1279,
-   "graded": 25,
-   "mae": 1.5656,
-   "bias": 0.4528
+   "graded": 64,
+   "mae": 1.52313,
+   "bias": 0.5425
   },
   "Rush + receiving touchdowns": {
    "logged": 1555,
-   "graded": 32,
-   "mae": 0.38062,
-   "bias": 0.16563
+   "graded": 78,
+   "mae": 0.34128,
+   "bias": 0.08718
   },
   "Rush + receiving yards": {
    "logged": 1555,
-   "graded": 32,
-   "mae": 20.89187,
-   "bias": 10.94187
+   "graded": 78,
+   "mae": 20.37769,
+   "bias": 7.97872
   },
   "Rush attempts": {
    "logged": 717,
-   "graded": 11,
-   "mae": 3.57909,
-   "bias": 0.01545
+   "graded": 31,
+   "mae": 3.77645,
+   "bias": 0.44419
   },
   "Rushing touchdowns": {
    "logged": 717,
-   "graded": 11,
-   "mae": 0.29182,
-   "bias": 0.20636
+   "graded": 31,
+   "mae": 0.31129,
+   "bias": 0.06806
   },
   "Rushing yards": {
    "logged": 717,
-   "graded": 11,
-   "mae": 12.03636,
-   "bias": 4.81455
+   "graded": 31,
+   "mae": 15.85258,
+   "bias": 3.78097
   },
   "Sacks": {
-   "logged": 3309,
-   "graded": 62,
-   "mae": 0.12113,
-   "bias": 0.01113
+   "logged": 3327,
+   "graded": 156,
+   "mae": 0.16051,
+   "bias": -0.01295
   },
   "Solo tackles": {
-   "logged": 3309,
-   "graded": 62,
-   "mae": 1.4029,
-   "bias": -0.21097
+   "logged": 3327,
+   "graded": 156,
+   "mae": 1.28077,
+   "bias": -0.05141
   },
   "Tackles + assists": {
-   "logged": 3309,
-   "graded": 62,
-   "mae": 1.93371,
-   "bias": -0.30758
+   "logged": 3327,
+   "graded": 156,
+   "mae": 1.91936,
+   "bias": 0.07551
   },
   "Targets": {
    "logged": 1279,
-   "graded": 25,
-   "mae": 1.8484,
-   "bias": 0.6388
+   "graded": 64,
+   "mae": 1.89953,
+   "bias": 0.98516
   },
   "Touchdowns scored": {
    "logged": 1555,
-   "graded": 34,
-   "mae": 0.365,
-   "bias": 0.16265
+   "graded": 84,
+   "mae": 0.32036,
+   "bias": 0.0844
   }
  },
  "records": [
@@ -17178,7 +17178,7 @@
   }
  ],
  "history": {
-  "total": 25663,
+  "total": 25717,
   "displayed": 1000,
   "truncated": true
  }
