@@ -237,9 +237,14 @@ def _market_watch_row(
         "pick": _selection(quote),
         "breakeven": round(1 / quote.price_decimal, 5),
         "market_fair_prob": None if market_fair is None else round(market_fair, 5),
+        "market_reference_prob": round(
+            market_fair if market_fair is not None else 1 / quote.price_decimal, 5
+        ),
         "offered_fair_prob": None if offered_fair is None else round(offered_fair, 5),
         "target_fair_prob": None if offered_fair is None else round(offered_fair, 5),
         "market_basis": market_basis,
+        "single_sided_offer": offered_fair is None,
+        "single_side_edge_reserve": 0.0,
         "model_prob": None,
         "model_prob_no_push": None,
         "projection_prob": None,
