@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 const app=fs.readFileSync(new URL("../site/app.js",import.meta.url),"utf8");
+const index=fs.readFileSync(new URL("../site/index.html",import.meta.url),"utf8");
+const parlays=fs.readFileSync(new URL("../pipeline/parlays.py",import.meta.url),"utf8");
 const start=app.indexOf("function renderStatus()"),end=app.indexOf("function renderMetrics()",start);
 assert.ok(start>=0&&end>start);
 const source=app.slice(start,end);
@@ -23,4 +25,9 @@ assert.doesNotMatch(keyless.banner,/closer to kickoff/);
 assert.match(status({odds_mode:"keyless",source_by_sport:{NFL:{projections:0}}}).banner,/statistics are not ready/);
 assert.equal(status({}).feed,"NO PRICES");
 assert.equal(status({odds_mode:"keyless",generated_at:"2000-01-01T00:00:00Z"}).feed,"STALE");
+assert.doesNotMatch(app,/no wager can qualify without a complete live price/i);
+assert.match(index,/one-sided offer may qualify only at LEAN/i);
+assert.doesNotMatch(index,/requires a complete current market/i);
+assert.match(parlays,/may qualify on the straight-bet board only at LEAN/i);
+assert.doesNotMatch(parlays,/remain ineligible for the stricter straight-bet board/i);
 console.log("Keyless feed status checks passed.");
