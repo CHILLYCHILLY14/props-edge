@@ -214,6 +214,11 @@ function renderStatus() {
     banner.className = "status-banner ok";
     banner.textContent = `${counts.actionable || 0} qualified NFL props from ${eligiblePriceRows} live Ontario-regulated price rows. ${state.meta.model_status || ""}`;
     $("#feedState").textContent = "LIVE";
+  } else if (state.meta.odds_mode === "keyless") {
+    banner.className = "status-banner warn";
+    banner.textContent = (formReady ? "Player projections are available. " : "Player statistics are not ready yet. ") +
+      "Sportsbook API-key requests are disabled. No verified keyless prop-price source is connected, so automatic priced picks and parlays are unavailable. You can still enter and review your own odds manually.";
+    $("#feedState").textContent = "KEYLESS";
   } else if (Number(source.projections) > 0) {
     banner.className = "status-banner warn";
     banner.textContent = `Regular-season form is ready and the model checks ${lookahead} days ahead, but no current Ontario-regulated player-prop prices were returned. Books often post these closer to kickoff; no wager can qualify without a complete live price.`;
@@ -638,7 +643,7 @@ function renderModel() {
     <div class="source-row"><span>League</span><strong>NFL only</strong></div>
     <div class="source-row"><span>Combined source</span><strong>${escapeHtml(source.source || "Unavailable")}</strong></div>
     <div class="source-row"><span>Schedule window</span><strong>${Number(state.meta.lookahead_days) || 21} days</strong></div>
-    <div class="source-row"><span>Live price rows</span><strong>${Number(source.priced_quotes) || 0}</strong></div>
+    <div class="source-row"><span>Published price rows</span><strong>${Number(source.priced_quotes) || 0}</strong></div>
     <div class="source-row"><span>Eligible Ontario rows</span><strong>${Number(source.eligible_priced_quotes ?? source.target_priced_quotes ?? state.meta.counts?.eligible_priced_quotes ?? state.meta.counts?.target_priced_quotes) || 0}</strong></div>
     <div class="source-row"><span>Books returned</span><strong>${Number(state.meta.counts?.eligible_books) || 0}</strong></div>
     <div class="source-row"><span>Priced markets</span><strong>${Number(state.meta.counts?.priced_markets) || 0}</strong></div>

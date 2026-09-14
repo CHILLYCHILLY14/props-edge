@@ -53,6 +53,7 @@ jobs:
           node tests/test_simulator.mjs
           node tests/test_staking.mjs
           node tests/test_sync.mjs
+          node tests/test_feed_status.mjs
 
       - name: Check browser scripts
         run: |
