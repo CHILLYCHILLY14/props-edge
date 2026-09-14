@@ -4,17 +4,88 @@
     "ontario_verified_as_of": "2026-09-01",
     "ontario_registry": "https://igamingontario.ca/en/player/regulated-igaming-market",
     "ontario_regulated": {
-      "BET99": ["BET99", "BET99 (CA - ON)", "bet99_ca_on"],
-      "Betano": ["Betano", "Betano (CA - ON)", "betano_ca_on"],
-      "BetMGM": ["BetMGM", "BetMGM (CA - ON)", "betmgm_ca_on"],
-      "BetRivers": ["BetRivers", "BetRivers (CA - ON)", "betrivers_ca_on"],
-      "DraftKings": ["DraftKings", "DraftKings (CA - ON)"],
-      "FanDuel": ["FanDuel", "FanDuel (CA - ON)"],
-      "PointsBet": ["PointsBet", "PointsBet (CA - ON)", "pointsbetca"],
-      "PROLINE": ["PROLINE", "PROLINE (CA - ON)", "proline_ca_on"],
-      "Sports Interaction": ["Sports Interaction", "Sports Interaction (CA - ON)", "sportsinteraction_ca_on"]
+      "BET99": [
+        "BET99",
+        "BET99 (CA - ON)",
+        "bet99_ca_on"
+      ],
+      "Betano": [
+        "Betano",
+        "Betano (CA - ON)",
+        "betano_ca_on"
+      ],
+      "BetMGM": [
+        "BetMGM",
+        "BetMGM (CA - ON)",
+        "betmgm_ca_on"
+      ],
+      "BetRivers": [
+        "BetRivers",
+        "BetRivers (CA - ON)",
+        "betrivers_ca_on"
+      ],
+      "DraftKings": [
+        "DraftKings",
+        "DraftKings (CA - ON)"
+      ],
+      "FanDuel": [
+        "FanDuel",
+        "FanDuel (CA - ON)"
+      ],
+      "PointsBet": [
+        "PointsBet",
+        "PointsBet (CA - ON)",
+        "pointsbetca"
+      ],
+      "PROLINE": [
+        "PROLINE",
+        "PROLINE (CA - ON)",
+        "proline_ca_on"
+      ],
+      "Sports Interaction": [
+        "Sports Interaction",
+        "Sports Interaction (CA - ON)",
+        "sportsinteraction_ca_on"
+      ],
+      "bet365": [
+        "bet365",
+        "Bet365",
+        "bet365 (CA - ON)"
+      ],
+      "Caesars": [
+        "Caesars",
+        "Caesars Sportsbook",
+        "Caesars (CA - ON)"
+      ],
+      "Fanatics Sportsbook": [
+        "Fanatics Sportsbook",
+        "Fanatics",
+        "Fanatics (CA - ON)"
+      ],
+      "Hard Rock Bet": [
+        "Hard Rock Bet",
+        "Hard Rock Bet (CA - ON)"
+      ],
+      "theScore Bet": [
+        "theScore Bet",
+        "TheScore Bet",
+        "theScore Bet (CA - ON)"
+      ],
+      "TonyBet": [
+        "TonyBet",
+        "TonyBet (CA - ON)"
+      ],
+      "ToonieBet": [
+        "ToonieBet",
+        "Tooniebet",
+        "ToonieBet (CA - ON)"
+      ]
     },
-    "primary_consensus": ["DraftKings", "FanDuel", "BetMGM"],
+    "primary_consensus": [
+      "DraftKings",
+      "FanDuel",
+      "BetMGM"
+    ],
     "secondary_consensus": [
       "bet99_ca_on",
       "betano_ca_on",
@@ -28,7 +99,10 @@
   "sports": {
     "NFL": {
       "primary_sport": "american-football",
-      "league_aliases": ["nfl", "national-football-league"],
+      "league_aliases": [
+        "nfl",
+        "national-football-league"
+      ],
       "secondary_sport": "americanfootball_nfl",
       "espn_path": "football/nfl"
     }
@@ -54,7 +128,7 @@
     "defense_prior_season_weight": 0.55,
     "defense_current_season_full_weight_games": 4,
     "volatile_market_weight": 0.78,
-    "longest_market_weight": 0.70,
+    "longest_market_weight": 0.7,
     "volatile_minimum_samples": 6,
     "soft_raw_market_gap": 0.18,
     "max_raw_market_gap": 0.25,
@@ -65,7 +139,7 @@
     "lean_price_ev": 0.015,
     "good_price_ev": 0.03,
     "best_price_ev": 0.055,
-    "edge_ceiling": 0.10,
+    "edge_ceiling": 0.1,
     "price_ev_ceiling": 0.12,
     "min_price": -175,
     "max_price": 300,
