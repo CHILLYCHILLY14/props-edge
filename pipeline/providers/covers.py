@@ -43,6 +43,7 @@ MARKETS = {
     "KICKING POINTS": "Kicking points",
     "SOLO TACKLES": "Solo tackles",
     "TACKLES + ASSISTS": "Tackles + assists",
+    "TACKLES & ASSISTS": "Tackles + assists",
     "TACKLES AND ASSISTS": "Tackles + assists",
     "SACKS": "Sacks",
 }
@@ -55,6 +56,7 @@ BOOKS = {
     "caesars": "Caesars",
     "draftkings": "DraftKings",
     "fanduel": "FanDuel",
+    "fanatics": "Fanatics Sportsbook",
     "fanaticssportsbook": "Fanatics Sportsbook",
     "hardrockbet": "Hard Rock Bet",
     "pointsbet": "PointsBet",
