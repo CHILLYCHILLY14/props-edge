@@ -1,36 +1,48 @@
 {
   "league": "NFL",
   "season": 2026,
-  "generated_at": "2026-09-14T16:56:01.547127+00:00",
+  "generated_at": "2026-09-14T18:30:33.893092+00:00",
   "provider_priority": [
+    "Covers public NFL prop comparison (no key)",
     "ESPN regular-season statistics and current rosters (no key)"
   ],
   "odds_mode": "keyless",
-  "price_source_status": "unavailable",
-  "pricing_mode": "keyless-projections-until-verified-prices",
-  "price_scope": "Verified keyless player-prop prices are not currently available",
-  "eligible_books": [],
+  "price_source_status": "available",
+  "pricing_mode": "keyless-public-market-lines",
+  "price_scope": "Publicly observed sportsbook-brand prop prices; verify the Ontario line before wagering",
+  "eligible_books": [
+    "BetMGM",
+    "BetRivers",
+    "Caesars",
+    "DraftKings",
+    "FanDuel",
+    "Fanatics Sportsbook",
+    "Hard Rock Bet",
+    "bet365",
+    "theScore Bet"
+  ],
   "ontario_registry": "https://igamingontario.ca/en/player/regulated-igaming-market",
   "ontario_verified_as_of": "2026-09-01",
   "configured": {
+    "covers_keyless": true,
     "odds_api_io": false,
     "the_odds_api": false,
     "espn_keyless": true
   },
   "counts": {
-    "priced_quotes": 0,
-    "eligible_priced_quotes": 0,
-    "priced_events": 0,
-    "eligible_priced_events": 0,
-    "eligible_books": 0,
-    "priced_markets": 0,
-    "board": 0,
+    "priced_quotes": 168,
+    "eligible_priced_quotes": 168,
+    "priced_events": 1,
+    "eligible_priced_events": 1,
+    "eligible_books": 9,
+    "priced_markets": 8,
+    "board": 50,
     "actionable": 0,
-    "qualified_options": 0,
+    "qualified_options": 1,
     "best": 0,
     "good": 0,
-    "leans": 0,
-    "watch": 0,
+    "leans": 1,
+    "watch": 49,
     "projections": 7500,
     "projected_markets": 27,
     "scheduled_projections": 7500,
@@ -45,26 +57,34 @@
   },
   "source_by_sport": {
     "NFL": {
-      "source": "ESPN regular-season form",
-      "priced_quotes": 0,
-      "eligible_priced_quotes": 0,
+      "source": "Covers public prop comparison + ESPN regular-season form",
+      "priced_quotes": 168,
+      "eligible_priced_quotes": 168,
       "projections": 7500,
       "errors": []
     }
   },
   "source_by_provider": {
+    "covers": {
+      "source_url": "https://www.covers.com/sport/football/nfl/player-props",
+      "timestamp_basis": "page_observed_at",
+      "priced_quotes": 168,
+      "eligible_priced_quotes": 168
+    },
     "odds_api_io": {
       "priced_quotes": 0,
-      "eligible_priced_quotes": 0
+      "eligible_priced_quotes": 0,
+      "disabled": true
     },
     "the_odds_api": {
       "priced_quotes": 0,
-      "eligible_priced_quotes": 0
+      "eligible_priced_quotes": 0,
+      "disabled": true
     }
   },
   "lookahead_days": 21,
   "next_scheduled_game": "2026-09-15T00:15Z",
-  "model_status": "The next 21 days of regular-season schedule and form are ready, but no verified keyless player-prop price source is connected. Key-based requests are disabled.",
+  "model_status": "Observed NFL prop prices from Ontario-regulated sportsbook brands, regular-season player samples, and opponent matchup data are available. Verify the current Ontario price before wagering.",
   "ledger_mode": "manual-browser",
   "max_odds_age_hours": 12,
   "market_coverage": [
@@ -87,8 +107,10 @@
     "Daily Parlays mix 3\u20134 fresh same-book prop legs, retain the sample and confidence safeguards, require market variety, and apply an extra same-game correlation haircut.",
     "Touchdowns, field goals, interceptions and sacks use count-stat probability handling and stricter reliability gates.",
     "Sportsbook consensus is never treated as an independent model by itself.",
-    "Each exact prop publishes the best returned price from the configured Ontario-regulated book allowlist.",
-    "Key-based odds requests are disabled. Missing keyless prices stay unavailable; existing wagers and keyless player projections are preserved.",
+    "Each exact prop publishes the best observed price from the configured Ontario-regulated brand allowlist.",
+    "Covers supplies public comparison-page market lines. The observation time is recorded; it is not represented as a sportsbook-originated update time.",
+    "One-sided or unmatched prices remain visible as WATCH rows but cannot qualify without a complete same-line market.",
+    "Key-based odds requests are disabled. If the public page is unavailable or changes shape, existing wagers and keyless player projections are preserved.",
     "A wager enters My Ledger only after the user reviews the live price and clicks Add.",
     "No odds API credentials are read or sent by the scheduled build."
   ]

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-09-14T16:56:01.547127+00:00",
+  "generated_at": "2026-09-14T18:30:33.893092+00:00",
   "timezone": "America/Toronto",
   "method": "One dedicated anytime-touchdown ticket plus three mixed-market payout targets, each using three or four statistically supported NFL prop outcomes at one eligible sportsbook. Every leg has a fresh posted price, a matched NFL projection, at least the configured sample and confidence floors, and no hard safety flag. Mixed tickets use at least two market groups; the touchdown ticket uses only anytime scorers. Every ticket limits repeated player and market exposure, and gives same-game pairs an additional probability haircut.",
   "notes": [
@@ -19,8 +19,8 @@
           "matchup": "Denver Broncos @ Kansas City Chiefs"
         }
       ],
-      "prop_prices_considered": 0,
-      "eligible_legs": 0,
+      "prop_prices_considered": 168,
+      "eligible_legs": 8,
       "cards": [
         {
           "status": "waiting",
@@ -38,7 +38,7 @@
           "target_american": 1000,
           "leg_count": 0,
           "legs": [],
-          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+          "reason": "Supported legs are available, but no 3\u20134 leg combination lands inside this payout band."
         },
         {
           "status": "waiting",
@@ -47,7 +47,7 @@
           "target_american": 5000,
           "leg_count": 0,
           "legs": [],
-          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+          "reason": "Supported legs are available, but no 3\u20134 leg combination lands inside this payout band."
         },
         {
           "status": "waiting",
@@ -56,7 +56,7 @@
           "target_american": 10000,
           "leg_count": 0,
           "legs": [],
-          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+          "reason": "Supported legs are available, but no 3\u20134 leg combination lands inside this payout band."
         }
       ]
     },
