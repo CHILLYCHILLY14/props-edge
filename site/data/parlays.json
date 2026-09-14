@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-09-14T00:21:58.141108+00:00",
+  "generated_at": "2026-09-14T01:01:39.387979+00:00",
   "timezone": "America/Toronto",
   "method": "One dedicated anytime-touchdown ticket plus three mixed-market payout targets, each using three or four statistically supported NFL prop outcomes at one eligible sportsbook. Every leg has a fresh posted price, a matched NFL projection, at least the configured sample and confidence floors, and no hard safety flag. Mixed tickets use at least two market groups; the touchdown ticket uses only anytime scorers. Every ticket limits repeated player and market exposure, and gives same-game pairs an additional probability haircut.",
   "notes": [
@@ -51,7 +51,7 @@
             {
               "event_id": "71474268",
               "start_time": "2026-09-15T00:15:00Z",
-              "updated_at": "2026-09-14T00:20:29.848Z",
+              "updated_at": "2026-09-14T00:55:28.162Z",
               "matchup": "Denver Broncos @ Kansas City Chiefs",
               "player": "Bo Nix",
               "market": "Pass completions",
@@ -75,7 +75,7 @@
             {
               "event_id": "71474268",
               "start_time": "2026-09-15T00:15:00Z",
-              "updated_at": "2026-09-14T00:20:29.848Z",
+              "updated_at": "2026-09-14T00:55:28.162Z",
               "matchup": "Denver Broncos @ Kansas City Chiefs",
               "player": "Harrison Butker",
               "market": "Field goals made",
@@ -99,7 +99,7 @@
             {
               "event_id": "71474268",
               "start_time": "2026-09-15T00:15:00Z",
-              "updated_at": "2026-09-14T00:20:29.848Z",
+              "updated_at": "2026-09-14T00:55:28.162Z",
               "matchup": "Denver Broncos @ Kansas City Chiefs",
               "player": "Courtland Sutton",
               "market": "Anytime TD",
