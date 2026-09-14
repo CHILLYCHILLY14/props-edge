@@ -93,8 +93,10 @@ def _fetch_projections(settings: dict[str, Any], errors: list[str]) -> list[Any]
 
 def build() -> dict[str, Any]:
     settings = load_settings()
-    primary_key = os.getenv("ODDS_API_IO_KEY", "").strip()
-    secondary_key = os.getenv("THE_ODDS_API_KEY", "").strip()
+    # User-selected keyless mode: never consume provider credits, even if old
+    # secrets remain configured in GitHub. Do not turn projections into prices.
+    primary_key = ""
+    secondary_key = ""
     is_eligible = lambda quote: eligible_book_key(quote.book, settings) is not None
     errors: list[str] = []
     quotes = []
@@ -184,9 +186,11 @@ def build() -> dict[str, Any]:
         "league": "NFL",
         "season": _nfl_season_year(dt.datetime.now(dt.timezone.utc).date()),
         "generated_at": now,
-        "provider_priority": ["The Odds API Ontario keys", "Odds-API.io regulated-brand fallback", "ESPN regular-season statistics and current rosters"],
-        "pricing_mode": "best-ontario-regulated",
-        "price_scope": "Best available Ontario-regulated book",
+        "provider_priority": ["ESPN regular-season statistics and current rosters (no key)"],
+        "odds_mode": "keyless",
+        "price_source_status": "unavailable",
+        "pricing_mode": "keyless-projections-until-verified-prices",
+        "price_scope": "Verified keyless player-prop prices are not currently available",
         "eligible_books": eligible_books,
         "ontario_registry": settings["bookmakers"]["ontario_registry"],
         "ontario_verified_as_of": settings["bookmakers"]["ontario_verified_as_of"],
@@ -251,7 +255,7 @@ def build() -> dict[str, Any]:
             if quotes and projections
             else (
                 f"The next {lookahead_days} days of regular-season schedule and form are ready, "
-                "but no eligible Ontario-regulated player-prop prices have been returned yet."
+                "but no verified keyless player-prop price source is connected. Key-based requests are disabled."
                 if projections and scheduled_starts
                 else (
                     f"Regular-season form is available, but no game is scheduled inside the next {lookahead_days} days."
@@ -283,9 +287,9 @@ def build() -> dict[str, Any]:
             "Touchdowns, field goals, interceptions and sacks use count-stat probability handling and stricter reliability gates.",
             "Sportsbook consensus is never treated as an independent model by itself.",
             "Each exact prop publishes the best returned price from the configured Ontario-regulated book allowlist.",
-            "The Ontario-key feed is preferred; the regulated-brand feed is used only as a continuity fallback and every price must be verified in the Ontario sportsbook before wagering.",
+            "Key-based odds requests are disabled. Missing keyless prices stay unavailable; existing wagers and keyless player projections are preserved.",
             "A wager enters My Ledger only after the user reviews the live price and clicks Add.",
-            "API credentials remain GitHub Actions secrets and are never written to site data.",
+            "No odds API credentials are read or sent by the scheduled build.",
         ],
     }
     from . import accuracy
