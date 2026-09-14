@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-09-14T05:14:11.423547+00:00",
+  "generated_at": "2026-09-14T12:13:54.268848+00:00",
   "timezone": "America/Toronto",
   "method": "One dedicated anytime-touchdown ticket plus three mixed-market payout targets, each using three or four statistically supported NFL prop outcomes at one eligible sportsbook. Every leg has a fresh posted price, a matched NFL projection, at least the configured sample and confidence floors, and no hard safety flag. Mixed tickets use at least two market groups; the touchdown ticket uses only anytime scorers. Every ticket limits repeated player and market exposure, and gives same-game pairs an additional probability haircut.",
   "notes": [
@@ -19,8 +19,8 @@
           "matchup": "Denver Broncos @ Kansas City Chiefs"
         }
       ],
-      "prop_prices_considered": 463,
-      "eligible_legs": 67,
+      "prop_prices_considered": 482,
+      "eligible_legs": 68,
       "cards": [
         {
           "status": "waiting",
@@ -39,67 +39,67 @@
           "book": "DraftKings",
           "estimated_decimal": 11.0,
           "estimated_american": 1000,
-          "raw_independent_probability": 0.09372,
+          "raw_independent_probability": 0.09426,
           "correlation_factor": 0.729,
           "same_game": true,
-          "model_probability": 0.06832,
-          "book_implied_probability": 0.09093,
-          "parlay_value_ratio": 0.7514,
-          "fair_american": 1364,
+          "model_probability": 0.06871,
+          "book_implied_probability": 0.09088,
+          "parlay_value_ratio": 0.7561,
+          "fair_american": 1355,
           "leg_count": 3,
           "legs": [
             {
               "event_id": "71474268",
               "start_time": "2026-09-15T00:15:00Z",
-              "updated_at": "2026-09-14T04:20:10.361Z",
+              "updated_at": "2026-09-14T12:10:52.984Z",
               "matchup": "Denver Broncos @ Kansas City Chiefs",
-              "player": "RJ Harvey",
+              "player": "Travis Kelce",
+              "market": "Receiving yards",
+              "market_group": "Receiving",
+              "side": "under",
+              "line": 41.5,
+              "pick": "Travis Kelce \u2014 Under 41.5 Receiving yards",
+              "selection": "Under 41.5 Receiving yards",
+              "price_american": -112,
+              "model_probability": 0.52479,
+              "push_probability": 0.0,
+              "breakeven": 0.5291,
+              "confidence": 0.7,
+              "projection": 32.84,
+              "opponent_defense_rank": 11,
+              "opponent_defense_teams": 32,
+              "samples": 8,
+              "current_season_samples": 0,
+              "matchup_quality": "Neutral"
+            },
+            {
+              "event_id": "71474268",
+              "start_time": "2026-09-15T00:15:00Z",
+              "updated_at": "2026-09-14T12:10:52.984Z",
+              "matchup": "Denver Broncos @ Kansas City Chiefs",
+              "player": "Kenneth Walker III",
               "market": "Receptions",
               "market_group": "Receiving",
-              "side": "over",
-              "line": 2.5,
-              "pick": "RJ Harvey \u2014 Over 2.5 Receptions",
-              "selection": "Over 2.5 Receptions",
-              "price_american": -102,
-              "model_probability": 0.51917,
-              "push_probability": 0.0,
-              "breakeven": 0.50505,
-              "confidence": 0.7,
-              "projection": 3.01,
-              "opponent_defense_rank": 18,
-              "opponent_defense_teams": 32,
-              "samples": 8,
-              "current_season_samples": 0,
-              "matchup_quality": "Neutral"
-            },
-            {
-              "event_id": "71474268",
-              "start_time": "2026-09-15T00:15:00Z",
-              "updated_at": "2026-09-14T04:20:10.361Z",
-              "matchup": "Denver Broncos @ Kansas City Chiefs",
-              "player": "Bo Nix",
-              "market": "Passing touchdowns",
-              "market_group": "Touchdowns",
               "side": "under",
-              "line": 1.5,
-              "pick": "Bo Nix \u2014 Under 1.5 Passing touchdowns",
-              "selection": "Under 1.5 Passing touchdowns",
-              "price_american": -164,
-              "model_probability": 0.64284,
+              "line": 3.5,
+              "pick": "Kenneth Walker III \u2014 Under 3.5 Receptions",
+              "selection": "Under 3.5 Receptions",
+              "price_american": -156,
+              "model_probability": 0.6533,
               "push_probability": 0.0,
-              "breakeven": 0.62112,
+              "breakeven": 0.60976,
               "confidence": 0.7,
-              "projection": 0.97,
-              "opponent_defense_rank": 10,
+              "projection": 2.52,
+              "opponent_defense_rank": 3,
               "opponent_defense_teams": 32,
-              "samples": 8,
+              "samples": 7,
               "current_season_samples": 0,
-              "matchup_quality": "Neutral"
+              "matchup_quality": "Tough"
             },
             {
               "event_id": "71474268",
               "start_time": "2026-09-15T00:15:00Z",
-              "updated_at": "2026-09-14T04:20:10.361Z",
+              "updated_at": "2026-09-14T12:10:52.984Z",
               "matchup": "Denver Broncos @ Kansas City Chiefs",
               "player": "Courtland Sutton",
               "market": "Anytime TD",
@@ -108,10 +108,10 @@
               "line": 0.5,
               "pick": "Courtland Sutton \u2014 Over 0.5 Anytime TD",
               "selection": "Any Time Touchdown Scorer",
-              "price_american": 245,
-              "model_probability": 0.28082,
+              "price_american": 255,
+              "model_probability": 0.27493,
               "push_probability": 0.0,
-              "breakeven": 0.28986,
+              "breakeven": 0.28169,
               "confidence": 0.7,
               "projection": 0.23,
               "opponent_defense_rank": 6,
@@ -150,8 +150,8 @@
           "matchup": "Detroit Lions @ Buffalo Bills"
         }
       ],
-      "prop_prices_considered": 0,
-      "eligible_legs": 0,
+      "prop_prices_considered": 7,
+      "eligible_legs": 3,
       "cards": [
         {
           "status": "waiting",
@@ -169,7 +169,7 @@
           "target_american": 1000,
           "leg_count": 0,
           "legs": [],
-          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+          "reason": "Supported legs are available, but no 3\u20134 leg combination lands inside this payout band."
         },
         {
           "status": "waiting",
@@ -178,7 +178,7 @@
           "target_american": 5000,
           "leg_count": 0,
           "legs": [],
-          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+          "reason": "Supported legs are available, but no 3\u20134 leg combination lands inside this payout band."
         },
         {
           "status": "waiting",
@@ -187,7 +187,7 @@
           "target_american": 10000,
           "leg_count": 0,
           "legs": [],
-          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+          "reason": "Supported legs are available, but no 3\u20134 leg combination lands inside this payout band."
         }
       ]
     },
@@ -251,8 +251,8 @@
           "matchup": "Pittsburgh Steelers @ New England Patriots"
         }
       ],
-      "prop_prices_considered": 0,
-      "eligible_legs": 0,
+      "prop_prices_considered": 10,
+      "eligible_legs": 4,
       "cards": [
         {
           "status": "waiting",
@@ -270,7 +270,7 @@
           "target_american": 1000,
           "leg_count": 0,
           "legs": [],
-          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+          "reason": "Supported legs are available, but no 3\u20134 leg combination lands inside this payout band."
         },
         {
           "status": "waiting",
@@ -279,7 +279,7 @@
           "target_american": 5000,
           "leg_count": 0,
           "legs": [],
-          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+          "reason": "Supported legs are available, but no 3\u20134 leg combination lands inside this payout band."
         },
         {
           "status": "waiting",
@@ -288,7 +288,7 @@
           "target_american": 10000,
           "leg_count": 0,
           "legs": [],
-          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+          "reason": "Supported legs are available, but no 3\u20134 leg combination lands inside this payout band."
         }
       ]
     },
