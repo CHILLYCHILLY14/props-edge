@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#071019" />
-    <meta name="description" content="NFL-only player prop projections, live prices, no-vig market comparisons, and a manual wager ledger." />
+    <meta name="description" content="NFL-only player prop projections, live prices, paired no-vig comparisons, safeguarded one-sided offers, and a manual wager ledger." />
     <title>NFL Props Edge</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -37,7 +37,7 @@
         <div class="masthead-copy">
           <p class="eyebrow">NFL PLAYER PROP COMMAND DESK · 2026</p>
           <h1>Sharper props.<br /><span>Stricter decisions.</span></h1>
-          <p class="lede">The best returned Ontario-regulated price meets complete no-vig markets, conservative regular-season form, and market-specific probability checks. No posted price means no wager—never a made-up edge.</p>
+          <p class="lede">Every returned Ontario-regulated price is checked against conservative regular-season form and market-specific safeguards. Complete pairs use a no-vig comparison; an exact one-sided offer may qualify only at LEAN with an added reserve. No posted price means no wager—never a made-up edge.</p>
           <div class="coverage-chips" aria-label="Core NFL prop markets">
             <span>Touchdowns</span><span>Passing</span><span>Rushing</span><span>Receiving</span><span>Field goals</span>
           </div>
@@ -149,7 +149,7 @@
               <label><span>View side</span><select id="simSide"><option value="over">Over</option><option value="under">Under</option></select></label>
             </div>
             <button id="runSimulator" class="sim-run">Run 10,000 simulations</button>
-            <p class="sim-disclaimer">A simulation is not a qualified bet. A wager still requires a complete current market from an eligible Ontario book and every edge, confidence, price, and exposure gate.</p>
+            <p class="sim-disclaimer">A simulation is not a qualified bet. A wager still requires a current observed offer from an eligible Ontario book and every edge, confidence, price, and exposure gate.</p>
           </aside>
 
           <div id="simulatorEmpty" class="empty-state panel" hidden><strong>No matchup simulation is ready</strong><span>Regular-season player and opponent samples will appear automatically after the scheduled refresh.</span></div>
@@ -237,17 +237,17 @@
       <section id="view-model" class="view">
         <div class="section-title">
           <div><p class="eyebrow">AUDITABLE BY DESIGN</p><h2>Model &amp; Data Sources</h2></div>
-          <p>The board separates projection disagreement, no-vig market probability, offered-price value, and wager sizing.</p>
+          <p>The board separates projection disagreement, the available market reference, offered-price value, and wager sizing.</p>
         </div>
         <div class="method-grid">
           <article class="panel"><span class="step">01</span><h3>Real NFL data only</h3><p>Live prop prices come from the configured odds providers. ESPN supplies completed regular-season box scores. Preseason is excluded.</p></article>
           <article class="panel"><span class="step">02</span><h3>Early-season restraint</h3><p>Up to eight recent games feed a recency-weighted, median-stabilized projection. Prior-season influence is reduced until four current-season games exist.</p></article>
-          <article class="panel"><span class="step">03</span><h3>Power-method no-vig</h3><p>Complete Over/Under or Yes/No prices are de-vigged. Other eligible books form the comparison; the best offered Ontario price is published.</p></article>
+          <article class="panel"><span class="step">03</span><h3>Honest market reference</h3><p>Complete Over/Under or Yes/No pairs are power-de-vigged. If only one exact side is posted, its offered-price break-even is a reference—not no-vig—and the play is capped at LEAN with an extra 1.5% reserve.</p></article>
           <article class="panel"><span class="step">04</span><h3>Market-specific probability</h3><p>Yardage uses a continuous distribution; touchdowns, field goals, interceptions and sacks use count-stat handling with explicit push probability.</p></article>
-          <article class="panel"><span class="step">05</span><h3>Fail-closed gates</h3><p>Thin samples, low confidence, incomplete prices, excessive disagreement, extreme odds, correlated alternates, and exposure excess remain passes.</p></article>
+          <article class="panel"><span class="step">05</span><h3>Fail-closed gates</h3><p>Thin samples, low confidence, missing or stale offers, excessive disagreement, extreme odds, correlated alternates, and exposure excess remain passes.</p></article>
           <article class="panel"><span class="step">06</span><h3>Conservative staking</h3><p>Suggested stakes use 0.15 Kelly, then scale for confidence and data maturity. PASS rows always receive C$0.</p></article>
           <article class="panel"><span class="step">07</span><h3>Opponent defense adjustment</h3><p>Each player market is compared with position-level production allowed by the upcoming opponent and the league median. The adjustment is reliability-shrunk and capped at ±12%.</p></article>
-          <article class="panel"><span class="step">08</span><h3>10,000-run matchup lab</h3><p>The simulator blends the adjusted distribution with recent empirical results. It reports scenario probabilities and fair odds, but cannot qualify a wager without a current complete eligible-book market.</p></article>
+          <article class="panel"><span class="step">08</span><h3>10,000-run matchup lab</h3><p>The simulator blends the adjusted distribution with recent empirical results. It reports scenario probabilities and fair odds, but cannot qualify a wager without a current observed eligible-book offer.</p></article>
           <article class="panel"><span class="step">09</span><h3>Risk-adjusted parlays</h3><p>Daily cards combine 3–4 supported props at one book, require multiple market groups, avoid repeating a player, and haircut same-game probability. Unsupported payout bands remain blank.</p></article>
         </div>
         <div class="source-grid">

@@ -221,7 +221,7 @@ function renderStatus() {
     $("#feedState").textContent = "KEYLESS";
   } else if (Number(source.projections) > 0) {
     banner.className = "status-banner warn";
-    banner.textContent = `Regular-season form is ready and the model checks ${lookahead} days ahead, but no current Ontario-regulated player-prop prices were returned. Books often post these closer to kickoff; no wager can qualify without a complete live price.`;
+    banner.textContent = `Regular-season form is ready and the model checks ${lookahead} days ahead, but no current Ontario-regulated player-prop prices were returned. Books often post these closer to kickoff; no wager can qualify without a current observed book offer.`;
     $("#feedState").textContent = "NO PRICES";
   } else {
     banner.className = "status-banner warn";
