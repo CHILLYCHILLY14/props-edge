@@ -1,7 +1,7 @@
 {
   "league": "NFL",
   "season": 2026,
-  "generated_at": "2026-09-14T01:51:28.014795+00:00",
+  "generated_at": "2026-09-14T05:14:11.423547+00:00",
   "provider_priority": [
     "The Odds API Ontario keys",
     "Odds-API.io regulated-brand fallback",
@@ -21,36 +21,36 @@
     "espn_keyless": true
   },
   "counts": {
-    "priced_quotes": 471,
-    "eligible_priced_quotes": 471,
+    "priced_quotes": 479,
+    "eligible_priced_quotes": 479,
     "priced_events": 1,
     "eligible_priced_events": 1,
     "eligible_books": 2,
     "priced_markets": 23,
-    "board": 406,
+    "board": 412,
     "actionable": 8,
-    "qualified_options": 13,
+    "qualified_options": 15,
     "best": 0,
     "good": 5,
-    "leans": 8,
-    "watch": 393,
+    "leans": 10,
+    "watch": 397,
     "projections": 7500,
     "projected_markets": 27,
     "scheduled_projections": 7500,
     "matchup_adjusted": 7500,
-    "simulator_players": 1165,
+    "simulator_players": 1164,
     "roster_verified": 7500,
     "roster_verified_teams": 32,
     "scheduled_roster_teams": 32,
-    "suggested_exposure": 11.5,
+    "suggested_exposure": 12.0,
     "parlay_game_days": 10,
     "parlays_ready": 1
   },
   "source_by_sport": {
     "NFL": {
       "source": "Odds-API.io (regulated-brand fallback) + ESPN regular-season form",
-      "priced_quotes": 471,
-      "eligible_priced_quotes": 471,
+      "priced_quotes": 479,
+      "eligible_priced_quotes": 479,
       "projections": 7500,
       "errors": [
         "The Odds API request failed (HTTP 401: {\"message\":\"Usage quota has been reached. See usage plans at https://the-odds-api.com\",\"error_code\":\"OUT_OF_USAGE_CREDITS\",\"details_url\":\"https://the-odds-api.com/liveapi/guides/v4/api-error-codes.html#out-of-usage-credits\"}\n)"
@@ -59,8 +59,8 @@
   },
   "source_by_provider": {
     "odds_api_io": {
-      "priced_quotes": 471,
-      "eligible_priced_quotes": 471
+      "priced_quotes": 479,
+      "eligible_priced_quotes": 479
     },
     "the_odds_api": {
       "priced_quotes": 0,

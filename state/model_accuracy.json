@@ -102628,10 +102628,12 @@
    "stat_key": "brandonaubrey|dallascowboys|extrapointattempts",
    "id": "prop:NFL:401872930:Brandon Aubrey:Extra point attempts:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 3.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Brandon Aubrey:Extra points made:": {
    "kind": "prop",
@@ -102645,10 +102647,12 @@
    "stat_key": "brandonaubrey|dallascowboys|extrapointsmade",
    "id": "prop:NFL:401872930:Brandon Aubrey:Extra points made:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Brandon Aubrey:Field goal attempts:": {
    "kind": "prop",
@@ -102662,10 +102666,12 @@
    "stat_key": "brandonaubrey|dallascowboys|fieldgoalattempts",
    "id": "prop:NFL:401872930:Brandon Aubrey:Field goal attempts:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Brandon Aubrey:Field goals made:": {
    "kind": "prop",
@@ -102679,10 +102685,12 @@
    "stat_key": "brandonaubrey|dallascowboys|fieldgoalsmade",
    "id": "prop:NFL:401872930:Brandon Aubrey:Field goals made:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Brandon Aubrey:Kicking points:": {
    "kind": "prop",
@@ -102696,10 +102704,12 @@
    "stat_key": "brandonaubrey|dallascowboys|kickingpoints",
    "id": "prop:NFL:401872930:Brandon Aubrey:Kicking points:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Brian Burns:Sacks:": {
    "kind": "prop",
@@ -102713,10 +102723,12 @@
    "stat_key": "brianburns|newyorkgiants|sacks",
    "id": "prop:NFL:401872930:Brian Burns:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Brian Burns:Solo tackles:": {
    "kind": "prop",
@@ -102730,10 +102742,12 @@
    "stat_key": "brianburns|newyorkgiants|solotackles",
    "id": "prop:NFL:401872930:Brian Burns:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Brian Burns:Tackles + assists:": {
    "kind": "prop",
@@ -102747,10 +102761,12 @@
    "stat_key": "brianburns|newyorkgiants|tacklesassists",
    "id": "prop:NFL:401872930:Brian Burns:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Calvin Austin III:Anytime touchdown:": {
    "kind": "prop",
@@ -102900,10 +102916,12 @@
    "stat_key": "ceedeelamb|dallascowboys|anytimetouchdown",
    "id": "prop:NFL:401872930:CeeDee Lamb:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:CeeDee Lamb:Receiving touchdowns:": {
    "kind": "prop",
@@ -102917,10 +102935,12 @@
    "stat_key": "ceedeelamb|dallascowboys|receivingtouchdowns",
    "id": "prop:NFL:401872930:CeeDee Lamb:Receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:CeeDee Lamb:Receiving yards:": {
    "kind": "prop",
@@ -102934,10 +102954,12 @@
    "stat_key": "ceedeelamb|dallascowboys|receivingyards",
    "id": "prop:NFL:401872930:CeeDee Lamb:Receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 44.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:CeeDee Lamb:Receptions:": {
    "kind": "prop",
@@ -102951,10 +102973,12 @@
    "stat_key": "ceedeelamb|dallascowboys|receptions",
    "id": "prop:NFL:401872930:CeeDee Lamb:Receptions:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 5.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:CeeDee Lamb:Rush + receiving touchdowns:": {
    "kind": "prop",
@@ -102968,10 +102992,12 @@
    "stat_key": "ceedeelamb|dallascowboys|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:CeeDee Lamb:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:CeeDee Lamb:Rush + receiving yards:": {
    "kind": "prop",
@@ -102985,10 +103011,12 @@
    "stat_key": "ceedeelamb|dallascowboys|rushingreceivingyards",
    "id": "prop:NFL:401872930:CeeDee Lamb:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 44.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:CeeDee Lamb:Targets:": {
    "kind": "prop",
@@ -103002,10 +103030,12 @@
    "stat_key": "ceedeelamb|dallascowboys|targets",
    "id": "prop:NFL:401872930:CeeDee Lamb:Targets:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 8.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:CeeDee Lamb:Touchdowns scored:": {
    "kind": "prop",
@@ -103019,10 +103049,12 @@
    "stat_key": "ceedeelamb|dallascowboys|touchdownsscored",
    "id": "prop:NFL:401872930:CeeDee Lamb:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Cobie Durant:Sacks:": {
    "kind": "prop",
@@ -103036,10 +103068,12 @@
    "stat_key": "cobiedurant|dallascowboys|sacks",
    "id": "prop:NFL:401872930:Cobie Durant:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Cobie Durant:Solo tackles:": {
    "kind": "prop",
@@ -103053,10 +103087,12 @@
    "stat_key": "cobiedurant|dallascowboys|solotackles",
    "id": "prop:NFL:401872930:Cobie Durant:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Cobie Durant:Tackles + assists:": {
    "kind": "prop",
@@ -103070,10 +103106,12 @@
    "stat_key": "cobiedurant|dallascowboys|tacklesassists",
    "id": "prop:NFL:401872930:Cobie Durant:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:DJ Reader:Sacks:": {
    "kind": "prop",
@@ -103087,10 +103125,12 @@
    "stat_key": "djreader|newyorkgiants|sacks",
    "id": "prop:NFL:401872930:DJ Reader:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:DJ Reader:Solo tackles:": {
    "kind": "prop",
@@ -103104,10 +103144,12 @@
    "stat_key": "djreader|newyorkgiants|solotackles",
    "id": "prop:NFL:401872930:DJ Reader:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:DJ Reader:Tackles + assists:": {
    "kind": "prop",
@@ -103121,10 +103163,12 @@
    "stat_key": "djreader|newyorkgiants|tacklesassists",
    "id": "prop:NFL:401872930:DJ Reader:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dak Prescott:Anytime touchdown:": {
    "kind": "prop",
@@ -103138,10 +103182,12 @@
    "stat_key": "dakprescott|dallascowboys|anytimetouchdown",
    "id": "prop:NFL:401872930:Dak Prescott:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dak Prescott:Pass + rush + receiving touchdowns:": {
    "kind": "prop",
@@ -103155,10 +103201,12 @@
    "stat_key": "dakprescott|dallascowboys|passingrushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:Dak Prescott:Pass + rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dak Prescott:Pass + rush + receiving yards:": {
    "kind": "prop",
@@ -103172,10 +103220,12 @@
    "stat_key": "dakprescott|dallascowboys|passingrushingreceivingyards",
    "id": "prop:NFL:401872930:Dak Prescott:Pass + rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 189.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dak Prescott:Pass + rush yards:": {
    "kind": "prop",
@@ -103189,10 +103239,12 @@
    "stat_key": "dakprescott|dallascowboys|passingrushingyards",
    "id": "prop:NFL:401872930:Dak Prescott:Pass + rush yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 189.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dak Prescott:Pass attempts:": {
    "kind": "prop",
@@ -103206,10 +103258,12 @@
    "stat_key": "dakprescott|dallascowboys|passingattempts",
    "id": "prop:NFL:401872930:Dak Prescott:Pass attempts:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 34.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dak Prescott:Pass completions:": {
    "kind": "prop",
@@ -103223,10 +103277,12 @@
    "stat_key": "dakprescott|dallascowboys|passingcompletions",
    "id": "prop:NFL:401872930:Dak Prescott:Pass completions:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 22.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dak Prescott:Pass interceptions:": {
    "kind": "prop",
@@ -103240,10 +103296,12 @@
    "stat_key": "dakprescott|dallascowboys|passinginterceptions",
    "id": "prop:NFL:401872930:Dak Prescott:Pass interceptions:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dak Prescott:Passing touchdowns:": {
    "kind": "prop",
@@ -103257,10 +103315,12 @@
    "stat_key": "dakprescott|dallascowboys|passingtouchdowns",
    "id": "prop:NFL:401872930:Dak Prescott:Passing touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dak Prescott:Passing yards:": {
    "kind": "prop",
@@ -103274,10 +103334,12 @@
    "stat_key": "dakprescott|dallascowboys|passingyards",
    "id": "prop:NFL:401872930:Dak Prescott:Passing yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 175.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dak Prescott:Rush + receiving touchdowns:": {
    "kind": "prop",
@@ -103291,10 +103353,12 @@
    "stat_key": "dakprescott|dallascowboys|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:Dak Prescott:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dak Prescott:Rush + receiving yards:": {
    "kind": "prop",
@@ -103308,10 +103372,12 @@
    "stat_key": "dakprescott|dallascowboys|rushingreceivingyards",
    "id": "prop:NFL:401872930:Dak Prescott:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 14.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dak Prescott:Rush attempts:": {
    "kind": "prop",
@@ -103325,10 +103391,12 @@
    "stat_key": "dakprescott|dallascowboys|rushingattempts",
    "id": "prop:NFL:401872930:Dak Prescott:Rush attempts:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dak Prescott:Rushing touchdowns:": {
    "kind": "prop",
@@ -103342,10 +103410,12 @@
    "stat_key": "dakprescott|dallascowboys|rushingtouchdowns",
    "id": "prop:NFL:401872930:Dak Prescott:Rushing touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dak Prescott:Rushing yards:": {
    "kind": "prop",
@@ -103359,10 +103429,12 @@
    "stat_key": "dakprescott|dallascowboys|rushingyards",
    "id": "prop:NFL:401872930:Dak Prescott:Rushing yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 14.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dak Prescott:Touchdowns scored:": {
    "kind": "prop",
@@ -103376,10 +103448,12 @@
    "stat_key": "dakprescott|dallascowboys|touchdownsscored",
    "id": "prop:NFL:401872930:Dak Prescott:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Darnell Mooney:Anytime touchdown:": {
    "kind": "prop",
@@ -103393,10 +103467,12 @@
    "stat_key": "darnellmooney|newyorkgiants|anytimetouchdown",
    "id": "prop:NFL:401872930:Darnell Mooney:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Darnell Mooney:Receiving touchdowns:": {
    "kind": "prop",
@@ -103410,10 +103486,12 @@
    "stat_key": "darnellmooney|newyorkgiants|receivingtouchdowns",
    "id": "prop:NFL:401872930:Darnell Mooney:Receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Darnell Mooney:Receiving yards:": {
    "kind": "prop",
@@ -103427,10 +103505,12 @@
    "stat_key": "darnellmooney|newyorkgiants|receivingyards",
    "id": "prop:NFL:401872930:Darnell Mooney:Receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 27.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Darnell Mooney:Receptions:": {
    "kind": "prop",
@@ -103444,10 +103524,12 @@
    "stat_key": "darnellmooney|newyorkgiants|receptions",
    "id": "prop:NFL:401872930:Darnell Mooney:Receptions:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Darnell Mooney:Rush + receiving touchdowns:": {
    "kind": "prop",
@@ -103461,10 +103543,12 @@
    "stat_key": "darnellmooney|newyorkgiants|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:Darnell Mooney:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Darnell Mooney:Rush + receiving yards:": {
    "kind": "prop",
@@ -103478,10 +103562,12 @@
    "stat_key": "darnellmooney|newyorkgiants|rushingreceivingyards",
    "id": "prop:NFL:401872930:Darnell Mooney:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 27.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Darnell Mooney:Targets:": {
    "kind": "prop",
@@ -103495,10 +103581,12 @@
    "stat_key": "darnellmooney|newyorkgiants|targets",
    "id": "prop:NFL:401872930:Darnell Mooney:Targets:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Darnell Mooney:Touchdowns scored:": {
    "kind": "prop",
@@ -103512,10 +103600,12 @@
    "stat_key": "darnellmooney|newyorkgiants|touchdownsscored",
    "id": "prop:NFL:401872930:Darnell Mooney:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dee Winters:Sacks:": {
    "kind": "prop",
@@ -103529,10 +103619,12 @@
    "stat_key": "deewinters|dallascowboys|sacks",
    "id": "prop:NFL:401872930:Dee Winters:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dee Winters:Solo tackles:": {
    "kind": "prop",
@@ -103546,10 +103638,12 @@
    "stat_key": "deewinters|dallascowboys|solotackles",
    "id": "prop:NFL:401872930:Dee Winters:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 4.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dee Winters:Tackles + assists:": {
    "kind": "prop",
@@ -103563,10 +103657,12 @@
    "stat_key": "deewinters|dallascowboys|tacklesassists",
    "id": "prop:NFL:401872930:Dee Winters:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 4.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Devin Singletary:Anytime touchdown:": {
    "kind": "prop",
@@ -103580,10 +103676,12 @@
    "stat_key": "devinsingletary|newyorkgiants|anytimetouchdown",
    "id": "prop:NFL:401872930:Devin Singletary:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Devin Singletary:Rush + receiving touchdowns:": {
    "kind": "prop",
@@ -103597,10 +103695,12 @@
    "stat_key": "devinsingletary|newyorkgiants|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:Devin Singletary:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Devin Singletary:Rush + receiving yards:": {
    "kind": "prop",
@@ -103614,10 +103714,12 @@
    "stat_key": "devinsingletary|newyorkgiants|rushingreceivingyards",
    "id": "prop:NFL:401872930:Devin Singletary:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 38.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Devin Singletary:Rush attempts:": {
    "kind": "prop",
@@ -103631,10 +103733,12 @@
    "stat_key": "devinsingletary|newyorkgiants|rushingattempts",
    "id": "prop:NFL:401872930:Devin Singletary:Rush attempts:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 6.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Devin Singletary:Rushing touchdowns:": {
    "kind": "prop",
@@ -103648,10 +103752,12 @@
    "stat_key": "devinsingletary|newyorkgiants|rushingtouchdowns",
    "id": "prop:NFL:401872930:Devin Singletary:Rushing touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Devin Singletary:Rushing yards:": {
    "kind": "prop",
@@ -103665,10 +103771,12 @@
    "stat_key": "devinsingletary|newyorkgiants|rushingyards",
    "id": "prop:NFL:401872930:Devin Singletary:Rushing yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 16.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Devin Singletary:Touchdowns scored:": {
    "kind": "prop",
@@ -103682,10 +103790,12 @@
    "stat_key": "devinsingletary|newyorkgiants|touchdownsscored",
    "id": "prop:NFL:401872930:Devin Singletary:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Donovan Ezeiruaku:Sacks:": {
    "kind": "prop",
@@ -103699,10 +103809,12 @@
    "stat_key": "donovanezeiruaku|dallascowboys|sacks",
    "id": "prop:NFL:401872930:Donovan Ezeiruaku:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.5,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Donovan Ezeiruaku:Solo tackles:": {
    "kind": "prop",
@@ -103716,10 +103828,12 @@
    "stat_key": "donovanezeiruaku|dallascowboys|solotackles",
    "id": "prop:NFL:401872930:Donovan Ezeiruaku:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 4.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Donovan Ezeiruaku:Tackles + assists:": {
    "kind": "prop",
@@ -103733,10 +103847,12 @@
    "stat_key": "donovanezeiruaku|dallascowboys|tacklesassists",
    "id": "prop:NFL:401872930:Donovan Ezeiruaku:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 10.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dru Phillips:Sacks:": {
    "kind": "prop",
@@ -103750,10 +103866,12 @@
    "stat_key": "druphillips|newyorkgiants|sacks",
    "id": "prop:NFL:401872930:Dru Phillips:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dru Phillips:Solo tackles:": {
    "kind": "prop",
@@ -103767,10 +103885,12 @@
    "stat_key": "druphillips|newyorkgiants|solotackles",
    "id": "prop:NFL:401872930:Dru Phillips:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dru Phillips:Tackles + assists:": {
    "kind": "prop",
@@ -103784,10 +103904,12 @@
    "stat_key": "druphillips|newyorkgiants|tacklesassists",
    "id": "prop:NFL:401872930:Dru Phillips:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:George Pickens:Anytime touchdown:": {
    "kind": "prop",
@@ -103801,10 +103923,12 @@
    "stat_key": "georgepickens|dallascowboys|anytimetouchdown",
    "id": "prop:NFL:401872930:George Pickens:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:George Pickens:Receiving touchdowns:": {
    "kind": "prop",
@@ -103818,10 +103942,12 @@
    "stat_key": "georgepickens|dallascowboys|receivingtouchdowns",
    "id": "prop:NFL:401872930:George Pickens:Receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:George Pickens:Receiving yards:": {
    "kind": "prop",
@@ -103835,10 +103961,12 @@
    "stat_key": "georgepickens|dallascowboys|receivingyards",
    "id": "prop:NFL:401872930:George Pickens:Receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 28.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:George Pickens:Receptions:": {
    "kind": "prop",
@@ -103852,10 +103980,12 @@
    "stat_key": "georgepickens|dallascowboys|receptions",
    "id": "prop:NFL:401872930:George Pickens:Receptions:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 3.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:George Pickens:Rush + receiving touchdowns:": {
    "kind": "prop",
@@ -103869,10 +103999,12 @@
    "stat_key": "georgepickens|dallascowboys|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:George Pickens:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:George Pickens:Rush + receiving yards:": {
    "kind": "prop",
@@ -103886,10 +104018,12 @@
    "stat_key": "georgepickens|dallascowboys|rushingreceivingyards",
    "id": "prop:NFL:401872930:George Pickens:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 28.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:George Pickens:Targets:": {
    "kind": "prop",
@@ -103903,10 +104037,12 @@
    "stat_key": "georgepickens|dallascowboys|targets",
    "id": "prop:NFL:401872930:George Pickens:Targets:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 6.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:George Pickens:Touchdowns scored:": {
    "kind": "prop",
@@ -103920,10 +104056,12 @@
    "stat_key": "georgepickens|dallascowboys|touchdownsscored",
    "id": "prop:NFL:401872930:George Pickens:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jake Ferguson:Anytime touchdown:": {
    "kind": "prop",
@@ -103937,10 +104075,12 @@
    "stat_key": "jakeferguson|dallascowboys|anytimetouchdown",
    "id": "prop:NFL:401872930:Jake Ferguson:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jake Ferguson:Receiving touchdowns:": {
    "kind": "prop",
@@ -103954,10 +104094,12 @@
    "stat_key": "jakeferguson|dallascowboys|receivingtouchdowns",
    "id": "prop:NFL:401872930:Jake Ferguson:Receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jake Ferguson:Receiving yards:": {
    "kind": "prop",
@@ -103971,10 +104113,12 @@
    "stat_key": "jakeferguson|dallascowboys|receivingyards",
    "id": "prop:NFL:401872930:Jake Ferguson:Receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 6.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jake Ferguson:Receptions:": {
    "kind": "prop",
@@ -103988,10 +104132,12 @@
    "stat_key": "jakeferguson|dallascowboys|receptions",
    "id": "prop:NFL:401872930:Jake Ferguson:Receptions:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jake Ferguson:Rush + receiving touchdowns:": {
    "kind": "prop",
@@ -104005,10 +104151,12 @@
    "stat_key": "jakeferguson|dallascowboys|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:Jake Ferguson:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jake Ferguson:Rush + receiving yards:": {
    "kind": "prop",
@@ -104022,10 +104170,12 @@
    "stat_key": "jakeferguson|dallascowboys|rushingreceivingyards",
    "id": "prop:NFL:401872930:Jake Ferguson:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 6.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jake Ferguson:Targets:": {
    "kind": "prop",
@@ -104039,10 +104189,12 @@
    "stat_key": "jakeferguson|dallascowboys|targets",
    "id": "prop:NFL:401872930:Jake Ferguson:Targets:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jake Ferguson:Touchdowns scored:": {
    "kind": "prop",
@@ -104056,10 +104208,12 @@
    "stat_key": "jakeferguson|dallascowboys|touchdownsscored",
    "id": "prop:NFL:401872930:Jake Ferguson:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:KaVontae Turpin:Anytime touchdown:": {
    "kind": "prop",
@@ -104073,10 +104227,12 @@
    "stat_key": "kavontaeturpin|dallascowboys|anytimetouchdown",
    "id": "prop:NFL:401872930:KaVontae Turpin:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:KaVontae Turpin:Receiving touchdowns:": {
    "kind": "prop",
@@ -104090,10 +104246,12 @@
    "stat_key": "kavontaeturpin|dallascowboys|receivingtouchdowns",
    "id": "prop:NFL:401872930:KaVontae Turpin:Receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:KaVontae Turpin:Receiving yards:": {
    "kind": "prop",
@@ -104107,10 +104265,12 @@
    "stat_key": "kavontaeturpin|dallascowboys|receivingyards",
    "id": "prop:NFL:401872930:KaVontae Turpin:Receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 8.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:KaVontae Turpin:Receptions:": {
    "kind": "prop",
@@ -104124,10 +104284,12 @@
    "stat_key": "kavontaeturpin|dallascowboys|receptions",
    "id": "prop:NFL:401872930:KaVontae Turpin:Receptions:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:KaVontae Turpin:Rush + receiving touchdowns:": {
    "kind": "prop",
@@ -104141,10 +104303,12 @@
    "stat_key": "kavontaeturpin|dallascowboys|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:KaVontae Turpin:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:KaVontae Turpin:Rush + receiving yards:": {
    "kind": "prop",
@@ -104158,10 +104322,12 @@
    "stat_key": "kavontaeturpin|dallascowboys|rushingreceivingyards",
    "id": "prop:NFL:401872930:KaVontae Turpin:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 8.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:KaVontae Turpin:Targets:": {
    "kind": "prop",
@@ -104175,10 +104341,12 @@
    "stat_key": "kavontaeturpin|dallascowboys|targets",
    "id": "prop:NFL:401872930:KaVontae Turpin:Targets:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:KaVontae Turpin:Touchdowns scored:": {
    "kind": "prop",
@@ -104192,10 +104360,12 @@
    "stat_key": "kavontaeturpin|dallascowboys|touchdownsscored",
    "id": "prop:NFL:401872930:KaVontae Turpin:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Kenny Clark:Sacks:": {
    "kind": "prop",
@@ -104209,10 +104379,12 @@
    "stat_key": "kennyclark|dallascowboys|sacks",
    "id": "prop:NFL:401872930:Kenny Clark:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Kenny Clark:Solo tackles:": {
    "kind": "prop",
@@ -104226,10 +104398,12 @@
    "stat_key": "kennyclark|dallascowboys|solotackles",
    "id": "prop:NFL:401872930:Kenny Clark:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Kenny Clark:Tackles + assists:": {
    "kind": "prop",
@@ -104243,10 +104417,12 @@
    "stat_key": "kennyclark|dallascowboys|tacklesassists",
    "id": "prop:NFL:401872930:Kenny Clark:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Malik Harrison:Sacks:": {
    "kind": "prop",
@@ -104260,10 +104436,12 @@
    "stat_key": "malikharrison|newyorkgiants|sacks",
    "id": "prop:NFL:401872930:Malik Harrison:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Malik Harrison:Solo tackles:": {
    "kind": "prop",
@@ -104277,10 +104455,12 @@
    "stat_key": "malikharrison|newyorkgiants|solotackles",
    "id": "prop:NFL:401872930:Malik Harrison:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Malik Harrison:Tackles + assists:": {
    "kind": "prop",
@@ -104294,10 +104474,12 @@
    "stat_key": "malikharrison|newyorkgiants|tacklesassists",
    "id": "prop:NFL:401872930:Malik Harrison:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Malik Hooker:Sacks:": {
    "kind": "prop",
@@ -104311,10 +104493,12 @@
    "stat_key": "malikhooker|dallascowboys|sacks",
    "id": "prop:NFL:401872930:Malik Hooker:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Malik Hooker:Solo tackles:": {
    "kind": "prop",
@@ -104328,10 +104512,12 @@
    "stat_key": "malikhooker|dallascowboys|solotackles",
    "id": "prop:NFL:401872930:Malik Hooker:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Malik Hooker:Tackles + assists:": {
    "kind": "prop",
@@ -104345,10 +104531,12 @@
    "stat_key": "malikhooker|dallascowboys|tacklesassists",
    "id": "prop:NFL:401872930:Malik Hooker:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Markquese Bell:Sacks:": {
    "kind": "prop",
@@ -104362,10 +104550,12 @@
    "stat_key": "markquesebell|dallascowboys|sacks",
    "id": "prop:NFL:401872930:Markquese Bell:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Markquese Bell:Solo tackles:": {
    "kind": "prop",
@@ -104379,10 +104569,12 @@
    "stat_key": "markquesebell|dallascowboys|solotackles",
    "id": "prop:NFL:401872930:Markquese Bell:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Markquese Bell:Tackles + assists:": {
    "kind": "prop",
@@ -104396,10 +104588,12 @@
    "stat_key": "markquesebell|dallascowboys|tacklesassists",
    "id": "prop:NFL:401872930:Markquese Bell:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Reddy Steward:Sacks:": {
    "kind": "prop",
@@ -104566,10 +104760,12 @@
    "stat_key": "tyronetracyjr|newyorkgiants|anytimetouchdown",
    "id": "prop:NFL:401872930:Tyrone Tracy Jr.:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Tyrone Tracy Jr.:Receiving touchdowns:": {
    "kind": "prop",
@@ -104634,10 +104830,12 @@
    "stat_key": "tyronetracyjr|newyorkgiants|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:Tyrone Tracy Jr.:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Tyrone Tracy Jr.:Rush + receiving yards:": {
    "kind": "prop",
@@ -104651,10 +104849,12 @@
    "stat_key": "tyronetracyjr|newyorkgiants|rushingreceivingyards",
    "id": "prop:NFL:401872930:Tyrone Tracy Jr.:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 14.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Tyrone Tracy Jr.:Rush attempts:": {
    "kind": "prop",
@@ -104668,10 +104868,12 @@
    "stat_key": "tyronetracyjr|newyorkgiants|rushingattempts",
    "id": "prop:NFL:401872930:Tyrone Tracy Jr.:Rush attempts:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Tyrone Tracy Jr.:Rushing touchdowns:": {
    "kind": "prop",
@@ -104685,10 +104887,12 @@
    "stat_key": "tyronetracyjr|newyorkgiants|rushingtouchdowns",
    "id": "prop:NFL:401872930:Tyrone Tracy Jr.:Rushing touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Tyrone Tracy Jr.:Rushing yards:": {
    "kind": "prop",
@@ -104702,10 +104906,12 @@
    "stat_key": "tyronetracyjr|newyorkgiants|rushingyards",
    "id": "prop:NFL:401872930:Tyrone Tracy Jr.:Rushing yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 14.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Tyrone Tracy Jr.:Targets:": {
    "kind": "prop",
@@ -104736,10 +104942,12 @@
    "stat_key": "tyronetracyjr|newyorkgiants|touchdownsscored",
    "id": "prop:NFL:401872930:Tyrone Tracy Jr.:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Von Miller:Sacks:": {
    "kind": "prop",
@@ -104804,10 +105012,12 @@
    "stat_key": "abdulcarter|newyorkgiants|sacks",
    "id": "prop:NFL:401872930:Abdul Carter:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Brevyn Spann-Ford:Sacks:": {
    "kind": "prop",
@@ -104821,10 +105031,12 @@
    "stat_key": "brevynspannford|dallascowboys|sacks",
    "id": "prop:NFL:401872930:Brevyn Spann-Ford:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Brevyn Spann-Ford:Tackles + assists:": {
    "kind": "prop",
@@ -104838,10 +105050,12 @@
    "stat_key": "brevynspannford|dallascowboys|tacklesassists",
    "id": "prop:NFL:401872930:Brevyn Spann-Ford:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Darius Slayton:Anytime touchdown:": {
    "kind": "prop",
@@ -104974,10 +105188,12 @@
    "stat_key": "gregnewsomeii|newyorkgiants|sacks",
    "id": "prop:NFL:401872930:Greg Newsome II:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:James Houston:Sacks:": {
    "kind": "prop",
@@ -104991,10 +105207,12 @@
    "stat_key": "jameshouston|dallascowboys|sacks",
    "id": "prop:NFL:401872930:James Houston:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:James Houston:Tackles + assists:": {
    "kind": "prop",
@@ -105008,10 +105226,12 @@
    "stat_key": "jameshouston|dallascowboys|tacklesassists",
    "id": "prop:NFL:401872930:James Houston:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jason Pinnock:Sacks:": {
    "kind": "prop",
@@ -105076,10 +105296,12 @@
    "stat_key": "javontewilliams|dallascowboys|anytimetouchdown",
    "id": "prop:NFL:401872930:Javonte Williams:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Javonte Williams:Rush + receiving touchdowns:": {
    "kind": "prop",
@@ -105093,10 +105315,12 @@
    "stat_key": "javontewilliams|dallascowboys|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:Javonte Williams:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Javonte Williams:Rush + receiving yards:": {
    "kind": "prop",
@@ -105110,10 +105334,12 @@
    "stat_key": "javontewilliams|dallascowboys|rushingreceivingyards",
    "id": "prop:NFL:401872930:Javonte Williams:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 72.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Javonte Williams:Rush attempts:": {
    "kind": "prop",
@@ -105127,10 +105353,12 @@
    "stat_key": "javontewilliams|dallascowboys|rushingattempts",
    "id": "prop:NFL:401872930:Javonte Williams:Rush attempts:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 12.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Javonte Williams:Rushing touchdowns:": {
    "kind": "prop",
@@ -105144,10 +105372,12 @@
    "stat_key": "javontewilliams|dallascowboys|rushingtouchdowns",
    "id": "prop:NFL:401872930:Javonte Williams:Rushing touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Javonte Williams:Rushing yards:": {
    "kind": "prop",
@@ -105161,10 +105391,12 @@
    "stat_key": "javontewilliams|dallascowboys|rushingyards",
    "id": "prop:NFL:401872930:Javonte Williams:Rushing yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 41.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Javonte Williams:Touchdowns scored:": {
    "kind": "prop",
@@ -105178,10 +105410,12 @@
    "stat_key": "javontewilliams|dallascowboys|touchdownsscored",
    "id": "prop:NFL:401872930:Javonte Williams:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jevon Holland:Sacks:": {
    "kind": "prop",
@@ -105195,10 +105429,12 @@
    "stat_key": "jevonholland|newyorkgiants|sacks",
    "id": "prop:NFL:401872930:Jevon Holland:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jevon Holland:Solo tackles:": {
    "kind": "prop",
@@ -105212,10 +105448,12 @@
    "stat_key": "jevonholland|newyorkgiants|solotackles",
    "id": "prop:NFL:401872930:Jevon Holland:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jevon Holland:Tackles + assists:": {
    "kind": "prop",
@@ -105229,10 +105467,12 @@
    "stat_key": "jevonholland|newyorkgiants|tacklesassists",
    "id": "prop:NFL:401872930:Jevon Holland:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jonathan Bullard:Sacks:": {
    "kind": "prop",
@@ -105246,10 +105486,12 @@
    "stat_key": "jonathanbullard|dallascowboys|sacks",
    "id": "prop:NFL:401872930:Jonathan Bullard:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.5,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Malik Davis:Anytime touchdown:": {
    "kind": "prop",
@@ -105331,10 +105573,12 @@
    "stat_key": "quinnenwilliams|dallascowboys|sacks",
    "id": "prop:NFL:401872930:Quinnen Williams:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Quinnen Williams:Solo tackles:": {
    "kind": "prop",
@@ -105348,10 +105592,12 @@
    "stat_key": "quinnenwilliams|dallascowboys|solotackles",
    "id": "prop:NFL:401872930:Quinnen Williams:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Quinnen Williams:Tackles + assists:": {
    "kind": "prop",
@@ -105365,10 +105611,12 @@
    "stat_key": "quinnenwilliams|dallascowboys|tacklesassists",
    "id": "prop:NFL:401872930:Quinnen Williams:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Rashan Gary:Sacks:": {
    "kind": "prop",
@@ -105382,10 +105630,12 @@
    "stat_key": "rashangary|dallascowboys|sacks",
    "id": "prop:NFL:401872930:Rashan Gary:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Rashan Gary:Tackles + assists:": {
    "kind": "prop",
@@ -105399,10 +105649,12 @@
    "stat_key": "rashangary|dallascowboys|tacklesassists",
    "id": "prop:NFL:401872930:Rashan Gary:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Roy Robertson-Harris:Sacks:": {
    "kind": "prop",
@@ -105467,10 +105719,12 @@
    "stat_key": "ryanflournoy|dallascowboys|anytimetouchdown",
    "id": "prop:NFL:401872930:Ryan Flournoy:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Ryan Flournoy:Receiving touchdowns:": {
    "kind": "prop",
@@ -105484,10 +105738,12 @@
    "stat_key": "ryanflournoy|dallascowboys|receivingtouchdowns",
    "id": "prop:NFL:401872930:Ryan Flournoy:Receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Ryan Flournoy:Rush + receiving touchdowns:": {
    "kind": "prop",
@@ -105501,10 +105757,12 @@
    "stat_key": "ryanflournoy|dallascowboys|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:Ryan Flournoy:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Ryan Flournoy:Touchdowns scored:": {
    "kind": "prop",
@@ -105518,10 +105776,12 @@
    "stat_key": "ryanflournoy|dallascowboys|touchdownsscored",
    "id": "prop:NFL:401872930:Ryan Flournoy:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Shavon Revel Jr.:Sacks:": {
    "kind": "prop",
@@ -105535,10 +105795,12 @@
    "stat_key": "shavonreveljr|dallascowboys|sacks",
    "id": "prop:NFL:401872930:Shavon Revel Jr.:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Shavon Revel Jr.:Tackles + assists:": {
    "kind": "prop",
@@ -105552,10 +105814,12 @@
    "stat_key": "shavonreveljr|dallascowboys|tacklesassists",
    "id": "prop:NFL:401872930:Shavon Revel Jr.:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:DeMarvion Overshown:Sacks:": {
    "kind": "prop",
@@ -105569,10 +105833,12 @@
    "stat_key": "demarvionovershown|dallascowboys|sacks",
    "id": "prop:NFL:401872930:DeMarvion Overshown:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Devin Singletary:Receiving touchdowns:": {
    "kind": "prop",
@@ -105586,10 +105852,12 @@
    "stat_key": "devinsingletary|newyorkgiants|receivingtouchdowns",
    "id": "prop:NFL:401872930:Devin Singletary:Receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Hunter Luepke:Anytime touchdown:": {
    "kind": "prop",
@@ -105603,10 +105871,12 @@
    "stat_key": "hunterluepke|dallascowboys|anytimetouchdown",
    "id": "prop:NFL:401872930:Hunter Luepke:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Hunter Luepke:Receiving touchdowns:": {
    "kind": "prop",
@@ -105637,10 +105907,12 @@
    "stat_key": "hunterluepke|dallascowboys|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:Hunter Luepke:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Hunter Luepke:Touchdowns scored:": {
    "kind": "prop",
@@ -105654,10 +105926,12 @@
    "stat_key": "hunterluepke|dallascowboys|touchdownsscored",
    "id": "prop:NFL:401872930:Hunter Luepke:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:KaVontae Turpin:Rushing touchdowns:": {
    "kind": "prop",
@@ -105688,10 +105962,12 @@
    "stat_key": "lukeschoonmaker|dallascowboys|anytimetouchdown",
    "id": "prop:NFL:401872930:Luke Schoonmaker:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Luke Schoonmaker:Receiving touchdowns:": {
    "kind": "prop",
@@ -105705,10 +105981,12 @@
    "stat_key": "lukeschoonmaker|dallascowboys|receivingtouchdowns",
    "id": "prop:NFL:401872930:Luke Schoonmaker:Receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Luke Schoonmaker:Rush + receiving touchdowns:": {
    "kind": "prop",
@@ -105722,10 +106000,12 @@
    "stat_key": "lukeschoonmaker|dallascowboys|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:Luke Schoonmaker:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Luke Schoonmaker:Touchdowns scored:": {
    "kind": "prop",
@@ -105739,10 +106019,12 @@
    "stat_key": "lukeschoonmaker|dallascowboys|touchdownsscored",
    "id": "prop:NFL:401872930:Luke Schoonmaker:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Theo Johnson:Anytime touchdown:": {
    "kind": "prop",
@@ -105756,10 +106038,12 @@
    "stat_key": "theojohnson|newyorkgiants|anytimetouchdown",
    "id": "prop:NFL:401872930:Theo Johnson:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Theo Johnson:Receiving touchdowns:": {
    "kind": "prop",
@@ -105773,10 +106057,12 @@
    "stat_key": "theojohnson|newyorkgiants|receivingtouchdowns",
    "id": "prop:NFL:401872930:Theo Johnson:Receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Theo Johnson:Rush + receiving touchdowns:": {
    "kind": "prop",
@@ -105790,10 +106076,12 @@
    "stat_key": "theojohnson|newyorkgiants|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:Theo Johnson:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Theo Johnson:Touchdowns scored:": {
    "kind": "prop",
@@ -105807,10 +106095,12 @@
    "stat_key": "theojohnson|newyorkgiants|touchdownsscored",
    "id": "prop:NFL:401872930:Theo Johnson:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Abdul Carter:Solo tackles:": {
    "kind": "prop",
@@ -105824,10 +106114,12 @@
    "stat_key": "abdulcarter|newyorkgiants|solotackles",
    "id": "prop:NFL:401872930:Abdul Carter:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Abdul Carter:Tackles + assists:": {
    "kind": "prop",
@@ -105841,10 +106133,12 @@
    "stat_key": "abdulcarter|newyorkgiants|tacklesassists",
    "id": "prop:NFL:401872930:Abdul Carter:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 3.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Brevyn Spann-Ford:Solo tackles:": {
    "kind": "prop",
@@ -105858,10 +106152,12 @@
    "stat_key": "brevynspannford|dallascowboys|solotackles",
    "id": "prop:NFL:401872930:Brevyn Spann-Ford:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Darius Slayton:Targets:": {
    "kind": "prop",
@@ -105892,10 +106188,12 @@
    "stat_key": "gregnewsomeii|newyorkgiants|tacklesassists",
    "id": "prop:NFL:401872930:Greg Newsome II:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 3.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:James Houston:Solo tackles:": {
    "kind": "prop",
@@ -105909,10 +106207,12 @@
    "stat_key": "jameshouston|dallascowboys|solotackles",
    "id": "prop:NFL:401872930:James Houston:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Malik Davis:Rush + receiving yards:": {
    "kind": "prop",
@@ -105960,10 +106260,12 @@
    "stat_key": "rashangary|dallascowboys|solotackles",
    "id": "prop:NFL:401872930:Rashan Gary:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Ryan Flournoy:Receptions:": {
    "kind": "prop",
@@ -105977,10 +106279,12 @@
    "stat_key": "ryanflournoy|dallascowboys|receptions",
    "id": "prop:NFL:401872930:Ryan Flournoy:Receptions:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Shavon Revel Jr.:Solo tackles:": {
    "kind": "prop",
@@ -105994,10 +106298,12 @@
    "stat_key": "shavonreveljr|dallascowboys|solotackles",
    "id": "prop:NFL:401872930:Shavon Revel Jr.:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Greg Newsome II:Solo tackles:": {
    "kind": "prop",
@@ -106011,10 +106317,12 @@
    "stat_key": "gregnewsomeii|newyorkgiants|solotackles",
    "id": "prop:NFL:401872930:Greg Newsome II:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jonathan Bullard:Solo tackles:": {
    "kind": "prop",
@@ -106028,10 +106336,12 @@
    "stat_key": "jonathanbullard|dallascowboys|solotackles",
    "id": "prop:NFL:401872930:Jonathan Bullard:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jonathan Bullard:Tackles + assists:": {
    "kind": "prop",
@@ -106045,10 +106355,12 @@
    "stat_key": "jonathanbullard|dallascowboys|tacklesassists",
    "id": "prop:NFL:401872930:Jonathan Bullard:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Malik Davis:Rushing yards:": {
    "kind": "prop",
@@ -106079,10 +106391,12 @@
    "stat_key": "ryanflournoy|dallascowboys|receivingyards",
    "id": "prop:NFL:401872930:Ryan Flournoy:Receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 22.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Ryan Flournoy:Rush + receiving yards:": {
    "kind": "prop",
@@ -106096,10 +106410,12 @@
    "stat_key": "ryanflournoy|dallascowboys|rushingreceivingyards",
    "id": "prop:NFL:401872930:Ryan Flournoy:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 22.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Ryan Flournoy:Targets:": {
    "kind": "prop",
@@ -106113,10 +106429,12 @@
    "stat_key": "ryanflournoy|dallascowboys|targets",
    "id": "prop:NFL:401872930:Ryan Flournoy:Targets:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 4.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Javonte Williams:Targets:": {
    "kind": "prop",
@@ -106130,10 +106448,12 @@
    "stat_key": "javontewilliams|dallascowboys|targets",
    "id": "prop:NFL:401872930:Javonte Williams:Targets:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 5.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jaxson Dart:Pass attempts:": {
    "kind": "prop",
@@ -106147,10 +106467,12 @@
    "stat_key": "jaxsondart|newyorkgiants|passingattempts",
    "id": "prop:NFL:401872930:Jaxson Dart:Pass attempts:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 29.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jaxson Dart:Pass completions:": {
    "kind": "prop",
@@ -106164,10 +106486,12 @@
    "stat_key": "jaxsondart|newyorkgiants|passingcompletions",
    "id": "prop:NFL:401872930:Jaxson Dart:Pass completions:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 23.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Luke Schoonmaker:Targets:": {
    "kind": "prop",
@@ -106181,10 +106505,12 @@
    "stat_key": "lukeschoonmaker|dallascowboys|targets",
    "id": "prop:NFL:401872930:Luke Schoonmaker:Targets:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Brevyn Spann-Ford:Anytime touchdown:": {
    "kind": "prop",
@@ -106198,10 +106524,12 @@
    "stat_key": "brevynspannford|dallascowboys|anytimetouchdown",
    "id": "prop:NFL:401872930:Brevyn Spann-Ford:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Brevyn Spann-Ford:Receiving touchdowns:": {
    "kind": "prop",
@@ -106215,10 +106543,12 @@
    "stat_key": "brevynspannford|dallascowboys|receivingtouchdowns",
    "id": "prop:NFL:401872930:Brevyn Spann-Ford:Receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Brevyn Spann-Ford:Rush + receiving touchdowns:": {
    "kind": "prop",
@@ -106232,10 +106562,12 @@
    "stat_key": "brevynspannford|dallascowboys|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:Brevyn Spann-Ford:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Brevyn Spann-Ford:Touchdowns scored:": {
    "kind": "prop",
@@ -106249,10 +106581,12 @@
    "stat_key": "brevynspannford|dallascowboys|touchdownsscored",
    "id": "prop:NFL:401872930:Brevyn Spann-Ford:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Chauncey Golston:Sacks:": {
    "kind": "prop",
@@ -106266,10 +106600,12 @@
    "stat_key": "chaunceygolston|newyorkgiants|sacks",
    "id": "prop:NFL:401872930:Chauncey Golston:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Hunter Luepke:Targets:": {
    "kind": "prop",
@@ -106300,10 +106636,12 @@
    "stat_key": "isaiahlikely|newyorkgiants|anytimetouchdown",
    "id": "prop:NFL:401872930:Isaiah Likely:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Isaiah Likely:Receiving touchdowns:": {
    "kind": "prop",
@@ -106317,10 +106655,12 @@
    "stat_key": "isaiahlikely|newyorkgiants|receivingtouchdowns",
    "id": "prop:NFL:401872930:Isaiah Likely:Receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Isaiah Likely:Receptions:": {
    "kind": "prop",
@@ -106334,10 +106674,12 @@
    "stat_key": "isaiahlikely|newyorkgiants|receptions",
    "id": "prop:NFL:401872930:Isaiah Likely:Receptions:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 8.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Isaiah Likely:Rush + receiving touchdowns:": {
    "kind": "prop",
@@ -106351,10 +106693,12 @@
    "stat_key": "isaiahlikely|newyorkgiants|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:Isaiah Likely:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Isaiah Likely:Targets:": {
    "kind": "prop",
@@ -106368,10 +106712,12 @@
    "stat_key": "isaiahlikely|newyorkgiants|targets",
    "id": "prop:NFL:401872930:Isaiah Likely:Targets:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 8.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Isaiah Likely:Touchdowns scored:": {
    "kind": "prop",
@@ -106385,10 +106731,12 @@
    "stat_key": "isaiahlikely|newyorkgiants|touchdownsscored",
    "id": "prop:NFL:401872930:Isaiah Likely:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jalen Thompson:Sacks:": {
    "kind": "prop",
@@ -106402,10 +106750,12 @@
    "stat_key": "jalenthompson|dallascowboys|sacks",
    "id": "prop:NFL:401872930:Jalen Thompson:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jalen Thompson:Tackles + assists:": {
    "kind": "prop",
@@ -106419,10 +106769,12 @@
    "stat_key": "jalenthompson|dallascowboys|tacklesassists",
    "id": "prop:NFL:401872930:Jalen Thompson:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 9.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Javonte Williams:Receiving touchdowns:": {
    "kind": "prop",
@@ -106436,10 +106788,12 @@
    "stat_key": "javontewilliams|dallascowboys|receivingtouchdowns",
    "id": "prop:NFL:401872930:Javonte Williams:Receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jaxson Dart:Pass + rush + receiving yards:": {
    "kind": "prop",
@@ -106453,10 +106807,12 @@
    "stat_key": "jaxsondart|newyorkgiants|passingrushingreceivingyards",
    "id": "prop:NFL:401872930:Jaxson Dart:Pass + rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 284.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jaxson Dart:Pass + rush yards:": {
    "kind": "prop",
@@ -106470,10 +106826,12 @@
    "stat_key": "jaxsondart|newyorkgiants|passingrushingyards",
    "id": "prop:NFL:401872930:Jaxson Dart:Pass + rush yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 284.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jaxson Dart:Pass interceptions:": {
    "kind": "prop",
@@ -106487,10 +106845,12 @@
    "stat_key": "jaxsondart|newyorkgiants|passinginterceptions",
    "id": "prop:NFL:401872930:Jaxson Dart:Pass interceptions:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jaxson Dart:Passing yards:": {
    "kind": "prop",
@@ -106504,10 +106864,12 @@
    "stat_key": "jaxsondart|newyorkgiants|passingyards",
    "id": "prop:NFL:401872930:Jaxson Dart:Passing yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 230.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jaxson Dart:Rush attempts:": {
    "kind": "prop",
@@ -106521,10 +106883,12 @@
    "stat_key": "jaxsondart|newyorkgiants|rushingattempts",
    "id": "prop:NFL:401872930:Jaxson Dart:Rush attempts:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 11.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:KaVontae Turpin:Rush attempts:": {
    "kind": "prop",
@@ -106555,10 +106919,12 @@
    "stat_key": "theojohnson|newyorkgiants|targets",
    "id": "prop:NFL:401872930:Theo Johnson:Targets:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Brevyn Spann-Ford:Receptions:": {
    "kind": "prop",
@@ -106572,10 +106938,12 @@
    "stat_key": "brevynspannford|dallascowboys|receptions",
    "id": "prop:NFL:401872930:Brevyn Spann-Ford:Receptions:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Brevyn Spann-Ford:Targets:": {
    "kind": "prop",
@@ -106589,10 +106957,12 @@
    "stat_key": "brevynspannford|dallascowboys|targets",
    "id": "prop:NFL:401872930:Brevyn Spann-Ford:Targets:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Chauncey Golston:Tackles + assists:": {
    "kind": "prop",
@@ -106606,10 +106976,12 @@
    "stat_key": "chaunceygolston|newyorkgiants|tacklesassists",
    "id": "prop:NFL:401872930:Chauncey Golston:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 4.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:DeMarvion Overshown:Solo tackles:": {
    "kind": "prop",
@@ -106623,10 +106995,12 @@
    "stat_key": "demarvionovershown|dallascowboys|solotackles",
    "id": "prop:NFL:401872930:DeMarvion Overshown:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:DeMarvion Overshown:Tackles + assists:": {
    "kind": "prop",
@@ -106640,10 +107014,12 @@
    "stat_key": "demarvionovershown|dallascowboys|tacklesassists",
    "id": "prop:NFL:401872930:DeMarvion Overshown:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 7.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Devin Singletary:Receptions:": {
    "kind": "prop",
@@ -106657,10 +107033,12 @@
    "stat_key": "devinsingletary|newyorkgiants|receptions",
    "id": "prop:NFL:401872930:Devin Singletary:Receptions:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 4.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Devin Singletary:Targets:": {
    "kind": "prop",
@@ -106674,10 +107052,12 @@
    "stat_key": "devinsingletary|newyorkgiants|targets",
    "id": "prop:NFL:401872930:Devin Singletary:Targets:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 4.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Hunter Luepke:Receptions:": {
    "kind": "prop",
@@ -106708,10 +107088,12 @@
    "stat_key": "hunterluepke|dallascowboys|rushingreceivingyards",
    "id": "prop:NFL:401872930:Hunter Luepke:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 7.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jalen Thompson:Solo tackles:": {
    "kind": "prop",
@@ -106725,10 +107107,12 @@
    "stat_key": "jalenthompson|dallascowboys|solotackles",
    "id": "prop:NFL:401872930:Jalen Thompson:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 3.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Javonte Williams:Receptions:": {
    "kind": "prop",
@@ -106742,10 +107126,12 @@
    "stat_key": "javontewilliams|dallascowboys|receptions",
    "id": "prop:NFL:401872930:Javonte Williams:Receptions:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 5.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jaxson Dart:Pass + rush + receiving touchdowns:": {
    "kind": "prop",
@@ -106759,10 +107145,12 @@
    "stat_key": "jaxsondart|newyorkgiants|passingrushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:Jaxson Dart:Pass + rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 3.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jaxson Dart:Rush + receiving yards:": {
    "kind": "prop",
@@ -106776,10 +107164,12 @@
    "stat_key": "jaxsondart|newyorkgiants|rushingreceivingyards",
    "id": "prop:NFL:401872930:Jaxson Dart:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 54.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jaxson Dart:Rushing yards:": {
    "kind": "prop",
@@ -106793,10 +107183,12 @@
    "stat_key": "jaxsondart|newyorkgiants|rushingyards",
    "id": "prop:NFL:401872930:Jaxson Dart:Rushing yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 54.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Luke Schoonmaker:Receptions:": {
    "kind": "prop",
@@ -106810,10 +107202,12 @@
    "stat_key": "lukeschoonmaker|dallascowboys|receptions",
    "id": "prop:NFL:401872930:Luke Schoonmaker:Receptions:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Theo Johnson:Receiving yards:": {
    "kind": "prop",
@@ -106827,10 +107221,12 @@
    "stat_key": "theojohnson|newyorkgiants|receivingyards",
    "id": "prop:NFL:401872930:Theo Johnson:Receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 9.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Theo Johnson:Rush + receiving yards:": {
    "kind": "prop",
@@ -106844,10 +107240,12 @@
    "stat_key": "theojohnson|newyorkgiants|rushingreceivingyards",
    "id": "prop:NFL:401872930:Theo Johnson:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 9.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Alijah Clark:Sacks:": {
    "kind": "prop",
@@ -106861,10 +107259,12 @@
    "stat_key": "alijahclark|dallascowboys|sacks",
    "id": "prop:NFL:401872930:Alijah Clark:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Caelen Carson:Sacks:": {
    "kind": "prop",
@@ -106912,10 +107312,12 @@
    "stat_key": "daronbland|dallascowboys|sacks",
    "id": "prop:NFL:401872930:DaRon Bland:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Emari Demercado:Anytime touchdown:": {
    "kind": "prop",
@@ -106929,10 +107331,12 @@
    "stat_key": "emaridemercado|dallascowboys|anytimetouchdown",
    "id": "prop:NFL:401872930:Emari Demercado:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Emari Demercado:Receiving touchdowns:": {
    "kind": "prop",
@@ -106963,10 +107367,12 @@
    "stat_key": "emaridemercado|dallascowboys|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:Emari Demercado:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Emari Demercado:Rushing touchdowns:": {
    "kind": "prop",
@@ -106980,10 +107386,12 @@
    "stat_key": "emaridemercado|dallascowboys|rushingtouchdowns",
    "id": "prop:NFL:401872930:Emari Demercado:Rushing touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Emari Demercado:Touchdowns scored:": {
    "kind": "prop",
@@ -106997,10 +107405,12 @@
    "stat_key": "emaridemercado|dallascowboys|touchdownsscored",
    "id": "prop:NFL:401872930:Emari Demercado:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Hunter Luepke:Rushing touchdowns:": {
    "kind": "prop",
@@ -107014,10 +107424,12 @@
    "stat_key": "hunterluepke|dallascowboys|rushingtouchdowns",
    "id": "prop:NFL:401872930:Hunter Luepke:Rushing touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jonathan Mingo:Anytime touchdown:": {
    "kind": "prop",
@@ -107031,10 +107443,12 @@
    "stat_key": "jonathanmingo|dallascowboys|anytimetouchdown",
    "id": "prop:NFL:401872930:Jonathan Mingo:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jonathan Mingo:Receiving touchdowns:": {
    "kind": "prop",
@@ -107048,10 +107462,12 @@
    "stat_key": "jonathanmingo|dallascowboys|receivingtouchdowns",
    "id": "prop:NFL:401872930:Jonathan Mingo:Receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jonathan Mingo:Rush + receiving touchdowns:": {
    "kind": "prop",
@@ -107065,10 +107481,12 @@
    "stat_key": "jonathanmingo|dallascowboys|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:Jonathan Mingo:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jonathan Mingo:Targets:": {
    "kind": "prop",
@@ -107082,10 +107500,12 @@
    "stat_key": "jonathanmingo|dallascowboys|targets",
    "id": "prop:NFL:401872930:Jonathan Mingo:Targets:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jonathan Mingo:Touchdowns scored:": {
    "kind": "prop",
@@ -107099,10 +107519,12 @@
    "stat_key": "jonathanmingo|dallascowboys|touchdownsscored",
    "id": "prop:NFL:401872930:Jonathan Mingo:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Marist Liufau:Sacks:": {
    "kind": "prop",
@@ -107133,10 +107555,12 @@
    "stat_key": "pjlocke|dallascowboys|sacks",
    "id": "prop:NFL:401872930:P.J. Locke:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Paulson Adebo:Sacks:": {
    "kind": "prop",
@@ -107150,10 +107574,12 @@
    "stat_key": "paulsonadebo|newyorkgiants|sacks",
    "id": "prop:NFL:401872930:Paulson Adebo:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Tremaine Edmunds:Sacks:": {
    "kind": "prop",
@@ -107167,10 +107593,12 @@
    "stat_key": "tremaineedmunds|newyorkgiants|sacks",
    "id": "prop:NFL:401872930:Tremaine Edmunds:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Tyrus Wheat:Sacks:": {
    "kind": "prop",
@@ -107201,10 +107629,12 @@
    "stat_key": "chaunceygolston|newyorkgiants|solotackles",
    "id": "prop:NFL:401872930:Chauncey Golston:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Hunter Luepke:Receiving yards:": {
    "kind": "prop",
@@ -107235,10 +107665,12 @@
    "stat_key": "theojohnson|newyorkgiants|receptions",
    "id": "prop:NFL:401872930:Theo Johnson:Receptions:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Brevyn Spann-Ford:Receiving yards:": {
    "kind": "prop",
@@ -107252,10 +107684,12 @@
    "stat_key": "brevynspannford|dallascowboys|receivingyards",
    "id": "prop:NFL:401872930:Brevyn Spann-Ford:Receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 14.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Brevyn Spann-Ford:Rush + receiving yards:": {
    "kind": "prop",
@@ -107269,10 +107703,12 @@
    "stat_key": "brevynspannford|dallascowboys|rushingreceivingyards",
    "id": "prop:NFL:401872930:Brevyn Spann-Ford:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 14.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Isaiah Likely:Receiving yards:": {
    "kind": "prop",
@@ -107286,10 +107722,12 @@
    "stat_key": "isaiahlikely|newyorkgiants|receivingyards",
    "id": "prop:NFL:401872930:Isaiah Likely:Receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 78.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Isaiah Likely:Rush + receiving yards:": {
    "kind": "prop",
@@ -107303,10 +107741,12 @@
    "stat_key": "isaiahlikely|newyorkgiants|rushingreceivingyards",
    "id": "prop:NFL:401872930:Isaiah Likely:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 78.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jaxson Dart:Anytime touchdown:": {
    "kind": "prop",
@@ -107320,10 +107760,12 @@
    "stat_key": "jaxsondart|newyorkgiants|anytimetouchdown",
    "id": "prop:NFL:401872930:Jaxson Dart:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jaxson Dart:Passing touchdowns:": {
    "kind": "prop",
@@ -107337,10 +107779,12 @@
    "stat_key": "jaxsondart|newyorkgiants|passingtouchdowns",
    "id": "prop:NFL:401872930:Jaxson Dart:Passing touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 3.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jaxson Dart:Rush + receiving touchdowns:": {
    "kind": "prop",
@@ -107354,10 +107798,12 @@
    "stat_key": "jaxsondart|newyorkgiants|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:Jaxson Dart:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jaxson Dart:Rushing touchdowns:": {
    "kind": "prop",
@@ -107371,10 +107817,12 @@
    "stat_key": "jaxsondart|newyorkgiants|rushingtouchdowns",
    "id": "prop:NFL:401872930:Jaxson Dart:Rushing touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jaxson Dart:Touchdowns scored:": {
    "kind": "prop",
@@ -107388,10 +107836,12 @@
    "stat_key": "jaxsondart|newyorkgiants|touchdownsscored",
    "id": "prop:NFL:401872930:Jaxson Dart:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:KaVontae Turpin:Rushing yards:": {
    "kind": "prop",
@@ -107422,10 +107872,12 @@
    "stat_key": "lukeschoonmaker|dallascowboys|receivingyards",
    "id": "prop:NFL:401872930:Luke Schoonmaker:Receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 12.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Luke Schoonmaker:Rush + receiving yards:": {
    "kind": "prop",
@@ -107439,10 +107891,12 @@
    "stat_key": "lukeschoonmaker|dallascowboys|rushingreceivingyards",
    "id": "prop:NFL:401872930:Luke Schoonmaker:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 12.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Tremaine Edmunds:Tackles + assists:": {
    "kind": "prop",
@@ -107456,10 +107910,12 @@
    "stat_key": "tremaineedmunds|newyorkgiants|tacklesassists",
    "id": "prop:NFL:401872930:Tremaine Edmunds:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 8.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Devin Singletary:Receiving yards:": {
    "kind": "prop",
@@ -107473,10 +107929,12 @@
    "stat_key": "devinsingletary|newyorkgiants|receivingyards",
    "id": "prop:NFL:401872930:Devin Singletary:Receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 22.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Javonte Williams:Receiving yards:": {
    "kind": "prop",
@@ -107490,10 +107948,12 @@
    "stat_key": "javontewilliams|dallascowboys|receivingyards",
    "id": "prop:NFL:401872930:Javonte Williams:Receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 31.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Alijah Clark:Solo tackles:": {
    "kind": "prop",
@@ -107507,10 +107967,12 @@
    "stat_key": "alijahclark|dallascowboys|solotackles",
    "id": "prop:NFL:401872930:Alijah Clark:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:DaRon Bland:Solo tackles:": {
    "kind": "prop",
@@ -107524,10 +107986,12 @@
    "stat_key": "daronbland|dallascowboys|solotackles",
    "id": "prop:NFL:401872930:DaRon Bland:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 3.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Darius Alexander:Tackles + assists:": {
    "kind": "prop",
@@ -107575,10 +108039,12 @@
    "stat_key": "jonathanmingo|dallascowboys|receptions",
    "id": "prop:NFL:401872930:Jonathan Mingo:Receptions:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Tremaine Edmunds:Solo tackles:": {
    "kind": "prop",
@@ -107592,10 +108058,12 @@
    "stat_key": "tremaineedmunds|newyorkgiants|solotackles",
    "id": "prop:NFL:401872930:Tremaine Edmunds:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 7.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Zaire Barnes:Sacks:": {
    "kind": "prop",
@@ -107609,10 +108077,12 @@
    "stat_key": "zairebarnes|newyorkgiants|sacks",
    "id": "prop:NFL:401872930:Zaire Barnes:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Alijah Clark:Tackles + assists:": {
    "kind": "prop",
@@ -107626,10 +108096,12 @@
    "stat_key": "alijahclark|dallascowboys|tacklesassists",
    "id": "prop:NFL:401872930:Alijah Clark:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Caelen Carson:Solo tackles:": {
    "kind": "prop",
@@ -107711,10 +108183,12 @@
    "stat_key": "daronbland|dallascowboys|tacklesassists",
    "id": "prop:NFL:401872930:DaRon Bland:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 8.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Darius Alexander:Solo tackles:": {
    "kind": "prop",
@@ -107762,10 +108236,12 @@
    "stat_key": "emaridemercado|dallascowboys|rushingattempts",
    "id": "prop:NFL:401872930:Emari Demercado:Rush attempts:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Paulson Adebo:Tackles + assists:": {
    "kind": "prop",
@@ -107779,10 +108255,12 @@
    "stat_key": "paulsonadebo|newyorkgiants|tacklesassists",
    "id": "prop:NFL:401872930:Paulson Adebo:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 3.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Deonte Banks:Sacks:": {
    "kind": "prop",
@@ -107796,10 +108274,12 @@
    "stat_key": "deontebanks|newyorkgiants|sacks",
    "id": "prop:NFL:401872930:Deonte Banks:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Hunter Luepke:Sacks:": {
    "kind": "prop",
@@ -107847,10 +108327,12 @@
    "stat_key": "tylernubin|newyorkgiants|sacks",
    "id": "prop:NFL:401872930:Tyler Nubin:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Emari Demercado:Rush + receiving yards:": {
    "kind": "prop",
@@ -107864,10 +108346,12 @@
    "stat_key": "emaridemercado|dallascowboys|rushingreceivingyards",
    "id": "prop:NFL:401872930:Emari Demercado:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 7.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Emari Demercado:Rushing yards:": {
    "kind": "prop",
@@ -107881,10 +108365,12 @@
    "stat_key": "emaridemercado|dallascowboys|rushingyards",
    "id": "prop:NFL:401872930:Emari Demercado:Rushing yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 7.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Marist Liufau:Solo tackles:": {
    "kind": "prop",
@@ -107966,10 +108452,12 @@
    "stat_key": "hunterluepke|dallascowboys|rushingattempts",
    "id": "prop:NFL:401872930:Hunter Luepke:Rush attempts:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Hunter Luepke:Rushing yards:": {
    "kind": "prop",
@@ -107983,10 +108471,12 @@
    "stat_key": "hunterluepke|dallascowboys|rushingyards",
    "id": "prop:NFL:401872930:Hunter Luepke:Rushing yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 7.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Marist Liufau:Tackles + assists:": {
    "kind": "prop",
@@ -108017,10 +108507,12 @@
    "stat_key": "pjlocke|dallascowboys|tacklesassists",
    "id": "prop:NFL:401872930:P.J. Locke:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Paulson Adebo:Solo tackles:": {
    "kind": "prop",
@@ -108034,10 +108526,12 @@
    "stat_key": "paulsonadebo|newyorkgiants|solotackles",
    "id": "prop:NFL:401872930:Paulson Adebo:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 3.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Zaire Barnes:Solo tackles:": {
    "kind": "prop",
@@ -108051,10 +108545,12 @@
    "stat_key": "zairebarnes|newyorkgiants|solotackles",
    "id": "prop:NFL:401872930:Zaire Barnes:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Zaire Barnes:Tackles + assists:": {
    "kind": "prop",
@@ -108068,10 +108564,12 @@
    "stat_key": "zairebarnes|newyorkgiants|tacklesassists",
    "id": "prop:NFL:401872930:Zaire Barnes:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Tyler Nubin:Tackles + assists:": {
    "kind": "prop",
@@ -108085,10 +108583,12 @@
    "stat_key": "tylernubin|newyorkgiants|tacklesassists",
    "id": "prop:NFL:401872930:Tyler Nubin:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 3.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Emari Demercado:Receiving yards:": {
    "kind": "prop",
@@ -108119,10 +108619,12 @@
    "stat_key": "pjlocke|dallascowboys|solotackles",
    "id": "prop:NFL:401872930:P.J. Locke:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Ar'Darius Washington:Tackles + assists:": {
    "kind": "prop",
@@ -108136,10 +108638,12 @@
    "stat_key": "ardariuswashington|newyorkgiants|tacklesassists",
    "id": "prop:NFL:401872930:Ar'Darius Washington:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jonathan Mingo:Receiving yards:": {
    "kind": "prop",
@@ -108153,10 +108657,12 @@
    "stat_key": "jonathanmingo|dallascowboys|receivingyards",
    "id": "prop:NFL:401872930:Jonathan Mingo:Receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 10.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jonathan Mingo:Rush + receiving yards:": {
    "kind": "prop",
@@ -108170,10 +108676,12 @@
    "stat_key": "jonathanmingo|dallascowboys|rushingreceivingyards",
    "id": "prop:NFL:401872930:Jonathan Mingo:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 10.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Ar'Darius Washington:Sacks:": {
    "kind": "prop",
@@ -108187,10 +108695,12 @@
    "stat_key": "ardariuswashington|newyorkgiants|sacks",
    "id": "prop:NFL:401872930:Ar'Darius Washington:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Hunter Luepke:Solo tackles:": {
    "kind": "prop",
@@ -108221,10 +108731,12 @@
    "stat_key": "tylernubin|newyorkgiants|solotackles",
    "id": "prop:NFL:401872930:Tyler Nubin:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 3.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Hunter Luepke:Tackles + assists:": {
    "kind": "prop",
@@ -108255,10 +108767,12 @@
    "stat_key": "cjokoye|newyorkgiants|sacks",
    "id": "prop:NFL:401872930:CJ Okoye:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Dalen Cambre:Sacks:": {
    "kind": "prop",
@@ -108510,10 +109024,12 @@
    "stat_key": "deontebanks|newyorkgiants|solotackles",
    "id": "prop:NFL:401872930:Deonte Banks:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 4.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Deonte Banks:Tackles + assists:": {
    "kind": "prop",
@@ -108527,10 +109043,12 @@
    "stat_key": "deontebanks|newyorkgiants|tacklesassists",
    "id": "prop:NFL:401872930:Deonte Banks:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 4.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Ar'Darius Washington:Solo tackles:": {
    "kind": "prop",
@@ -108544,10 +109062,12 @@
    "stat_key": "ardariuswashington|newyorkgiants|solotackles",
    "id": "prop:NFL:401872930:Ar'Darius Washington:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Rico Payton:Solo tackles:": {
    "kind": "prop",
@@ -108629,10 +109149,12 @@
    "stat_key": "otitoogbonnia|dallascowboys|sacks",
    "id": "prop:NFL:401872930:Otito Ogbonnia:Sacks:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:CJ Okoye:Tackles + assists:": {
    "kind": "prop",
@@ -108646,10 +109168,12 @@
    "stat_key": "cjokoye|newyorkgiants|tacklesassists",
    "id": "prop:NFL:401872930:CJ Okoye:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Malik Davis:Tackles + assists:": {
    "kind": "prop",
@@ -108680,10 +109204,12 @@
    "stat_key": "otitoogbonnia|dallascowboys|solotackles",
    "id": "prop:NFL:401872930:Otito Ogbonnia:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 2.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:CJ Okoye:Solo tackles:": {
    "kind": "prop",
@@ -108697,10 +109223,12 @@
    "stat_key": "cjokoye|newyorkgiants|solotackles",
    "id": "prop:NFL:401872930:CJ Okoye:Solo tackles:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jameis Winston:Pass interceptions:": {
    "kind": "prop",
@@ -108731,10 +109259,12 @@
    "stat_key": "otitoogbonnia|dallascowboys|tacklesassists",
    "id": "prop:NFL:401872930:Otito Ogbonnia:Tackles + assists:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 4.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Ameer Speed:Sacks:": {
    "kind": "prop",
@@ -109139,10 +109669,12 @@
    "stat_key": "patrickricard|newyorkgiants|anytimetouchdown",
    "id": "prop:NFL:401872930:Patrick Ricard:Anytime touchdown:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Patrick Ricard:Receiving touchdowns:": {
    "kind": "prop",
@@ -109156,10 +109688,12 @@
    "stat_key": "patrickricard|newyorkgiants|receivingtouchdowns",
    "id": "prop:NFL:401872930:Patrick Ricard:Receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Patrick Ricard:Rush + receiving touchdowns:": {
    "kind": "prop",
@@ -109173,10 +109707,12 @@
    "stat_key": "patrickricard|newyorkgiants|rushingreceivingtouchdowns",
    "id": "prop:NFL:401872930:Patrick Ricard:Rush + receiving touchdowns:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Patrick Ricard:Targets:": {
    "kind": "prop",
@@ -109190,10 +109726,12 @@
    "stat_key": "patrickricard|newyorkgiants|targets",
    "id": "prop:NFL:401872930:Patrick Ricard:Targets:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 1.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Patrick Ricard:Touchdowns scored:": {
    "kind": "prop",
@@ -109207,10 +109745,12 @@
    "stat_key": "patrickricard|newyorkgiants|touchdownsscored",
    "id": "prop:NFL:401872930:Patrick Ricard:Touchdowns scored:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Raheem Layne:Sacks:": {
    "kind": "prop",
@@ -109870,10 +110410,12 @@
    "stat_key": "patrickricard|newyorkgiants|receptions",
    "id": "prop:NFL:401872930:Patrick Ricard:Receptions:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Jameis Winston:Rush + receiving yards:": {
    "kind": "prop",
@@ -110142,10 +110684,12 @@
    "stat_key": "patrickricard|newyorkgiants|receivingyards",
    "id": "prop:NFL:401872930:Patrick Ricard:Receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872930:Patrick Ricard:Rush + receiving yards:": {
    "kind": "prop",
@@ -110159,10 +110703,12 @@
    "stat_key": "patrickricard|newyorkgiants|rushingreceivingyards",
    "id": "prop:NFL:401872930:Patrick Ricard:Rush + receiving yards:",
    "captured_at": "2026-09-06T23:41:40.481812+00:00",
-   "result": "Pending",
+   "result": "Graded",
    "version": "2026-09-06-ev2",
    "season": 2026,
-   "season_type": 2
+   "season_type": 2,
+   "actual": 0.0,
+   "graded_at": "2026-09-14T05:13:46.463188+00:00"
   },
   "prop:NFL:401872931:Alohi Gilman:Sacks:": {
    "kind": "prop",
