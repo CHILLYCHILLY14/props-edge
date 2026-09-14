@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
-import os
 from pathlib import Path
 from typing import Any
 
@@ -17,9 +16,10 @@ from .model import (
     select_portfolio,
 )
 from . import parlays
+from .providers.covers import CoversProvider, SOURCE_URL as COVERS_SOURCE_URL
 from .providers.espn import EspnProjectionProvider, _nfl_season_year
-from .providers.odds_api_io import OddsApiIoProvider
-from .providers.the_odds_api import TheOddsApiProvider
+from .providers.odds_api_io import OddsApiIoProvider  # retained for disabled-provider regression tests
+from .providers.the_odds_api import TheOddsApiProvider  # retained for disabled-provider regression tests
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -93,38 +93,26 @@ def _fetch_projections(settings: dict[str, Any], errors: list[str]) -> list[Any]
 
 def build() -> dict[str, Any]:
     settings = load_settings()
-    # User-selected keyless mode: never consume provider credits, even if old
-    # secrets remain configured in GitHub. Do not turn projections into prices.
-    primary_key = ""
-    secondary_key = ""
+    # Keyless mode never reads or spends an odds API credential. Covers is a
+    # public comparison page; every quote is still restricted to a brand on the
+    # current Ontario registry allowlist and must be verified before placement.
     is_eligible = lambda quote: eligible_book_key(quote.book, settings) is not None
     errors: list[str] = []
-    quotes = []
-    primary_quotes = []
-    secondary_quotes = []
-    odds_source = "No live props source available"
-    if primary_key:
-        try:
-            primary_quotes = OddsApiIoProvider(primary_key, settings).fetch("NFL")
-        except ProviderError as exc:
-            errors.append(str(exc))
-    # Prefer the jurisdiction-specific Canadian feed. The brand-level source is
-    # a continuity fallback when that feed has no eligible Ontario price rows.
-    if secondary_key:
-        try:
-            secondary_quotes = TheOddsApiProvider(secondary_key, settings).fetch("NFL")
-        except ProviderError as exc:
-            errors.append(str(exc))
-    eligible_primary = [quote for quote in primary_quotes if is_eligible(quote)]
-    eligible_secondary = [quote for quote in secondary_quotes if is_eligible(quote)]
-    if eligible_secondary:
-        quotes = eligible_secondary
-        odds_source = "The Odds API (Ontario keys)"
-    elif eligible_primary:
-        quotes = eligible_primary
-        odds_source = "Odds-API.io (regulated-brand fallback)"
-
     projections = _fetch_projections(settings, errors)
+    public_quotes: list[Any] = []
+    if projections:
+        try:
+            public_quotes = CoversProvider(settings).fetch("NFL", projections)
+        except ProviderError as exc:
+            errors.append(str(exc))
+        except Exception as exc:
+            errors.append(f"Covers public prop comparison failed: {exc}")
+    quotes = [quote for quote in public_quotes if is_eligible(quote)]
+    odds_source = (
+        "Covers public prop comparison"
+        if quotes
+        else "No verified keyless props source available"
+    )
 
     market_watch = evaluate_quotes(quotes, settings)
     evaluated = evaluate_quotes_against_projections(quotes, projections, settings)
@@ -186,17 +174,25 @@ def build() -> dict[str, Any]:
         "league": "NFL",
         "season": _nfl_season_year(dt.datetime.now(dt.timezone.utc).date()),
         "generated_at": now,
-        "provider_priority": ["ESPN regular-season statistics and current rosters (no key)"],
+        "provider_priority": [
+            "Covers public NFL prop comparison (no key)",
+            "ESPN regular-season statistics and current rosters (no key)",
+        ],
         "odds_mode": "keyless",
-        "price_source_status": "unavailable",
-        "pricing_mode": "keyless-projections-until-verified-prices",
-        "price_scope": "Verified keyless player-prop prices are not currently available",
+        "price_source_status": "available" if quotes else "unavailable",
+        "pricing_mode": "keyless-public-market-lines",
+        "price_scope": (
+            "Publicly observed sportsbook-brand prop prices; verify the Ontario line before wagering"
+            if quotes
+            else "Verified keyless player-prop prices are not currently available"
+        ),
         "eligible_books": eligible_books,
         "ontario_registry": settings["bookmakers"]["ontario_registry"],
         "ontario_verified_as_of": settings["bookmakers"]["ontario_verified_as_of"],
         "configured": {
-            "odds_api_io": bool(primary_key),
-            "the_odds_api": bool(secondary_key),
+            "covers_keyless": True,
+            "odds_api_io": False,
+            "the_odds_api": False,
             "espn_keyless": True,
         },
         "counts": {
@@ -239,23 +235,31 @@ def build() -> dict[str, Any]:
             }
         },
         "source_by_provider": {
+            "covers": {
+                "source_url": COVERS_SOURCE_URL,
+                "timestamp_basis": "page_observed_at",
+                "priced_quotes": len(public_quotes),
+                "eligible_priced_quotes": len(quotes),
+            },
             "odds_api_io": {
-                "priced_quotes": len(primary_quotes),
-                "eligible_priced_quotes": len(eligible_primary),
+                "priced_quotes": 0,
+                "eligible_priced_quotes": 0,
+                "disabled": True,
             },
             "the_odds_api": {
-                "priced_quotes": len(secondary_quotes),
-                "eligible_priced_quotes": len(eligible_secondary),
+                "priced_quotes": 0,
+                "eligible_priced_quotes": 0,
+                "disabled": True,
             },
         },
         "lookahead_days": lookahead_days,
         "next_scheduled_game": scheduled_starts[0] if scheduled_starts else "",
         "model_status": (
-            "Live Ontario-regulated NFL prices, regular-season player samples, and opponent matchup data are available."
+            "Observed NFL prop prices from Ontario-regulated sportsbook brands, regular-season player samples, and opponent matchup data are available. Verify the current Ontario price before wagering."
             if quotes and projections
             else (
                 f"The next {lookahead_days} days of regular-season schedule and form are ready, "
-                "but no verified keyless player-prop price source is connected. Key-based requests are disabled."
+                "but the public comparison source returned no matchable player-prop prices. Key-based requests are disabled."
                 if projections and scheduled_starts
                 else (
                     f"Regular-season form is available, but no game is scheduled inside the next {lookahead_days} days."
@@ -286,8 +290,10 @@ def build() -> dict[str, Any]:
             "Daily Parlays mix 3–4 fresh same-book prop legs, retain the sample and confidence safeguards, require market variety, and apply an extra same-game correlation haircut.",
             "Touchdowns, field goals, interceptions and sacks use count-stat probability handling and stricter reliability gates.",
             "Sportsbook consensus is never treated as an independent model by itself.",
-            "Each exact prop publishes the best returned price from the configured Ontario-regulated book allowlist.",
-            "Key-based odds requests are disabled. Missing keyless prices stay unavailable; existing wagers and keyless player projections are preserved.",
+            "Each exact prop publishes the best observed price from the configured Ontario-regulated brand allowlist.",
+            "Covers supplies public comparison-page market lines. The observation time is recorded; it is not represented as a sportsbook-originated update time.",
+            "One-sided or unmatched prices remain visible as WATCH rows but cannot qualify without a complete same-line market.",
+            "Key-based odds requests are disabled. If the public page is unavailable or changes shape, existing wagers and keyless player projections are preserved.",
             "A wager enters My Ledger only after the user reviews the live price and clicks Add.",
             "No odds API credentials are read or sent by the scheduled build.",
         ],
