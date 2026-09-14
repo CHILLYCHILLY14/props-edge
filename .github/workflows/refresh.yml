@@ -10,12 +10,12 @@ on:
       - "config/**"
       - "tests/**"
       - "site/index.html"
-      - "site/app.js"
-      - "site/ledger.js"
-      - "site/staking.js"
-      - "site/eligibility.js"
-      - "site/model-accuracy.js"
       - "site/styles.css"
+      # Every script in site/, listed as a pattern rather than one by one. The
+      # old list named each file, so adding betsync.js meant the published site
+      # silently stopped redeploying whenever only that file changed - the repo
+      # was right and the live page was stale, with nothing to show for it.
+      - "site/*.js"
   schedule:
     - cron: "0 12,16,20 * * *"
     - cron: "0 0,5 * * *"
