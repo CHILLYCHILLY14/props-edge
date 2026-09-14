@@ -43,9 +43,11 @@ market were not portfolio-deduplicated.
   touchdown markets are built from actual game-level box scores.
 - Market-only rows are watches and cannot qualify.
 - A matched player and market projection is required.
-- Complete offered-book Over/Under prices are required.
-- External complete markets are power-de-vigged and preferred.
-- Projection probability and market probability remain visible separately.
+- Complete offered-book Over/Under or Yes/No pairs are power-de-vigged and preferred.
+- An exact one-sided offer may qualify only with a matched independent projection;
+  it receives an extra 1.5% edge reserve and is capped at LEAN.
+- Projection probability and the available market reference (no-vig or offered
+  break-even) remain visible separately; a one-sided offer is never labeled no-vig.
 - Model edge and offered-price expected return must both pass.
 - Raw projection/market disagreement above 18 percentage points is LEAN-only
   with a half-sized stake; above 25 percentage points still fails closed.
