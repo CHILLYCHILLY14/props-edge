@@ -405,7 +405,7 @@ def build(rows: list[dict], projections: list[dict], settings: dict,
         "notes": [
             "Displayed parlay odds are straight multiplication of the posted leg prices; the sportsbook may reprice or reject correlated same-game legs.",
             "Win chances estimate all legs winning outright. A push changes the ticket and payout under the book's rules. Same-game probability haircuts are uncalibrated assumptions, not a fitted joint-outcome model.",
-            "Anytime-touchdown scorer markets may be one-sided. Those legs require an independent player projection and pass the parlay safeguards, but remain ineligible for the stricter straight-bet board when no two-sided no-vig price exists.",
+            "Anytime-touchdown scorer markets may be one-sided. Those legs require an independent player projection and pass the parlay safeguards. A one-sided offer may qualify on the straight-bet board only at LEAN after the extra reserve and every other safety gate.",
             "These are high-variance planning cards, not Kelly-sized model bets, and nothing is added to My Ledger automatically.",
             "Verify every leg, price, player status, and the final parlay payout at the named sportsbook before considering a wager.",
         ],
