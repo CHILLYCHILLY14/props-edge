@@ -136,6 +136,25 @@ class DailyParlayTests(unittest.TestCase):
             rows[0]["model_prob_no_push"] = value
             self.assertEqual(build(rows, self.projections(), SETTINGS)["dates"][0]["cards"][0]["status"], "waiting")
 
+    def test_same_game_chance_is_not_presented_as_calibrated(self):
+        rows = [row(str(i), 200, .5, "same") for i in range(1, 4)]
+        ticket = build(rows, self.projections(), SETTINGS)["dates"][0]["cards"][0]
+        self.assertEqual(ticket["status"], "ready")
+        self.assertTrue(ticket["same_game"])
+        self.assertIsNone(ticket["model_probability"])
+        self.assertIsNone(ticket["parlay_value_ratio"])
+        self.assertIsNone(ticket["fair_american"])
+        self.assertEqual(ticket["joint_probability_bounds"], [0.0, 0.5])
+
+    def test_same_game_identity_does_not_depend_on_haircut_setting(self):
+        from copy import deepcopy
+        settings = deepcopy(SETTINGS)
+        settings["daily_parlays"]["same_game_pair_haircut"] = 1
+        rows = [row(str(i), 200, .5, "same") for i in range(1, 4)]
+        ticket = build(rows, self.projections(), settings)["dates"][0]["cards"][0]
+        self.assertTrue(ticket["same_game"])
+        self.assertIsNone(ticket["model_probability"])
+
     def test_game_day_is_emitted_even_without_prices(self):
         feed = build([], self.projections(), SETTINGS)
         self.assertEqual(feed["dates"][0]["date"], "2026-09-13")

@@ -63,9 +63,6 @@ jobs:
           node --check site/app.js
 
       - name: Refresh NFL props and projections
-        env:
-          ODDS_API_IO_KEY: ${{ secrets.ODDS_API_IO_KEY }}
-          THE_ODDS_API_KEY: ${{ secrets.THE_ODDS_API_KEY }}
         run: python -m pipeline.build
 
       - name: Commit generated data

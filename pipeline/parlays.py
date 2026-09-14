@@ -278,6 +278,11 @@ def _best_card(rows: list[dict], target: dict, cfg: dict) -> dict | None:
     if best is None:
         return None
     _, combo, decimal_price, raw_probability, model_probability, correlation_factor = best
+    same_game = len({str(r.get("event_id") or r.get("result_event_id") or "") for r in combo}) < len(combo)
+    probabilities = [_win_probability(r) for r in combo]
+    # Dependence is not identified by marginal hit rates. Publish mathematical
+    # bounds, not the uncalibrated haircut as a measured joint win probability.
+    bounds = [max(0.0, sum(probabilities) - (len(probabilities) - 1)), min(probabilities)]
     return {
         "status": "ready",
         "key": target["key"],
@@ -288,11 +293,13 @@ def _best_card(rows: list[dict], target: dict, cfg: dict) -> dict | None:
         "estimated_american": _american(decimal_price),
         "raw_independent_probability": round(raw_probability, 5),
         "correlation_factor": round(correlation_factor, 5),
-        "same_game": correlation_factor < 1,
-        "model_probability": round(model_probability, 5),
+        "same_game": same_game,
+        "probability_method": "unmeasured dependence" if same_game else "independent games assumption",
+        "joint_probability_bounds": [round(v, 5) for v in bounds] if same_game else None,
+        "model_probability": None if same_game else round(model_probability, 5),
         "book_implied_probability": round(1 / decimal_price, 5),
-        "parlay_value_ratio": round(model_probability * decimal_price, 4),
-        "fair_american": _american(1 / max(0.0001, model_probability)),
+        "parlay_value_ratio": None if same_game else round(model_probability * decimal_price, 4),
+        "fair_american": None if same_game else _american(1 / max(0.0001, model_probability)),
         "leg_count": len(combo),
         "legs": [{
             "event_id": row.get("event_id") or row.get("result_event_id"),

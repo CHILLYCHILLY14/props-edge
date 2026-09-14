@@ -317,64 +317,34 @@ class BuildFallbackTests(unittest.TestCase):
         self.assertEqual([day["date"] for day in payloads["parlays.json"]["dates"]],
                          ["2026-09-13", "2026-10-01"])
 
-    def test_ontario_key_provider_is_preferred_when_it_has_eligible_prices(self) -> None:
-        primary = [
-            row for row in parse_primary_event(fixture("odds_api_io_event.json"), "NFL")
-            if row.book != "DraftKings"
-        ]
-        secondary = parse_secondary_event(fixture("the_odds_api_event.json"), "NFL")
-
-        class Primary:
-            def __init__(self, *_): pass
-            def fetch(self, _): return primary
-
-        class Secondary:
-            def __init__(self, *_): pass
-            def fetch(self, _): return secondary
-
-        class Espn:
-            def __init__(self, *_): pass
-            def fetch(self, _): return []
-
-        with patch.dict("os.environ", {"ODDS_API_IO_KEY":"primary", "THE_ODDS_API_KEY":"secondary"}), \
-             patch.object(build_module, "OddsApiIoProvider", Primary), \
-             patch.object(build_module, "TheOddsApiProvider", Secondary), \
-             patch.object(build_module, "EspnProjectionProvider", Espn), \
-             patch.object(build_module, "_write_json"):
+    def test_keyless_build_never_uses_leftover_api_secrets(self) -> None:
+        with patch.dict("os.environ", {"ODDS_API_IO_KEY": "unused-primary", "THE_ODDS_API_KEY": "unused-secondary"}), \
+             patch.object(build_module, "OddsApiIoProvider") as primary, \
+             patch.object(build_module, "TheOddsApiProvider") as secondary, \
+             patch.object(build_module, "_fetch_projections", return_value=[]), \
+             patch("pipeline.accuracy.update"), \
+             patch.object(build_module, "_write_json") as write:
             meta = build_module.build()
+        primary.assert_not_called()
+        secondary.assert_not_called()
+        self.assertEqual(meta["odds_mode"], "keyless")
+        self.assertEqual(meta["counts"]["eligible_priced_quotes"], 0)
+        self.assertEqual(meta["counts"]["actionable"], 0)
+        payloads = {call.args[0]: call.args[1] for call in write.call_args_list}
+        self.assertEqual(payloads["board.json"], [])
+        self.assertNotIn("unused-primary", json.dumps(meta))
+        self.assertNotIn("unused-secondary", json.dumps(meta))
 
-        self.assertEqual(meta["source_by_sport"]["NFL"]["source"], "The Odds API (Ontario keys)")
-        self.assertGreater(meta["counts"]["eligible_priced_quotes"], 0)
-        self.assertGreater(meta["source_by_provider"]["odds_api_io"]["eligible_priced_quotes"], 0)
-        self.assertGreater(meta["source_by_provider"]["the_odds_api"]["eligible_priced_quotes"], 0)
-
-    def test_regulated_brand_feed_is_continuity_fallback(self) -> None:
-        primary = parse_primary_event(fixture("odds_api_io_event.json"), "NFL")
-
-        class Primary:
-            def __init__(self, *_): pass
-            def fetch(self, _): return primary
-
-        class Secondary:
-            def __init__(self, *_): pass
-            def fetch(self, _): return []
-
-        class Espn:
-            def __init__(self, *_): pass
-            def fetch(self, _): return []
-
-        with patch.dict("os.environ", {"ODDS_API_IO_KEY":"primary", "THE_ODDS_API_KEY":"secondary"}), \
-             patch.object(build_module, "OddsApiIoProvider", Primary), \
-             patch.object(build_module, "TheOddsApiProvider", Secondary), \
-             patch.object(build_module, "EspnProjectionProvider", Espn), \
-             patch.object(build_module, "_write_json"):
+    def test_keyless_mode_preserves_player_projections(self) -> None:
+        projections = [replace(sample_projection(), event_id="future", start_time="2026-10-01T23:15:00Z")]
+        with patch.object(build_module, "_fetch_projections", return_value=projections), \
+             patch("pipeline.accuracy.update"), \
+             patch.object(build_module, "_write_json") as write:
             meta = build_module.build()
-
-        self.assertEqual(
-            meta["source_by_sport"]["NFL"]["source"],
-            "Odds-API.io (regulated-brand fallback)",
-        )
-        self.assertEqual(meta["counts"]["eligible_books"], 3)
+        payloads = {call.args[0]: call.args[1] for call in write.call_args_list}
+        self.assertEqual(len(payloads["projections.json"]), 1)
+        self.assertEqual(meta["counts"]["actionable"], 0)
+        self.assertIn("Key-based requests are disabled", meta["model_status"])
 
 
 class ProjectionPricingTests(unittest.TestCase):
