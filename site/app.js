@@ -291,8 +291,8 @@ function betCard(row) {
       <div class="card-numbers">
         <div><span>Price</span><strong>${american(row.price_american)}</strong></div>
         <div><span>Model</span><strong>${pct(row.model_prob_no_push ?? row.model_prob)}</strong></div>
-        <div><span>No-vig</span><strong>${pct(row.market_fair_prob)}</strong></div>
-        <div><span>No-vig value</span><strong>${pct(row.edge)}</strong></div>
+        <div><span>${row.single_sided_offer ? "Break-even" : "No-vig"}</span><strong>${pct(row.market_reference_prob ?? row.market_fair_prob)}</strong></div>
+        <div><span>${row.single_sided_offer ? "Reserved edge" : "No-vig value"}</span><strong>${pct(row.edge)}</strong></div>
         <div><span>Conservative return</span><strong>${pct(row.action_edge ?? row.edge_real ?? row.ev)}</strong></div>
         <div><span>Samples</span><strong>${Number(row.projection_samples) || 0}</strong></div>
       </div>
@@ -412,7 +412,7 @@ function renderFullBoard() {
       <td>${escapeHtml(row.book || "—")}</td>
       <td class="num">${american(row.price_american)}</td>
       <td class="num">${pct(row.model_prob_no_push ?? row.model_prob)}</td>
-      <td class="num">${pct(row.market_fair_prob)}</td>
+      <td class="num">${pct(row.market_reference_prob ?? row.market_fair_prob)}</td>
       <td class="num">${pct(row.push_prob)}</td>
       <td class="num">${pct(row.edge)}</td>
       <td class="num">${pct(row.edge_real ?? row.ev)}</td>

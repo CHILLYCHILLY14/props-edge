@@ -152,7 +152,8 @@
     "max_stake": 50,
     "max_open_exposure": 0.35,
     "max_plays_per_slate": 8,
-    "max_props_per_player": 2
+    "max_props_per_player": 2,
+    "single_side_edge_reserve": 0.015
   },
   "daily_parlays": {
     "timezone": "America/Toronto",

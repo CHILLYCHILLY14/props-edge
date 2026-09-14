@@ -237,9 +237,14 @@ def _market_watch_row(
         "pick": _selection(quote),
         "breakeven": round(1 / quote.price_decimal, 5),
         "market_fair_prob": None if market_fair is None else round(market_fair, 5),
+        "market_reference_prob": round(
+            market_fair if market_fair is not None else 1 / quote.price_decimal, 5
+        ),
         "offered_fair_prob": None if offered_fair is None else round(offered_fair, 5),
         "target_fair_prob": None if offered_fair is None else round(offered_fair, 5),
         "market_basis": market_basis,
+        "single_sided_offer": offered_fair is None,
+        "single_side_edge_reserve": 0.0,
         "model_prob": None,
         "model_prob_no_push": None,
         "projection_prob": None,
@@ -465,8 +470,6 @@ def _tier_and_reason(
         return "PASS", f"Player roster status is {projection.injury_status}"
     if quote.side in ("over", "under") and quote.line is None:
         return "PASS", "A real prop line is required"
-    if quote.side in ("over", "under") and offered_fair is None:
-        return "PASS", "Complete two-sided offered-book prices are required"
     required_samples = int(cfg["minimum_samples"])
     if _is_volatile_market(quote.market):
         required_samples = max(required_samples, int(cfg.get("volatile_minimum_samples", required_samples)))
@@ -501,8 +504,15 @@ def _tier_and_reason(
     if raw_projection_gap > float(cfg.get("soft_raw_market_gap", cfg["max_raw_market_gap"])):
         tier = "LEAN"
         return tier, "Large projection/market gap — reduced stake; verify current role and line"
-    if external_books == 0 and offered_fair is None and tier == "BEST":
-        tier = "GOOD"
+    if offered_fair is None:
+        # A real, exact one-sided offer is enough to compute break-even and EV
+        # against the independent projection, but not enough to remove vig.
+        # Keep it actionable only at the most conservative label.
+        reserve = float(cfg.get("single_side_edge_reserve", 0.015))
+        return "LEAN", (
+            f"One-sided observed offer — {reserve * 100:.1f}% safety reserve applied; "
+            "verify the current line and price"
+        )
     return tier, ""
 
 
@@ -581,8 +591,16 @@ def evaluate_quotes_against_projections(
             model_loss = (1 - model_conditional) * (1 - push_probability)
             raw_edge = model_conditional / max(0.0001, market_conditional) - 1
             raw_price_ev = model_win * quote.price_decimal + push_probability - 1
-            edge = _compress(raw_edge, float(cfg["edge_ceiling"]))
-            price_ev = _compress(raw_price_ev, float(cfg["price_ev_ceiling"]))
+            single_sided_offer = offered_fair is None
+            single_side_reserve = (
+                float(cfg.get("single_side_edge_reserve", 0.015))
+                if single_sided_offer else 0.0
+            )
+            edge = _compress(raw_edge, float(cfg["edge_ceiling"])) - single_side_reserve
+            price_ev = (
+                _compress(raw_price_ev, float(cfg["price_ev_ceiling"]))
+                - single_side_reserve
+            )
             raw_projection_gap = abs(projection_conditional - market_conditional)
             tier, reason = _tier_and_reason(
                 quote,
@@ -638,10 +656,13 @@ def evaluate_quotes_against_projections(
                     "book": eligible_book_name(quote.book, settings) or quote.book,
                     "pick": _selection(quote),
                     "breakeven": round(breakeven, 5),
-                    "market_fair_prob": round(market_conditional, 5),
+                    "market_fair_prob": None if fair is None else round(fair, 5),
+                    "market_reference_prob": round(market_conditional, 5),
                     "offered_fair_prob": None if offered_fair is None else round(offered_fair, 5),
                     "target_fair_prob": None if offered_fair is None else round(offered_fair, 5),
                     "market_basis": market_basis,
+                    "single_sided_offer": single_sided_offer,
+                    "single_side_edge_reserve": round(single_side_reserve, 5),
                     "projection_prob": round(projection_conditional, 5),
                     "model_prob": round(model_win, 5),
                     "model_prob_no_push": round(model_conditional, 5),

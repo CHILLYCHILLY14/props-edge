@@ -373,15 +373,28 @@ class ProjectionPricingTests(unittest.TestCase):
         self.assertIn(over["tier"], {"LEAN", "GOOD", "BEST"})
         self.assertGreaterEqual(over["recommended_stake"], self.settings["projection_model"]["minimum_stake"])
 
-    def test_incomplete_offered_market_fails_closed(self) -> None:
-        draftkings_over = [row for row in self.quotes if row.book == "DraftKings" and row.side == "over"]
+    def test_one_sided_observed_offer_can_qualify_conservatively(self) -> None:
+        draftkings_over = [
+            row for row in self.quotes
+            if row.book == "DraftKings" and row.side == "over"
+        ]
         board = evaluate_quotes_against_projections(
             draftkings_over, [sample_projection()], self.settings
         )
         row = board[0]
-        self.assertEqual(row["tier"], "PASS")
-        self.assertEqual(row["recommended_stake"], 0)
-        self.assertIn("Complete two-sided", row["reason"])
+        self.assertEqual(row["tier"], "LEAN")
+        self.assertGreaterEqual(
+            row["recommended_stake"],
+            self.settings["projection_model"]["minimum_stake"],
+        )
+        self.assertTrue(row["single_sided_offer"])
+        self.assertIsNone(row["market_fair_prob"])
+        self.assertEqual(row["market_reference_prob"], row["breakeven"])
+        self.assertEqual(
+            row["single_side_edge_reserve"],
+            self.settings["projection_model"]["single_side_edge_reserve"],
+        )
+        self.assertIn("One-sided observed offer", row["reason"])
 
     def test_best_regulated_price_is_selected_for_each_side(self) -> None:
         board = evaluate_quotes(self.quotes, self.settings)
@@ -555,7 +568,8 @@ class ProjectionPricingTests(unittest.TestCase):
         self.assertEqual(pricing_model._market_key("Anytime TD"), "anytimetouchdown")
         self.assertEqual(rows[0]["mode"], "projection-and-market")
         self.assertGreater(rows[0]["model_prob_no_push"], 0.18)
-        self.assertIn("Complete two-sided", rows[0]["reason"])
+        self.assertTrue(rows[0]["single_sided_offer"])
+        self.assertNotIn("Complete two-sided", rows[0]["reason"])
 
     def test_prior_season_form_receives_less_weight(self) -> None:
         current = sample_projection()

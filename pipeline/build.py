@@ -292,7 +292,7 @@ def build() -> dict[str, Any]:
             "Sportsbook consensus is never treated as an independent model by itself.",
             "Each exact prop publishes the best observed price from the configured Ontario-regulated brand allowlist.",
             "Covers supplies public comparison-page market lines. The observation time is recorded; it is not represented as a sportsbook-originated update time.",
-            "One-sided or unmatched prices remain visible as WATCH rows but cannot qualify without a complete same-line market.",
+            "An exact one-sided offer can qualify only as a LEAN after an extra edge reserve; no opposite price or no-vig probability is invented.",
             "Key-based odds requests are disabled. If the public page is unavailable or changes shape, existing wagers and keyless player projections are preserved.",
             "A wager enters My Ledger only after the user reviews the live price and clicks Add.",
             "No odds API credentials are read or sent by the scheduled build.",
