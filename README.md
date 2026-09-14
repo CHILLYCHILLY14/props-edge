@@ -1,9 +1,11 @@
 # NFL Props Edge
 
 NFL Props Edge is an NFL-only player-prop model and GitHub Pages dashboard. It
-combines the best returned price from an Ontario-regulated sportsbook, complete no-vig two-way markets,
-conservative ESPN regular-season player form, and opponent-defense matchup
-adjustments. It never creates a wager merely
+combines the best returned price from an Ontario-regulated sportsbook with
+conservative ESPN regular-season player form, opponent-defense matchup
+adjustments, and the strongest available market reference. Complete two-way
+pairs are de-vigged; an exact one-sided offer can qualify only under the
+additional safeguards described below. It never creates a wager merely
 because another sportsbook has a different number.
 
 The public site contains no demo slate, sample recommendation, or fabricated
@@ -39,9 +41,12 @@ correct output is a watch row or an empty qualified board.
 - A player-form projection must match the live player and market.
 - Complete two-way prices are de-vigged with the power method. Other eligible
   books are preferred for comparison; the best offered price is published.
+- When only one exact side is posted, its offered-price break-even is used as a
+  reference rather than being mislabeled as no-vig. The play must have a matched
+  independent projection, receives an extra 1.5% edge reserve, and is capped at LEAN.
 - Integer lines explicitly include Win, Push, and Loss probability.
 - Model edge and offered-price value are calculated and gated separately.
-- Thin samples, low confidence, incomplete prices, excessive disagreement,
+- Thin samples, low confidence, missing or stale offers, excessive disagreement,
   extreme odds, duplicate alternate lines, player correlation, slate size, and
   exposure all fail closed.
 - PASS rows always receive a C$0 suggested stake.
@@ -64,12 +69,15 @@ correct output is a watch row or an empty qualified board.
    hit rates. Low-count markets such as touchdowns, field goals, interceptions,
    and sacks blend a Poisson count model with the observed game sample. Integer
    lines reserve probability for a push.
-5. Complete sportsbook pairs are de-vigged. The independent player-form
-   probability is blended toward the market according to sample maturity and
+5. Complete sportsbook pairs are de-vigged. If only one exact side is posted,
+   the offered-price break-even is retained as the market reference and no
+   no-vig probability is invented. The independent player-form probability is
+   blended toward the available reference according to sample maturity and
    confidence, with a hard maximum projection weight. Prior-season and volatile
    markets receive additional reliability reductions.
 6. Model edge is the relative difference between the blended no-push model
-   probability and the no-vig market probability.
+   probability and the available market reference. One-sided offers lose an
+   additional 1.5 percentage points before qualification and cannot exceed LEAN.
 7. Price value is the expected return at the offered decimal odds, including
    push refunds.
 8. Positive edge and price value are compressed separately before tiering.
@@ -127,10 +135,10 @@ alternates).
 
 Every leg still needs a matched player projection, six or more regular-season
 samples, at least 52% projection confidence, verified roster status, fresh odds,
-and no extreme projection/price disagreement. A one-sided anytime-touchdown
-market may appear in the parlay feed because it has an independent projection
-and a real posted break-even price, but it remains ineligible for the stricter
-straight-bet board without a complete two-sided no-vig market. If no safe 3–4
+and no extreme projection/price disagreement. A one-sided market may appear in the parlay feed when it has an independent
+projection and a real posted break-even price. It may also qualify on the
+straight-bet board only at LEAN after the extra one-sided reserve and all other
+safety gates. If no safe 3–4
 leg combination reaches a payout band, the site shows **Waiting** instead of
 adding a fifth leg or inventing odds.
 
@@ -144,9 +152,9 @@ count-stat simulation, while yardage and longest-play props use a continuous
 distribution.
 
 The simulator is an analysis tool, not a back door around qualification. Its
-result cannot enter My Ledger and is never called a wager unless a complete
-current market from an eligible Ontario book passes every model, price, confidence, and exposure
-gate.
+result cannot enter My Ledger and is never called a wager unless a current
+observed offer from an eligible Ontario book passes every model, price,
+confidence, and exposure gate.
 
 ## GitHub setup and updates
 
