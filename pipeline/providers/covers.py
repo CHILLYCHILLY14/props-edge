@@ -338,8 +338,10 @@ class CoversProvider:
                     if not quotes:
                         raise ProviderError("Covers returned no matchable NFL prop prices")
                     return quotes
-            except ProviderError:
-                raise
+            except ProviderError as exc:
+                # Empty or malformed responses can be transient CDN variants.
+                # Retry them just like transport failures before using cache.
+                last_error = str(exc)
             except urllib.error.HTTPError as exc:
                 last_error = f"HTTP {exc.code}"
                 if exc.code not in (429, 500, 502, 503, 504):
