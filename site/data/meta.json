@@ -1,7 +1,7 @@
 {
   "league": "NFL",
   "season": 2026,
-  "generated_at": "2026-09-14T18:30:33.893092+00:00",
+  "generated_at": "2026-09-14T18:46:17.592321+00:00",
   "provider_priority": [
     "Covers public NFL prop comparison (no key)",
     "ESPN regular-season statistics and current rosters (no key)"
@@ -30,19 +30,19 @@
     "espn_keyless": true
   },
   "counts": {
-    "priced_quotes": 168,
-    "eligible_priced_quotes": 168,
+    "priced_quotes": 180,
+    "eligible_priced_quotes": 180,
     "priced_events": 1,
     "eligible_priced_events": 1,
     "eligible_books": 9,
     "priced_markets": 8,
-    "board": 50,
-    "actionable": 0,
-    "qualified_options": 1,
+    "board": 55,
+    "actionable": 3,
+    "qualified_options": 10,
     "best": 0,
     "good": 0,
-    "leans": 1,
-    "watch": 49,
+    "leans": 10,
+    "watch": 45,
     "projections": 7500,
     "projected_markets": 27,
     "scheduled_projections": 7500,
@@ -51,15 +51,15 @@
     "roster_verified": 7500,
     "roster_verified_teams": 32,
     "scheduled_roster_teams": 32,
-    "suggested_exposure": 0,
+    "suggested_exposure": 5.0,
     "parlay_game_days": 10,
-    "parlays_ready": 0
+    "parlays_ready": 1
   },
   "source_by_sport": {
     "NFL": {
       "source": "Covers public prop comparison + ESPN regular-season form",
-      "priced_quotes": 168,
-      "eligible_priced_quotes": 168,
+      "priced_quotes": 180,
+      "eligible_priced_quotes": 180,
       "projections": 7500,
       "errors": []
     }
@@ -68,8 +68,8 @@
     "covers": {
       "source_url": "https://www.covers.com/sport/football/nfl/player-props",
       "timestamp_basis": "page_observed_at",
-      "priced_quotes": 168,
-      "eligible_priced_quotes": 168
+      "priced_quotes": 180,
+      "eligible_priced_quotes": 180
     },
     "odds_api_io": {
       "priced_quotes": 0,
@@ -109,7 +109,7 @@
     "Sportsbook consensus is never treated as an independent model by itself.",
     "Each exact prop publishes the best observed price from the configured Ontario-regulated brand allowlist.",
     "Covers supplies public comparison-page market lines. The observation time is recorded; it is not represented as a sportsbook-originated update time.",
-    "One-sided or unmatched prices remain visible as WATCH rows but cannot qualify without a complete same-line market.",
+    "An exact one-sided offer can qualify only as a LEAN after an extra edge reserve; no opposite price or no-vig probability is invented.",
     "Key-based odds requests are disabled. If the public page is unavailable or changes shape, existing wagers and keyless player projections are preserved.",
     "A wager enters My Ledger only after the user reviews the live price and clicks Add.",
     "No odds API credentials are read or sent by the scheduled build."
