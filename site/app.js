@@ -184,6 +184,7 @@ function renderStatus() {
   const formReady = Number(source.projections) > 0;
   const eligiblePriceRows = Number(source.eligible_priced_quotes ?? source.target_priced_quotes ?? counts.eligible_priced_quotes ?? counts.target_priced_quotes ?? state.board.length) || 0;
   const pricesReady = eligiblePriceRows > 0;
+  const cachedPrices = state.meta.price_source_status === "cached";
   const qualified = Number(counts.actionable) > 0;
   const setStage = (selector, status, label) => {
     const stage = $(selector);
@@ -211,9 +212,9 @@ function renderStatus() {
     banner.textContent = `NFL data is ${Math.floor(ageHours)} hours old. Treat every displayed price as stale and verify it at the sportsbook.`;
     $("#feedState").textContent = "STALE";
   } else if (pricesReady) {
-    banner.className = "status-banner ok";
-    banner.textContent = `${counts.actionable || 0} qualified NFL props from ${eligiblePriceRows} live Ontario-regulated price rows. ${state.meta.model_status || ""}`;
-    $("#feedState").textContent = "LIVE";
+    banner.className = cachedPrices ? "status-banner warn" : "status-banner ok";
+    banner.textContent = `${counts.actionable || 0} qualified NFL props from ${eligiblePriceRows} ${cachedPrices ? "recently observed" : "live"} Ontario-regulated price rows. ${state.meta.model_status || ""}`;
+    $("#feedState").textContent = cachedPrices ? "RECENT" : "LIVE";
   } else if (state.meta.odds_mode === "keyless") {
     banner.className = "status-banner warn";
     banner.textContent = (formReady ? "Player projections are available. " : "Player statistics are not ready yet. ") +
