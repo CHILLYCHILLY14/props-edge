@@ -18,6 +18,8 @@ from .model import (
 from . import parlays
 from .providers.covers import CoversProvider, SOURCE_URL as COVERS_SOURCE_URL
 from .providers.espn import EspnProjectionProvider, _nfl_season_year
+from .providers.odds_api_io import OddsApiIoProvider  # retained for disabled-provider regression tests
+from .providers.the_odds_api import TheOddsApiProvider  # retained for disabled-provider regression tests
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -257,7 +259,7 @@ def build() -> dict[str, Any]:
             if quotes and projections
             else (
                 f"The next {lookahead_days} days of regular-season schedule and form are ready, "
-                "but the public comparison source returned no matchable player-prop prices. Key-based requests remain disabled."
+                "but the public comparison source returned no matchable player-prop prices. Key-based requests are disabled."
                 if projections and scheduled_starts
                 else (
                     f"Regular-season form is available, but no game is scheduled inside the next {lookahead_days} days."
