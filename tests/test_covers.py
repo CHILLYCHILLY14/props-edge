@@ -1,5 +1,7 @@
 import unittest
+from unittest.mock import MagicMock, patch
 
+from pipeline.providers import covers
 from pipeline.providers.covers import parse_html
 from pipeline.schema import Projection
 
@@ -89,10 +91,24 @@ class CoversParserTests(unittest.TestCase):
         )
         self.assertEqual(len(rows), 5)
 
-    def test_rejects_other_sports_at_provider_boundary(self):
-        from pipeline.providers.covers import CoversProvider
+    def test_retries_an_empty_html_variant_before_failing_over(self):
+        response = MagicMock()
+        response.headers.get.return_value = "text/html"
+        response.read.return_value = b"<html></html>"
+        connection = MagicMock()
+        connection.__enter__.return_value = response
+        connection.__exit__.return_value = False
+        with (
+            patch.object(covers.urllib.request, "urlopen", return_value=connection) as opened,
+            patch.object(covers, "parse_html", side_effect=[[], ["verified quote"]]),
+            patch.object(covers.time, "sleep"),
+        ):
+            rows = covers.CoversProvider({}).fetch("NFL", [])
+        self.assertEqual(rows, ["verified quote"])
+        self.assertEqual(opened.call_count, 2)
 
-        self.assertEqual(CoversProvider({}).fetch("NBA", []), [])
+    def test_rejects_other_sports_at_provider_boundary(self):
+        self.assertEqual(covers.CoversProvider({}).fetch("NBA", []), [])
 
 
 if __name__ == "__main__":
