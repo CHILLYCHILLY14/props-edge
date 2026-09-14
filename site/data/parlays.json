@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generated_at": "2026-09-14T19:03:40.094012+00:00",
+  "generated_at": "2026-09-14T20:10:47.013742+00:00",
   "timezone": "America/Toronto",
   "method": "One dedicated anytime-touchdown ticket plus three mixed-market payout targets, each using three or four statistically supported NFL prop outcomes at one eligible sportsbook. Every leg has a fresh posted price, a matched NFL projection, at least the configured sample and confidence floors, and no hard safety flag. Mixed tickets use at least two market groups; the touchdown ticket uses only anytime scorers. Every ticket limits repeated player and market exposure, and gives same-game pairs an additional probability haircut.",
   "notes": [
@@ -19,8 +19,8 @@
           "matchup": "Denver Broncos @ Kansas City Chiefs"
         }
       ],
-      "prop_prices_considered": 0,
-      "eligible_legs": 0,
+      "prop_prices_considered": 152,
+      "eligible_legs": 56,
       "cards": [
         {
           "status": "waiting",
@@ -32,13 +32,100 @@
           "reason": "Waiting for at least three fresh, supported anytime-touchdown prices at one eligible book."
         },
         {
-          "status": "waiting",
+          "status": "ready",
           "key": "smart_shot",
           "name": "Smart Shot",
           "target_american": 1000,
-          "leg_count": 0,
-          "legs": [],
-          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+          "book": "theScore Bet",
+          "estimated_decimal": 10.54,
+          "estimated_american": 954,
+          "raw_independent_probability": 0.10208,
+          "correlation_factor": 0.729,
+          "same_game": true,
+          "probability_method": "unmeasured dependence",
+          "joint_probability_bounds": [
+            0.0,
+            0.3682
+          ],
+          "model_probability": null,
+          "book_implied_probability": 0.09485,
+          "parlay_value_ratio": null,
+          "fair_american": null,
+          "leg_count": 3,
+          "legs": [
+            {
+              "event_id": "401872931",
+              "start_time": "2026-09-15T00:15Z",
+              "updated_at": "2026-09-14T20:10:43.562624+00:00",
+              "matchup": "Denver Broncos @ Kansas City Chiefs",
+              "player": "Kenneth Walker III",
+              "market": "Rushing yards",
+              "market_group": "Rushing",
+              "side": "over",
+              "line": 64.5,
+              "pick": "Kenneth Walker III \u2014 Over 64.5 Rushing yards",
+              "selection": "Over 64.5 Rushing yards",
+              "price_american": -125,
+              "model_probability": 0.51102,
+              "push_probability": 0.0,
+              "breakeven": 0.55556,
+              "confidence": 0.7,
+              "projection": 58.34,
+              "opponent_defense_rank": 1,
+              "opponent_defense_teams": 32,
+              "samples": 7,
+              "current_season_samples": 0,
+              "matchup_quality": "Tough"
+            },
+            {
+              "event_id": "401872931",
+              "start_time": "2026-09-15T00:15Z",
+              "updated_at": "2026-09-14T20:10:43.562624+00:00",
+              "matchup": "Denver Broncos @ Kansas City Chiefs",
+              "player": "Bo Nix",
+              "market": "Pass attempts",
+              "market_group": "Passing",
+              "side": "over",
+              "line": 34.5,
+              "pick": "Bo Nix \u2014 Over 34.5 Pass attempts",
+              "selection": "Over 34.5 Pass attempts",
+              "price_american": -105,
+              "model_probability": 0.54255,
+              "push_probability": 0.0,
+              "breakeven": 0.5122,
+              "confidence": 0.7,
+              "projection": 36.43,
+              "opponent_defense_rank": 16,
+              "opponent_defense_teams": 32,
+              "samples": 8,
+              "current_season_samples": 0,
+              "matchup_quality": "Neutral"
+            },
+            {
+              "event_id": "401872931",
+              "start_time": "2026-09-15T00:15Z",
+              "updated_at": "2026-09-14T20:10:43.562624+00:00",
+              "matchup": "Denver Broncos @ Kansas City Chiefs",
+              "player": "RJ Harvey",
+              "market": "Anytime touchdown",
+              "market_group": "Touchdowns",
+              "side": "yes",
+              "line": null,
+              "pick": "RJ Harvey \u2014 Yes Anytime touchdown",
+              "selection": "Any Time Touchdown Scorer",
+              "price_american": 200,
+              "model_probability": 0.3682,
+              "push_probability": 0.0,
+              "breakeven": 0.33333,
+              "confidence": 0.7,
+              "projection": 0.81,
+              "opponent_defense_rank": 13,
+              "opponent_defense_teams": 32,
+              "samples": 8,
+              "current_season_samples": 0,
+              "matchup_quality": "Neutral"
+            }
+          ]
         },
         {
           "status": "waiting",
@@ -47,7 +134,7 @@
           "target_american": 5000,
           "leg_count": 0,
           "legs": [],
-          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+          "reason": "Supported legs are available, but no 3\u20134 leg combination lands inside this payout band."
         },
         {
           "status": "waiting",
@@ -56,7 +143,7 @@
           "target_american": 10000,
           "leg_count": 0,
           "legs": [],
-          "reason": "Waiting for at least three fresh, statistically supported prop prices at one eligible book."
+          "reason": "Supported legs are available, but no 3\u20134 leg combination lands inside this payout band."
         }
       ]
     },
