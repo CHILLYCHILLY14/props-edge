@@ -356,9 +356,9 @@ function parlayTicket(card, stale) {
       <div class="parlay-book"><span>${escapeHtml(card.book)}</span><small>${card.key === "touchdown_ticket" ? "Anytime scorers · best supported" : `${american(card.target_american)} target`} · estimated payout</small></div>
       <ol class="parlay-legs">${legs}</ol>
       <div class="parlay-foot">
-        <div><span>Estimated all-win chance</span><strong>${pct(card.model_probability)}</strong></div>
+        <div><span>Estimated all-win chance</span><strong>${card.same_game ? "Not calibrated" : pct(card.model_probability)}</strong></div>
         <div><span>Implied by estimated payout</span><strong>${pct(card.book_implied_probability)}</strong></div>
-        <small>${Number(card.correlation_factor) < 1 ? "Same-game estimate uses an uncalibrated correlation assumption. Confirm the book’s combined price." : "Estimate assumes independent games."} Pushes change the payout.</small>
+        <small>${card.same_game ? "Same-game legs are dependent. No calibrated all-win probability is available; the displayed payout is only a leg-price estimate, not a sportsbook quote." : "Estimate assumes independent games; it is not a guarantee."} Pushes change the payout.</small>
       </div>
     </article>`;
 }
