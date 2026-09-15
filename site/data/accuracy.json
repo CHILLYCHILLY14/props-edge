@@ -1,178 +1,178 @@
 {
  "schema": 3,
  "projection_only": true,
- "generated_at": "2026-09-15T00:21:51.216164+00:00",
+ "generated_at": "2026-09-15T05:14:31.236227+00:00",
  "label": "NFL player projection accuracy",
  "scope": {
   "season": 2026,
   "season_type": 2,
   "season_type_label": "regular season",
-  "included_records": 26350,
+  "included_records": 26371,
   "excluded_records": 0
  },
  "method": "One frozen pregame player projection per scheduled player and market, graded only from final box-score statistics. No wager, sportsbook price, stake unit, or ledger history is stored here. Missing statistics remain pending.",
  "props": {
   "Anytime touchdown": {
    "logged": 1594,
-   "graded": 248,
-   "mae": 0.38101,
-   "bias": -0.08883
+   "graded": 264,
+   "mae": 0.38057,
+   "bias": -0.09436
   },
   "Extra point attempts": {
    "logged": 112,
-   "graded": 24,
-   "mae": 1.39208,
-   "bias": -0.47208
+   "graded": 26,
+   "mae": 1.44346,
+   "bias": -0.52038
   },
   "Extra points made": {
    "logged": 112,
-   "graded": 24,
-   "mae": 1.33083,
-   "bias": -0.46083
+   "graded": 26,
+   "mae": 1.38769,
+   "bias": -0.51077
   },
   "Field goal attempts": {
    "logged": 112,
-   "graded": 24,
-   "mae": 1.26458,
-   "bias": 0.18375
+   "graded": 26,
+   "mae": 1.27538,
+   "bias": 0.27769
   },
   "Field goals made": {
    "logged": 112,
-   "graded": 24,
-   "mae": 0.9325,
-   "bias": 0.20833
+   "graded": 26,
+   "mae": 0.96154,
+   "bias": 0.29308
   },
   "Kicking points": {
    "logged": 112,
-   "graded": 24,
-   "mae": 3.29167,
-   "bias": 0.52667
+   "graded": 26,
+   "mae": 3.26,
+   "bias": 0.70769
   },
   "Pass + rush + receiving touchdowns": {
    "logged": 218,
-   "graded": 27,
-   "mae": 0.96741,
-   "bias": -0.18889
+   "graded": 29,
+   "mae": 0.97138,
+   "bias": -0.23483
   },
   "Pass + rush + receiving yards": {
    "logged": 218,
-   "graded": 27,
-   "mae": 69.35704,
-   "bias": -17.95333
+   "graded": 29,
+   "mae": 70.54414,
+   "bias": -10.74483
   },
   "Pass + rush yards": {
    "logged": 218,
-   "graded": 27,
-   "mae": 69.38444,
-   "bias": -17.73926
+   "graded": 29,
+   "mae": 70.64655,
+   "bias": -10.46862
   },
   "Pass attempts": {
    "logged": 218,
-   "graded": 27,
-   "mae": 6.57852,
-   "bias": -1.25704
+   "graded": 29,
+   "mae": 6.69931,
+   "bias": -0.59586
   },
   "Pass completions": {
    "logged": 218,
-   "graded": 27,
-   "mae": 4.26259,
-   "bias": -1.2863
+   "graded": 29,
+   "mae": 4.40586,
+   "bias": -0.76034
   },
   "Pass interceptions": {
    "logged": 218,
-   "graded": 27,
-   "mae": 0.63185,
-   "bias": -0.08296
+   "graded": 29,
+   "mae": 0.6131,
+   "bias": -0.0869
   },
   "Passing touchdowns": {
    "logged": 218,
-   "graded": 27,
-   "mae": 0.9237,
-   "bias": -0.10741
+   "graded": 29,
+   "mae": 0.91034,
+   "bias": -0.15034
   },
   "Passing yards": {
    "logged": 218,
-   "graded": 27,
-   "mae": 68.43259,
-   "bias": -11.75259
+   "graded": 29,
+   "mae": 68.9931,
+   "bias": -5.66207
   },
   "Receiving touchdowns": {
    "logged": 1308,
-   "graded": 190,
-   "mae": 0.32374,
-   "bias": -0.07437
+   "graded": 203,
+   "mae": 0.31985,
+   "bias": -0.07995
   },
   "Receiving yards": {
    "logged": 1308,
-   "graded": 190,
-   "mae": 20.14347,
-   "bias": -0.99105
+   "graded": 203,
+   "mae": 20.26202,
+   "bias": -0.03601
   },
   "Receptions": {
    "logged": 1308,
-   "graded": 190,
-   "mae": 1.46247,
-   "bias": -0.08732
+   "graded": 203,
+   "mae": 1.46384,
+   "bias": -0.01921
   },
   "Rush + receiving touchdowns": {
    "logged": 1594,
-   "graded": 234,
-   "mae": 0.39927,
-   "bias": -0.09868
+   "graded": 249,
+   "mae": 0.39924,
+   "bias": -0.1043
   },
   "Rush + receiving yards": {
    "logged": 1594,
-   "graded": 234,
-   "mae": 22.70141,
-   "bias": 0.10671
+   "graded": 249,
+   "mae": 23.11791,
+   "bias": 0.58498
   },
   "Rush attempts": {
-   "logged": 736,
-   "graded": 85,
-   "mae": 3.73929,
-   "bias": 0.19647
+   "logged": 739,
+   "graded": 89,
+   "mae": 3.89169,
+   "bias": 0.18022
   },
   "Rushing touchdowns": {
-   "logged": 736,
-   "graded": 85,
-   "mae": 0.41576,
-   "bias": -0.14165
+   "logged": 739,
+   "graded": 89,
+   "mae": 0.42382,
+   "bias": -0.14607
   },
   "Rushing yards": {
-   "logged": 736,
-   "graded": 85,
-   "mae": 19.53965,
-   "bias": 0.52529
+   "logged": 739,
+   "graded": 89,
+   "mae": 20.54225,
+   "bias": -0.16584
   },
   "Sacks": {
-   "logged": 3410,
-   "graded": 481,
-   "mae": 0.16807,
-   "bias": -0.02075
+   "logged": 3414,
+   "graded": 514,
+   "mae": 0.1687,
+   "bias": -0.01854
   },
   "Solo tackles": {
-   "logged": 3410,
-   "graded": 481,
-   "mae": 1.21297,
-   "bias": -0.04919
+   "logged": 3414,
+   "graded": 514,
+   "mae": 1.21786,
+   "bias": -0.01436
   },
   "Tackles + assists": {
-   "logged": 3410,
-   "graded": 481,
-   "mae": 1.75709,
-   "bias": 0.12349
+   "logged": 3414,
+   "graded": 514,
+   "mae": 1.76066,
+   "bias": 0.13996
   },
   "Targets": {
    "logged": 1308,
-   "graded": 190,
-   "mae": 1.89042,
-   "bias": 0.00884
+   "graded": 203,
+   "mae": 1.92271,
+   "bias": 0.09246
   },
   "Touchdowns scored": {
    "logged": 1594,
-   "graded": 248,
-   "mae": 0.38101,
-   "bias": -0.08883
+   "graded": 264,
+   "mae": 0.38057,
+   "bias": -0.09436
   }
  },
  "records": [
@@ -3437,6 +3437,57 @@
    "stat_key": "jonassanker|neworleanssaints|sacks",
    "id": "prop:NFL:401872979:Jonas Sanker:Sacks:",
    "captured_at": "2026-09-14T00:21:59.853079+00:00",
+   "result": "Pending",
+   "version": "2026-09-06-ev2"
+  },
+  {
+   "kind": "prop",
+   "league": "NFL",
+   "event_id": "401872979",
+   "start": "2026-10-06T00:15Z",
+   "matchup": "Atlanta Falcons @ New Orleans Saints",
+   "player": "Jonah Williams",
+   "season": 2026,
+   "season_type": 2,
+   "market": "Tackles + assists",
+   "projection": 2.8,
+   "stat_key": "jonahwilliams|neworleanssaints|tacklesassists",
+   "id": "prop:NFL:401872979:Jonah Williams:Tackles + assists:",
+   "captured_at": "2026-09-15T05:14:30.449753+00:00",
+   "result": "Pending",
+   "version": "2026-09-06-ev2"
+  },
+  {
+   "kind": "prop",
+   "league": "NFL",
+   "event_id": "401872979",
+   "start": "2026-10-06T00:15Z",
+   "matchup": "Atlanta Falcons @ New Orleans Saints",
+   "player": "Jonah Williams",
+   "season": 2026,
+   "season_type": 2,
+   "market": "Solo tackles",
+   "projection": 1.15,
+   "stat_key": "jonahwilliams|neworleanssaints|solotackles",
+   "id": "prop:NFL:401872979:Jonah Williams:Solo tackles:",
+   "captured_at": "2026-09-15T05:14:30.449753+00:00",
+   "result": "Pending",
+   "version": "2026-09-06-ev2"
+  },
+  {
+   "kind": "prop",
+   "league": "NFL",
+   "event_id": "401872979",
+   "start": "2026-10-06T00:15Z",
+   "matchup": "Atlanta Falcons @ New Orleans Saints",
+   "player": "Jonah Williams",
+   "season": 2026,
+   "season_type": 2,
+   "market": "Sacks",
+   "projection": 0.26,
+   "stat_key": "jonahwilliams|neworleanssaints|sacks",
+   "id": "prop:NFL:401872979:Jonah Williams:Sacks:",
+   "captured_at": "2026-09-15T05:14:30.449753+00:00",
    "result": "Pending",
    "version": "2026-09-06-ev2"
   },
@@ -17124,61 +17175,10 @@
    "captured_at": "2026-09-13T00:21:49.016467+00:00",
    "result": "Pending",
    "version": "2026-09-06-ev2"
-  },
-  {
-   "kind": "prop",
-   "league": "NFL",
-   "event_id": "401872977",
-   "start": "2026-10-04T20:25Z",
-   "matchup": "Los Angeles Chargers @ Seattle Seahawks",
-   "player": "Keaton Mitchell",
-   "season": 2026,
-   "season_type": 2,
-   "market": "Receiving yards",
-   "projection": 8.7,
-   "stat_key": "keatonmitchell|losangeleschargers|receivingyards",
-   "id": "prop:NFL:401872977:Keaton Mitchell:Receiving yards:",
-   "captured_at": "2026-09-13T00:21:49.016467+00:00",
-   "result": "Pending",
-   "version": "2026-09-06-ev2"
-  },
-  {
-   "kind": "prop",
-   "league": "NFL",
-   "event_id": "401872977",
-   "start": "2026-10-04T20:25Z",
-   "matchup": "Los Angeles Chargers @ Seattle Seahawks",
-   "player": "Keaton Mitchell",
-   "season": 2026,
-   "season_type": 2,
-   "market": "Receiving touchdowns",
-   "projection": 0.0,
-   "stat_key": "keatonmitchell|losangeleschargers|receivingtouchdowns",
-   "id": "prop:NFL:401872977:Keaton Mitchell:Receiving touchdowns:",
-   "captured_at": "2026-09-13T00:21:49.016467+00:00",
-   "result": "Pending",
-   "version": "2026-09-06-ev2"
-  },
-  {
-   "kind": "prop",
-   "league": "NFL",
-   "event_id": "401872977",
-   "start": "2026-10-04T20:25Z",
-   "matchup": "Los Angeles Chargers @ Seattle Seahawks",
-   "player": "Keaton Mitchell",
-   "season": 2026,
-   "season_type": 2,
-   "market": "Anytime touchdown",
-   "projection": 0.05,
-   "stat_key": "keatonmitchell|losangeleschargers|anytimetouchdown",
-   "id": "prop:NFL:401872977:Keaton Mitchell:Anytime touchdown:",
-   "captured_at": "2026-09-13T00:21:49.016467+00:00",
-   "result": "Pending",
-   "version": "2026-09-06-ev2"
   }
  ],
  "history": {
-  "total": 26350,
+  "total": 26371,
   "displayed": 1000,
   "truncated": true
  }
