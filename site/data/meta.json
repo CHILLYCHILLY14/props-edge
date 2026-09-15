@@ -1,26 +1,16 @@
 {
   "league": "NFL",
   "season": 2026,
-  "generated_at": "2026-09-15T16:10:07.225267+00:00",
+  "generated_at": "2026-09-15T20:10:44.940041+00:00",
   "provider_priority": [
     "Covers public NFL prop comparison (no key)",
     "ESPN regular-season statistics and current rosters (no key)"
   ],
   "odds_mode": "keyless",
-  "price_source_status": "available",
+  "price_source_status": "unavailable",
   "pricing_mode": "keyless-public-market-lines",
-  "price_scope": "Publicly observed sportsbook-brand prop prices; verify the Ontario line before wagering",
-  "eligible_books": [
-    "BetMGM",
-    "BetRivers",
-    "Caesars",
-    "DraftKings",
-    "FanDuel",
-    "Fanatics Sportsbook",
-    "Hard Rock Bet",
-    "bet365",
-    "theScore Bet"
-  ],
+  "price_scope": "Verified keyless player-prop prices are not currently available",
+  "eligible_books": [],
   "ontario_registry": "https://igamingontario.ca/en/player/regulated-igaming-market",
   "ontario_verified_as_of": "2026-09-01",
   "configured": {
@@ -30,46 +20,48 @@
     "espn_keyless": true
   },
   "counts": {
-    "priced_quotes": 136,
-    "eligible_priced_quotes": 136,
-    "priced_events": 10,
-    "eligible_priced_events": 10,
-    "eligible_books": 9,
-    "priced_markets": 6,
-    "board": 49,
-    "actionable": 4,
-    "qualified_options": 6,
+    "priced_quotes": 0,
+    "eligible_priced_quotes": 0,
+    "priced_events": 0,
+    "eligible_priced_events": 0,
+    "eligible_books": 0,
+    "priced_markets": 0,
+    "board": 0,
+    "actionable": 0,
+    "qualified_options": 0,
     "best": 0,
     "good": 0,
-    "leans": 6,
-    "watch": 43,
-    "projections": 7500,
-    "projected_markets": 27,
-    "scheduled_projections": 7500,
-    "matchup_adjusted": 7500,
-    "simulator_players": 1162,
-    "roster_verified": 7500,
-    "roster_verified_teams": 32,
-    "scheduled_roster_teams": 32,
-    "suggested_exposure": 6.5,
-    "parlay_game_days": 9,
-    "parlays_ready": 2
+    "leans": 0,
+    "watch": 0,
+    "projections": 0,
+    "projected_markets": 0,
+    "scheduled_projections": 0,
+    "matchup_adjusted": 0,
+    "simulator_players": 0,
+    "roster_verified": 0,
+    "roster_verified_teams": 0,
+    "scheduled_roster_teams": 0,
+    "suggested_exposure": 0,
+    "parlay_game_days": 0,
+    "parlays_ready": 0
   },
   "source_by_sport": {
     "NFL": {
-      "source": "Covers public prop comparison + ESPN regular-season form",
-      "priced_quotes": 136,
-      "eligible_priced_quotes": 136,
-      "projections": 7500,
-      "errors": []
+      "source": "No source available",
+      "priced_quotes": 0,
+      "eligible_priced_quotes": 0,
+      "projections": 0,
+      "errors": [
+        "ESPN regular-season statistics request failed (HTTP 400: \u001f\ufffd\b\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\ufffdVJ\ufffdOIU\ufffd210\ufffdQ\ufffdM-.NL\u0007\ufffd\ufffd\u00123sRS\u0014J\ufffd\u0015\ufffdSK\u0014R\ufffdR\ufffdJ\ufffd\u0015R\ufffdR\n\ufffd3\ufffdJ\ufffd\ufffdj\u0001\u0000\u0000\u0000\ufffd\ufffd\u0003\u0000\ufffd,\u0003\ufffd7\u0000\u0000\u0000)"
+      ]
     }
   },
   "source_by_provider": {
     "covers": {
       "source_url": "https://www.covers.com/sport/football/nfl/player-props",
       "timestamp_basis": "page_observed_at",
-      "priced_quotes": 136,
-      "eligible_priced_quotes": 136
+      "priced_quotes": 0,
+      "eligible_priced_quotes": 0
     },
     "odds_api_io": {
       "priced_quotes": 0,
@@ -83,8 +75,8 @@
     }
   },
   "lookahead_days": 21,
-  "next_scheduled_game": "2026-09-18T00:15Z",
-  "model_status": "Observed NFL prop prices from Ontario-regulated sportsbook brands, regular-season player samples, and opponent matchup data are available. Verify the current Ontario price before wagering.",
+  "next_scheduled_game": "",
+  "model_status": "NFL data is still too thin. The model will not force a wager.",
   "ledger_mode": "manual-browser",
   "max_odds_age_hours": 12,
   "market_coverage": [
